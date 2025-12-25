@@ -24,7 +24,8 @@
         { name: 'Gol Kralları', href: 'scorers.html', icon: 'fa-futbol' },
         { name: 'Asist Kralları', href: 'assists.html', icon: 'fa-hands-helping' },
         { name: 'Ziraat Kupası', href: 'ziraatkupasison16.html', icon: 'fa-award' },
-        { name: 'H2H', href: 'h2h-pro.html', icon: 'fa-exchange-alt' }
+        { name: 'H2H', href: 'h2h-pro.html', icon: 'fa-exchange-alt' },
+        { name: 'Admin', href: 'admin-data.html', icon: 'fa-cog' }
     ];
 
     // ╔══════════════════════════════════════════════════════════════╗

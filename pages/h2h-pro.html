@@ -763,133 +763,101 @@
         </div>
     </div>
 
-    <script>
-        // Team Data with extended stats
-        const teamsData = {
-            galatasaray: {
-                name: "Galatasaray",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-                stats: { played: 15, won: 10, draw: 3, lost: 2, gf: 32, ga: 12, points: 33 },
-                form: ['W', 'W', 'D', 'W', 'L'],
-                profile: { attack: 90, defense: 75, midfield: 85, possession: 82, setpiece: 70 }
-            },
-            fenerbahce: {
-                name: "Fenerbahçe",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-                stats: { played: 15, won: 9, draw: 4, lost: 2, gf: 28, ga: 14, points: 31 },
-                form: ['W', 'D', 'W', 'W', 'D'],
-                profile: { attack: 85, defense: 80, midfield: 82, possession: 78, setpiece: 75 }
-            },
-            besiktas: {
-                name: "Beşiktaş",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-                stats: { played: 15, won: 8, draw: 4, lost: 3, gf: 25, ga: 15, points: 28 },
-                form: ['L', 'W', 'W', 'D', 'W'],
-                profile: { attack: 78, defense: 72, midfield: 80, possession: 75, setpiece: 68 }
-            },
-            trabzonspor: {
-                name: "Trabzonspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-                stats: { played: 15, won: 7, draw: 5, lost: 3, gf: 22, ga: 16, points: 26 },
-                form: ['D', 'W', 'L', 'W', 'D'],
-                profile: { attack: 75, defense: 70, midfield: 78, possession: 72, setpiece: 72 }
-            },
-            basaksehir: {
-                name: "Başakşehir",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-                stats: { played: 15, won: 6, draw: 5, lost: 4, gf: 18, ga: 14, points: 23 },
-                form: ['W', 'D', 'D', 'L', 'W'],
-                profile: { attack: 68, defense: 75, midfield: 72, possession: 68, setpiece: 70 }
-            },
-            alanyaspor: {
-                name: "Alanyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-                stats: { played: 15, won: 5, draw: 6, lost: 4, gf: 16, ga: 15, points: 21 },
-                form: ['D', 'D', 'W', 'L', 'D'],
-                profile: { attack: 62, defense: 65, midfield: 68, possession: 60, setpiece: 58 }
-            },
-            antalyaspor: {
-                name: "Antalyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-                stats: { played: 15, won: 4, draw: 7, lost: 4, gf: 14, ga: 13, points: 19 },
-                form: ['D', 'D', 'D', 'W', 'L'],
-                profile: { attack: 58, defense: 68, midfield: 65, possession: 55, setpiece: 60 }
-            },
-            konyaspor: {
-                name: "Konyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-                stats: { played: 15, won: 4, draw: 5, lost: 6, gf: 12, ga: 18, points: 17 },
-                form: ['L', 'D', 'L', 'W', 'D'],
-                profile: { attack: 52, defense: 58, midfield: 60, possession: 48, setpiece: 55 }
-            },
-            samsunspor: {
-                name: "Samsunspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-                stats: { played: 15, won: 5, draw: 4, lost: 6, gf: 15, ga: 20, points: 19 },
-                form: ['W', 'L', 'D', 'L', 'W'],
-                profile: { attack: 60, defense: 55, midfield: 62, possession: 52, setpiece: 58 }
-            },
-            eyupspor: {
-                name: "Eyüpspor",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
-                stats: { played: 15, won: 4, draw: 4, lost: 7, gf: 13, ga: 19, points: 16 },
-                form: ['L', 'L', 'W', 'D', 'L'],
-                profile: { attack: 55, defense: 52, midfield: 58, possession: 50, setpiece: 52 }
-            },
-            goztepe: {
-                name: "Göztepe",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-                stats: { played: 15, won: 5, draw: 5, lost: 5, gf: 17, ga: 17, points: 20 },
-                form: ['W', 'D', 'L', 'W', 'D'],
-                profile: { attack: 65, defense: 62, midfield: 64, possession: 58, setpiece: 60 }
-            },
-            kayserispor: {
-                name: "Kayserispor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-                stats: { played: 15, won: 3, draw: 4, lost: 8, gf: 10, ga: 22, points: 13 },
-                form: ['L', 'L', 'D', 'L', 'W'],
-                profile: { attack: 48, defense: 45, midfield: 52, possession: 45, setpiece: 48 }
-            },
-            gaziantep: {
-                name: "Gaziantep FK",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-                stats: { played: 15, won: 3, draw: 5, lost: 7, gf: 12, ga: 21, points: 14 },
-                form: ['D', 'L', 'L', 'D', 'L'],
-                profile: { attack: 50, defense: 48, midfield: 55, possession: 48, setpiece: 50 }
-            },
-            genclerbirligi: {
-                name: "Gençlerbirliği",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png",
-                stats: { played: 15, won: 4, draw: 3, lost: 8, gf: 11, ga: 23, points: 15 },
-                form: ['L', 'W', 'L', 'L', 'D'],
-                profile: { attack: 52, defense: 42, midfield: 50, possession: 46, setpiece: 45 }
-            }
-        };
+    <!-- Merkezi Veri Dosyası -->
+    <script src="../data.js"></script>
 
-        // Sample H2H matches
-        const h2hMatches = {
-            'fenerbahce_vs_galatasaray': [
-                { scoreA: 2, scoreB: 1, date: '2024-11-15' },
-                { scoreA: 0, scoreB: 3, date: '2024-04-20' },
-                { scoreA: 1, scoreB: 1, date: '2023-12-10' },
-                { scoreA: 2, scoreB: 2, date: '2023-05-15' },
-                { scoreA: 0, scoreB: 1, date: '2022-11-08' }
-            ],
-            'besiktas_vs_galatasaray': [
-                { scoreA: 1, scoreB: 2, date: '2024-10-20' },
-                { scoreA: 2, scoreB: 2, date: '2024-03-15' },
-                { scoreA: 0, scoreB: 1, date: '2023-09-25' }
-            ],
-            'besiktas_vs_fenerbahce': [
-                { scoreA: 0, scoreB: 1, date: '2024-09-15' },
-                { scoreA: 3, scoreB: 2, date: '2024-02-18' },
-                { scoreA: 1, scoreB: 1, date: '2023-08-20' }
-            ],
-            'galatasaray_vs_trabzonspor': [
-                { scoreA: 3, scoreB: 1, date: '2024-08-10' },
-                { scoreA: 2, scoreB: 2, date: '2024-01-25' }
-            ]
-        };
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // TribeData'dan dinamik takım verisi oluştur
+        // ═══════════════════════════════════════════════════════════════
+
+        function buildTeamsData() {
+            const standings = TribeData.calculateStandings();
+            const teamsData = {};
+
+            // Her takım için istatistik oluştur
+            standings.forEach((team, index) => {
+                const teamKey = team.name.toLowerCase()
+                    .replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ğ/g, 'g')
+                    .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ı/g, 'i')
+                    .replace(/ü/g, 'u').replace(/ /g, '');
+
+                // Form son 5 maçtan
+                const form = team.form.slice(-5).map(f => {
+                    if (f === 'G') return 'W';
+                    if (f === 'B') return 'D';
+                    return 'L';
+                });
+
+                // Takım profili hesapla (sıralamaya göre)
+                const rank = index + 1;
+                const attackScore = Math.max(40, 95 - (rank * 3) + Math.round(team.gf / 2));
+                const defenseScore = Math.max(40, 90 - (rank * 3) - Math.round(team.ga / 3));
+
+                teamsData[teamKey] = {
+                    name: team.name,
+                    logo: TribeData.getTeamLogo(team.name),
+                    stats: {
+                        played: team.played,
+                        won: team.won,
+                        draw: team.draw,
+                        lost: team.lost,
+                        gf: team.gf,
+                        ga: team.ga,
+                        points: team.points
+                    },
+                    form: form,
+                    profile: {
+                        attack: Math.min(95, attackScore),
+                        defense: Math.min(90, Math.max(40, defenseScore)),
+                        midfield: Math.min(92, Math.max(45, Math.round((attackScore + defenseScore) / 2))),
+                        possession: Math.min(88, Math.max(42, 80 - (rank * 2))),
+                        setpiece: Math.min(85, Math.max(40, 75 - (rank * 2)))
+                    }
+                };
+            });
+
+            return teamsData;
+        }
+
+        // TribeData maçlarından H2H verisi oluştur
+        function buildH2HMatches() {
+            const h2h = {};
+
+            TribeData.matches.forEach((match, index) => {
+                const teamAKey = match.home.toLowerCase()
+                    .replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ğ/g, 'g')
+                    .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ı/g, 'i')
+                    .replace(/ /g, '');
+                const teamBKey = match.away.toLowerCase()
+                    .replace(/ş/g, 's').replace(/ç/g, 'c').replace(/ğ/g, 'g')
+                    .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ı/g, 'i')
+                    .replace(/ /g, '');
+
+                const key = [teamAKey, teamBKey].sort().join('_vs_');
+
+                if (!h2h[key]) h2h[key] = [];
+
+                // Tarihi hafta numarasından tahmin et
+                const baseDate = new Date('2024-09-01');
+                baseDate.setDate(baseDate.getDate() + (match.week * 7));
+
+                const isFirst = [teamAKey, teamBKey].sort()[0] === teamAKey;
+
+                h2h[key].push({
+                    scoreA: isFirst ? match.homeScore : match.awayScore,
+                    scoreB: isFirst ? match.awayScore : match.homeScore,
+                    date: baseDate.toISOString().split('T')[0],
+                    week: match.week
+                });
+            });
+
+            return h2h;
+        }
+
+        // Verileri oluştur
+        const teamsData = buildTeamsData();
+        const h2hMatches = buildH2HMatches();
 
         // Chart instances
         let radarChart, formChart, goalsChart, winRateChart;
