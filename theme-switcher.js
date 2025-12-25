@@ -110,6 +110,51 @@
     function createNavigation() {
         if (document.getElementById('tribeNavigation')) return;
 
+        // Viewport meta tag ekle (yoksa)
+        if (!document.querySelector('meta[name="viewport"]')) {
+            const viewport = document.createElement('meta');
+            viewport.name = 'viewport';
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+            document.head.appendChild(viewport);
+        }
+
+        // Global mobil stilleri ekle
+        const globalStyles = document.createElement('style');
+        globalStyles.id = 'tribeMobileStyles';
+        globalStyles.textContent = `
+            /* Global Mobile Fixes */
+            html, body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+            * {
+                box-sizing: border-box !important;
+            }
+            @media (max-width: 768px) {
+                .special-container, .container, .content-wrapper, main {
+                    padding: 10px !important;
+                    margin: 10px auto !important;
+                    max-width: 100% !important;
+                    overflow-x: hidden !important;
+                }
+                table {
+                    display: block !important;
+                    overflow-x: auto !important;
+                    white-space: nowrap !important;
+                    max-width: 100% !important;
+                    font-size: 0.8rem !important;
+                }
+                .header-banner h1, h1 {
+                    font-size: 1.8rem !important;
+                }
+                .header-banner h2, h2 {
+                    font-size: 1.2rem !important;
+                }
+            }
+        `;
+        document.head.appendChild(globalStyles);
+
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
         const nav = document.createElement('nav');
@@ -124,6 +169,7 @@
                     top: 0;
                     z-index: 1000;
                     font-family: 'Outfit', sans-serif;
+                    width: 100%;
                 }
                 .tribe-nav-container {
                     max-width: 1200px;
@@ -131,41 +177,45 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 0 20px;
+                    padding: 0 15px;
+                    min-height: 60px;
                 }
                 .tribe-nav-logo {
                     font-family: 'Teko', sans-serif;
-                    font-size: 1.8rem;
+                    font-size: 1.6rem;
                     font-weight: 700;
                     color: var(--primary, #c4ff0e);
                     text-decoration: none;
                     display: flex;
                     align-items: center;
-                    gap: 10px;
-                    padding: 15px 0;
+                    gap: 8px;
+                    padding: 10px 0;
                     text-shadow: 0 0 20px var(--primary-glow, rgba(196, 255, 14, 0.4));
+                    flex-shrink: 0;
                 }
                 .tribe-nav-logo i {
-                    font-size: 1.5rem;
+                    font-size: 1.3rem;
                 }
                 .tribe-nav-links {
                     display: flex;
-                    gap: 5px;
+                    gap: 3px;
                     list-style: none;
                     margin: 0;
                     padding: 0;
+                    flex-wrap: wrap;
+                    justify-content: flex-end;
                 }
                 .tribe-nav-link {
                     color: var(--text-main, #fff);
                     text-decoration: none;
-                    padding: 12px 16px;
+                    padding: 10px 12px;
                     border-radius: 8px;
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                     font-weight: 500;
                     transition: all 0.3s ease;
                     display: flex;
                     align-items: center;
-                    gap: 6px;
+                    gap: 5px;
                     white-space: nowrap;
                 }
                 .tribe-nav-link:hover {
@@ -177,60 +227,118 @@
                     color: var(--text-on-primary, #000);
                 }
                 .tribe-nav-link i {
-                    font-size: 0.85rem;
+                    font-size: 0.8rem;
                 }
                 .tribe-nav-toggle {
                     display: none;
-                    background: none;
-                    border: none;
+                    background: var(--bg-card, #141419);
+                    border: 2px solid var(--border, rgba(255,255,255,0.1));
                     color: var(--primary, #c4ff0e);
-                    font-size: 1.5rem;
+                    font-size: 1.3rem;
                     cursor: pointer;
-                    padding: 10px;
+                    padding: 10px 14px;
+                    border-radius: 10px;
+                    transition: all 0.3s ease;
                 }
-                @media (max-width: 900px) {
+                .tribe-nav-toggle:hover {
+                    border-color: var(--primary, #c4ff0e);
+                }
+                
+                /* Tablet */
+                @media (max-width: 1024px) {
+                    .tribe-nav-link {
+                        padding: 8px 10px;
+                        font-size: 0.8rem;
+                    }
+                    .tribe-nav-link span.nav-text {
+                        display: none;
+                    }
+                }
+                
+                /* Mobile */
+                @media (max-width: 768px) {
+                    .tribe-nav-container {
+                        padding: 0 10px;
+                    }
+                    .tribe-nav-logo {
+                        font-size: 1.4rem;
+                    }
+                    .tribe-nav-logo i {
+                        font-size: 1.1rem;
+                    }
                     .tribe-nav-links {
                         display: none;
-                        position: absolute;
-                        top: 100%;
+                        position: fixed;
+                        top: 60px;
                         left: 0;
                         right: 0;
-                        background: var(--bg-card, #141419);
+                        bottom: 0;
+                        background: var(--bg-body, #0a0a0e);
                         flex-direction: column;
-                        padding: 10px;
-                        border-bottom: 1px solid var(--border);
+                        padding: 20px;
+                        gap: 10px;
+                        overflow-y: auto;
+                        z-index: 999;
                     }
                     .tribe-nav-links.active {
                         display: flex;
                     }
                     .tribe-nav-toggle {
-                        display: block;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
                     }
                     .tribe-nav-link {
-                        padding: 15px;
+                        padding: 15px 20px;
+                        font-size: 1rem;
+                        border-radius: 12px;
+                        background: var(--bg-card, #141419);
+                        border: 1px solid var(--border, rgba(255,255,255,0.08));
+                    }
+                    .tribe-nav-link span.nav-text {
+                        display: inline;
+                    }
+                    .tribe-nav-link i {
+                        font-size: 1rem;
+                        width: 24px;
                     }
                 }
             </style>
             <div class="tribe-nav-container">
                 <a href="${basePath}index.html" class="tribe-nav-logo">
                     <i class="fas fa-futbol"></i>
-                    TRIBE LEAGUE
+                    <span>TRIBE</span>
                 </a>
-                <button class="tribe-nav-toggle" onclick="document.querySelector('.tribe-nav-links').classList.toggle('active')">
+                <button class="tribe-nav-toggle" onclick="document.querySelector('.tribe-nav-links').classList.toggle('active'); this.querySelector('i').classList.toggle('fa-bars'); this.querySelector('i').classList.toggle('fa-times');">
                     <i class="fas fa-bars"></i>
                 </button>
                 <ul class="tribe-nav-links">
                     ${NAV_ITEMS.map(item => {
             const href = item.isRoot ? basePath + item.href : pagesPath + item.href;
             const isActive = currentPage === item.href;
-            return `<li><a href="${href}" class="tribe-nav-link ${isActive ? 'active' : ''}"><i class="fas ${item.icon}"></i> ${item.name}</a></li>`;
+            return `<li><a href="${href}" class="tribe-nav-link ${isActive ? 'active' : ''}"><i class="fas ${item.icon}"></i> <span class="nav-text">${item.name}</span></a></li>`;
         }).join('')}
                 </ul>
             </div>
         `;
 
         document.body.insertBefore(nav, document.body.firstChild);
+
+        // Menü dışına tıklanınca kapat
+        document.addEventListener('click', (e) => {
+            const navLinks = document.querySelector('.tribe-nav-links');
+            const toggle = document.querySelector('.tribe-nav-toggle');
+            if (navLinks && toggle && !navLinks.contains(e.target) && !toggle.contains(e.target)) {
+                navLinks.classList.remove('active');
+                const icon = toggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
     }
+
 
     // ╔══════════════════════════════════════════════════════════════╗
     // ║  TEMA SEÇİCİ OLUŞTUR                                        ║
