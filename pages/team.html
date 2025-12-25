@@ -703,10 +703,7 @@
 
     <!-- MAIN CONTENT -->
     <div class="special-container" id="mainContainer">
-        <button class="edit-btn" id="editBtn" onclick="openLogin()">
-            <i class="fas fa-edit"></i> DÜZENLE
-        </button>
-
+        <!-- Düzenle butonu kaldırıldı - Admin panelden düzenlenir -->
         <!-- Team Selector -->
         <div class="team-selector-wrapper">
             <span class="team-selector-label"><i class="fas fa-futbol"></i> Takım Seç:</span>
@@ -799,184 +796,128 @@
                 <p>Henüz oyuncu eklenmemiş. Düzenleme modunda oyuncu ekleyebilirsiniz.</p>
             </div>
         </div>
-    </div>
 
-    <script>
-        // Team Data
-        const teamsData = {
-            genclerbirligi: {
-                name: "Gençlerbirliği FK",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png",
-                colors: { primary: "#d20000", secondary: "#000000" },
-                stats: { played: 2, won: 2, draw: 0, lost: 0, points: 6 },
-                players: []
-            },
-            samsunspor: {
-                name: "Samsunspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-                colors: { primary: "#e31e24", secondary: "#1a0505" },
-                stats: { played: 2, won: 1, draw: 1, lost: 0, points: 4 },
-                players: []
-            },
-            fenerbahce: {
-                name: "Fenerbahçe",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-                colors: { primary: "#FFED00", secondary: "#00205B" },
-                stats: { played: 2, won: 1, draw: 1, lost: 0, points: 4 },
-                players: []
-            },
-            goztepe: {
-                name: "Göztepe",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-                colors: { primary: "#FFCC00", secondary: "#D4001F" },
-                stats: { played: 2, won: 1, draw: 1, lost: 0, points: 4 },
-                players: []
-            },
-            basaksehir: {
-                name: "Başakşehir",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-                colors: { primary: "#f26522", secondary: "#273a7e" },
-                stats: { played: 2, won: 1, draw: 0, lost: 1, points: 3 },
-                players: []
-            },
-            besiktas: {
-                name: "Beşiktaş",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-                colors: { primary: "#ffffff", secondary: "#1a1a1a" },
-                stats: { played: 2, won: 1, draw: 0, lost: 1, points: 3 },
-                players: []
-            },
-            trabzonspor: {
-                name: "Trabzonspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-                colors: { primary: "#6D1E2A", secondary: "#0E4C92" },
-                stats: { played: 2, won: 1, draw: 0, lost: 1, points: 3 },
-                players: []
-            },
-            konyaspor: {
-                name: "Konyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-                colors: { primary: "#2E7D32", secondary: "#1a3d1c" },
-                stats: { played: 2, won: 0, draw: 2, lost: 0, points: 2 },
-                players: []
-            },
-            antalyaspor: {
-                name: "Antalyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-                colors: { primary: "#CC0000", secondary: "#1a0000" },
-                stats: { played: 2, won: 0, draw: 2, lost: 0, points: 2 },
-                players: []
-            },
-            galatasaray: {
-                name: "Galatasaray",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-                colors: { primary: "#FFD700", secondary: "#C8102E" },
-                stats: { played: 2, won: 0, draw: 1, lost: 1, points: 1 },
-                players: []
-            },
-            eyupspor: {
-                name: "Eyüpspor",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
-                colors: { primary: "#8B0000", secondary: "#FFD700" },
-                stats: { played: 2, won: 0, draw: 1, lost: 1, points: 1 },
-                players: []
-            },
-            kayserispor: {
-                name: "Kayserispor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-                colors: { primary: "#FFD700", secondary: "#D4001F" },
-                stats: { played: 2, won: 0, draw: 1, lost: 1, points: 1 },
-                players: []
-            },
-            alanyaspor: {
-                name: "Alanyaspor",
-                logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-                colors: { primary: "#ff6600", secondary: "#228B22" },
-                stats: { played: 2, won: 0, draw: 1, lost: 1, points: 1 },
-                players: []
-            },
-            gaziantep: {
-                name: "Gaziantep FK",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-                colors: { primary: "#D4001F", secondary: "#000000" },
-                stats: { played: 2, won: 0, draw: 1, lost: 1, points: 1 },
-                players: []
+        <!-- TribeData yükle -->
+        <script src="../data.js"></script>
+
+        <script>
+            // TribeData'dan team verilerini al
+            function buildTeamsData() {
+                const data = {};
+                const standings = TribeData.calculateStandings();
+                const standingsMap = {};
+                standings.forEach(s => standingsMap[s.name] = s);
+
+                // Takım key'leri için mapping
+                const keyMap = {
+                    'Gençlerbirliği': 'genclerbirligi',
+                    'Samsunspor': 'samsunspor',
+                    'Fenerbahçe': 'fenerbahce',
+                    'Göztepe': 'goztepe',
+                    'Başakşehir': 'basaksehir',
+                    'Beşiktaş': 'besiktas',
+                    'Trabzonspor': 'trabzonspor',
+                    'Konyaspor': 'konyaspor',
+                    'Antalyaspor': 'antalyaspor',
+                    'Galatasaray': 'galatasaray',
+                    'Eyüpspor': 'eyupspor',
+                    'Kayserispor': 'kayserispor',
+                    'Alanyaspor': 'alanyaspor',
+                    'Gaziantep': 'gaziantep'
+                };
+
+                Object.entries(TribeData.teams).forEach(([name, info]) => {
+                    const key = keyMap[name] || name.toLowerCase().replace(/[^a-z]/g, '');
+                    const st = standingsMap[name] || { played: 0, won: 0, draw: 0, lost: 0, points: 0 };
+
+                    data[key] = {
+                        name: name,
+                        logo: info.logo,
+                        colors: info.colors || { primary: '#c4ff0e', secondary: '#141419' },
+                        stats: {
+                            played: st.played,
+                            won: st.won,
+                            draw: st.draw,
+                            lost: st.lost,
+                            points: st.points
+                        },
+                        players: info.players || []
+                    };
+                });
+
+                return data;
             }
-        };
 
-        let currentTeam = 'genclerbirligi';
-        let isEditMode = false;
+            let teamsData = {};
+            let currentTeam = 'genclerbirligi';
+            let isEditMode = false;
 
-        // Encoded credentials
-        const validUsers = [
-            { u: atob('YWRtaW4='), p: atob('dHJpYmUyMDI0') },
-            { u: atob('bW9k'), p: atob('bGVhZ3VlMTIz') }
-        ];
+            // No longer using edit mode credentials - managed via admin panel
 
-        function loadTeam(teamId) {
-            const logo = document.getElementById('teamLogo');
-            const name = document.getElementById('teamName');
-            const statBoxes = document.querySelectorAll('.stat-box');
-            const header = document.getElementById('teamHeader');
+            function loadTeam(teamId) {
+                const logo = document.getElementById('teamLogo');
+                const name = document.getElementById('teamName');
+                const statBoxes = document.querySelectorAll('.stat-box');
+                const header = document.getElementById('teamHeader');
 
-            // Add changing class for fade out
-            logo.classList.add('changing');
-            name.classList.add('changing');
-            statBoxes.forEach((box, i) => {
-                setTimeout(() => box.classList.add('changing'), i * 30);
-            });
+                // Add changing class for fade out
+                logo.classList.add('changing');
+                name.classList.add('changing');
+                statBoxes.forEach((box, i) => {
+                    setTimeout(() => box.classList.add('changing'), i * 30);
+                });
 
-            // Wait for fade out, then update content
-            setTimeout(() => {
-                currentTeam = teamId;
-                const team = teamsData[teamId];
-
-                // Update colors first (for smooth background transition)
-                document.documentElement.style.setProperty('--team-primary', team.colors.primary);
-                document.documentElement.style.setProperty('--team-secondary', team.colors.secondary);
-
-                // Update content
-                logo.src = team.logo;
-                name.textContent = team.name;
-
-                // Update stats
-                document.getElementById('statPlayed').textContent = team.stats.played;
-                document.getElementById('statWon').textContent = team.stats.won;
-                document.getElementById('statDraw').textContent = team.stats.draw;
-                document.getElementById('statLost').textContent = team.stats.lost;
-                document.getElementById('statPoints').textContent = team.stats.points;
-
-                // Update squad
-                renderSquad(team.players);
-
-                // Fade in after brief delay
+                // Wait for fade out, then update content
                 setTimeout(() => {
-                    logo.classList.remove('changing');
-                    name.classList.remove('changing');
-                    statBoxes.forEach((box, i) => {
-                        setTimeout(() => box.classList.remove('changing'), i * 50);
-                    });
-                }, 50);
+                    currentTeam = teamId;
+                    const team = teamsData[teamId];
 
-            }, 300);
-        }
+                    // Update colors first (for smooth background transition)
+                    document.documentElement.style.setProperty('--team-primary', team.colors.primary);
+                    document.documentElement.style.setProperty('--team-secondary', team.colors.secondary);
 
-        function renderSquad(players) {
-            const tbody = document.getElementById('squadBody');
-            const emptyState = document.getElementById('emptySquad');
+                    // Update content
+                    logo.src = team.logo;
+                    name.textContent = team.name;
 
-            if (players.length === 0) {
-                tbody.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
+                    // Update stats
+                    document.getElementById('statPlayed').textContent = team.stats.played;
+                    document.getElementById('statWon').textContent = team.stats.won;
+                    document.getElementById('statDraw').textContent = team.stats.draw;
+                    document.getElementById('statLost').textContent = team.stats.lost;
+                    document.getElementById('statPoints').textContent = team.stats.points;
+
+                    // Update squad
+                    renderSquad(team.players);
+
+                    // Fade in after brief delay
+                    setTimeout(() => {
+                        logo.classList.remove('changing');
+                        name.classList.remove('changing');
+                        statBoxes.forEach((box, i) => {
+                            setTimeout(() => box.classList.remove('changing'), i * 50);
+                        });
+                    }, 50);
+
+                }, 300);
             }
 
-            emptyState.style.display = 'none';
+            function renderSquad(players) {
+                const tbody = document.getElementById('squadBody');
+                const emptyState = document.getElementById('emptySquad');
 
-            // Sort by number
-            players.sort((a, b) => a.number - b.number);
+                if (players.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
 
-            tbody.innerHTML = players.map((player, index) => `
+                emptyState.style.display = 'none';
+
+                // Sort by number
+                players.sort((a, b) => a.number - b.number);
+
+                tbody.innerHTML = players.map((player, index) => `
                 <tr data-index="${index}">
                     <td class="player-number">${player.number}</td>
                     <td class="player-name" contenteditable="true">${player.name}</td>
@@ -984,158 +925,159 @@
                     <td><i class="fas fa-trash delete-row" onclick="deletePlayer(${index})"></i></td>
                 </tr>
             `).join('');
-        }
-
-        function addPlayer() {
-            const number = document.getElementById('newPlayerNumber').value;
-            const name = document.getElementById('newPlayerName').value;
-            const position = document.getElementById('newPlayerPosition').value;
-
-            if (!number || !name) {
-                alert('Lütfen numara ve isim girin!');
-                return;
             }
 
-            teamsData[currentTeam].players.push({
-                number: parseInt(number),
-                name: name,
-                position: position
-            });
+            function addPlayer() {
+                const number = document.getElementById('newPlayerNumber').value;
+                const name = document.getElementById('newPlayerName').value;
+                const position = document.getElementById('newPlayerPosition').value;
 
-            // Clear form
-            document.getElementById('newPlayerNumber').value = '';
-            document.getElementById('newPlayerName').value = '';
-            document.getElementById('newPlayerPosition').value = 'GK';
+                if (!number || !name) {
+                    alert('Lütfen numara ve isim girin!');
+                    return;
+                }
 
-            renderSquad(teamsData[currentTeam].players);
-        }
+                teamsData[currentTeam].players.push({
+                    number: parseInt(number),
+                    name: name,
+                    position: position
+                });
 
-        function deletePlayer(index) {
-            if (confirm('Bu oyuncuyu silmek istediğinize emin misiniz?')) {
-                teamsData[currentTeam].players.splice(index, 1);
+                // Clear form
+                document.getElementById('newPlayerNumber').value = '';
+                document.getElementById('newPlayerName').value = '';
+                document.getElementById('newPlayerPosition').value = 'GK';
+
                 renderSquad(teamsData[currentTeam].players);
             }
-        }
 
-        function openLogin() {
-            document.getElementById('loginOverlay').classList.add('active');
-            document.getElementById('username').focus();
-        }
-
-        function closeLogin() {
-            document.getElementById('loginOverlay').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('loginError').style.display = 'none';
-        }
-
-        function tryLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-
-            const isValid = validUsers.some(v => v.u === user && v.p === pass);
-
-            if (isValid) {
-                closeLogin();
-                enterEditMode();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        }
-
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') tryLogin();
-        });
-
-        function enterEditMode() {
-            isEditMode = true;
-            document.getElementById('mainContainer').classList.add('edit-mode');
-            document.getElementById('editToolbar').classList.add('active');
-            document.getElementById('editBtn').style.display = 'none';
-        }
-
-        function exitEditMode() {
-            // Save changes from contenteditable fields
-            saveCurrentTeamData();
-
-            isEditMode = false;
-            document.getElementById('mainContainer').classList.remove('edit-mode');
-            document.getElementById('editToolbar').classList.remove('active');
-            document.getElementById('editBtn').style.display = 'flex';
-        }
-
-        function saveCurrentTeamData() {
-            const team = teamsData[currentTeam];
-
-            // Save stats
-            team.stats.played = parseInt(document.getElementById('statPlayed').textContent) || 0;
-            team.stats.won = parseInt(document.getElementById('statWon').textContent) || 0;
-            team.stats.draw = parseInt(document.getElementById('statDraw').textContent) || 0;
-            team.stats.lost = parseInt(document.getElementById('statLost').textContent) || 0;
-            team.stats.points = parseInt(document.getElementById('statPoints').textContent) || 0;
-
-            // Save player names from contenteditable
-            const rows = document.querySelectorAll('#squadBody tr');
-            rows.forEach((row, index) => {
-                const nameCell = row.querySelector('.player-name');
-                if (nameCell && team.players[index]) {
-                    team.players[index].name = nameCell.textContent;
+            function deletePlayer(index) {
+                if (confirm('Bu oyuncuyu silmek istediğinize emin misiniz?')) {
+                    teamsData[currentTeam].players.splice(index, 1);
+                    renderSquad(teamsData[currentTeam].players);
                 }
+            }
+
+            function openLogin() {
+                document.getElementById('loginOverlay').classList.add('active');
+                document.getElementById('username').focus();
+            }
+
+            function closeLogin() {
+                document.getElementById('loginOverlay').classList.remove('active');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('loginError').style.display = 'none';
+            }
+
+            function tryLogin() {
+                const user = document.getElementById('username').value;
+                const pass = document.getElementById('password').value;
+
+                const isValid = validUsers.some(v => v.u === user && v.p === pass);
+
+                if (isValid) {
+                    closeLogin();
+                    enterEditMode();
+                } else {
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            }
+
+            document.getElementById('password').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') tryLogin();
             });
-        }
 
-        function exportHTML() {
-            saveCurrentTeamData();
+            function enterEditMode() {
+                isEditMode = true;
+                document.getElementById('mainContainer').classList.add('edit-mode');
+                document.getElementById('editToolbar').classList.add('active');
+                document.getElementById('editBtn').style.display = 'none';
+            }
 
-            const fullHTML = document.documentElement.outerHTML;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(fullHTML, 'text/html');
+            function exitEditMode() {
+                // Save changes from contenteditable fields
+                saveCurrentTeamData();
 
-            doc.querySelector('#mainContainer')?.classList.remove('edit-mode');
-            doc.querySelectorAll('[contenteditable]').forEach(el => {
-                el.setAttribute('contenteditable', 'false');
-            });
+                isEditMode = false;
+                document.getElementById('mainContainer').classList.remove('edit-mode');
+                document.getElementById('editToolbar').classList.remove('active');
+                document.getElementById('editBtn').style.display = 'flex';
+            }
 
-            const loginOverlay = doc.querySelector('#loginOverlay');
-            if (loginOverlay) loginOverlay.classList.remove('active');
+            function saveCurrentTeamData() {
+                const team = teamsData[currentTeam];
 
-            const editToolbar = doc.querySelector('#editToolbar');
-            if (editToolbar) editToolbar.classList.remove('active');
+                // Save stats
+                team.stats.played = parseInt(document.getElementById('statPlayed').textContent) || 0;
+                team.stats.won = parseInt(document.getElementById('statWon').textContent) || 0;
+                team.stats.draw = parseInt(document.getElementById('statDraw').textContent) || 0;
+                team.stats.lost = parseInt(document.getElementById('statLost').textContent) || 0;
+                team.stats.points = parseInt(document.getElementById('statPoints').textContent) || 0;
 
-            const exportModal = doc.querySelector('#exportModal');
-            if (exportModal) exportModal.classList.remove('active');
+                // Save player names from contenteditable
+                const rows = document.querySelectorAll('#squadBody tr');
+                rows.forEach((row, index) => {
+                    const nameCell = row.querySelector('.player-name');
+                    if (nameCell && team.players[index]) {
+                        team.players[index].name = nameCell.textContent;
+                    }
+                });
+            }
 
-            const expEditBtn = doc.querySelector('#editBtn');
-            if (expEditBtn) expEditBtn.style.display = 'flex';
+            function exportHTML() {
+                saveCurrentTeamData();
 
-            const finalHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+                const fullHTML = document.documentElement.outerHTML;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(fullHTML, 'text/html');
 
-            document.getElementById('exportCode').value = finalHTML;
-            document.getElementById('exportModal').classList.add('active');
-        }
+                doc.querySelector('#mainContainer')?.classList.remove('edit-mode');
+                doc.querySelectorAll('[contenteditable]').forEach(el => {
+                    el.setAttribute('contenteditable', 'false');
+                });
 
-        function closeExport() {
-            document.getElementById('exportModal').classList.remove('active');
-        }
+                const loginOverlay = doc.querySelector('#loginOverlay');
+                if (loginOverlay) loginOverlay.classList.remove('active');
 
-        function copyCode() {
-            const textarea = document.getElementById('exportCode');
-            textarea.select();
-            document.execCommand('copy');
+                const editToolbar = doc.querySelector('#editToolbar');
+                if (editToolbar) editToolbar.classList.remove('active');
 
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-            }, 2000);
-        }
+                const exportModal = doc.querySelector('#exportModal');
+                if (exportModal) exportModal.classList.remove('active');
 
-        // Initialize
-        loadTeam('genclerbirligi');
-    </script>
+                const expEditBtn = doc.querySelector('#editBtn');
+                if (expEditBtn) expEditBtn.style.display = 'flex';
 
-    <script src="../theme-switcher.js"></script>
+                const finalHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+                document.getElementById('exportCode').value = finalHTML;
+                document.getElementById('exportModal').classList.add('active');
+            }
+
+            function closeExport() {
+                document.getElementById('exportModal').classList.remove('active');
+            }
+
+            function copyCode() {
+                const textarea = document.getElementById('exportCode');
+                textarea.select();
+                document.execCommand('copy');
+
+                const btn = event.target.closest('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            }
+
+            // Initialize
+            teamsData = buildTeamsData();
+            loadTeam('genclerbirligi');
+        </script>
+
+        <script src="../theme-switcher.js"></script>
 
 </body>
 

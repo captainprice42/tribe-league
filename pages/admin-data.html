@@ -744,11 +744,35 @@
 
         <!-- Teams Panel -->
         <div class="panel" id="panel-teams">
-            <div class="panel-title"><i class="fas fa-users"></i> Takım Bilgileri</div>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">
-                <i class="fas fa-info-circle"></i> Takımlar ve logoları
-            </p>
-            <div id="teamsList" class="grid-2"></div>
+            <div class="panel-title"><i class="fas fa-users"></i> Takım Kadroları</div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--text-muted); margin-right: 10px;">Takım Seç:</label>
+                <select id="squadTeamSelect" class="form-control" style="width: 300px; display: inline-block;"
+                    onchange="renderSquadEditor()">
+                </select>
+            </div>
+
+            <!-- Add Player Form -->
+            <div class="quick-add">
+                <input type="number" id="newPlayerNumber" placeholder="No" min="1" max="99" style="max-width: 80px;">
+                <input type="text" id="newPlayerName" placeholder="Oyuncu Adı" style="flex: 2;">
+                <select id="newPlayerPosition">
+                    <option value="GK">Kaleci (GK)</option>
+                    <option value="DF">Defans (DF)</option>
+                    <option value="MF">Orta Saha (MF)</option>
+                    <option value="FW">Forvet (FW)</option>
+                </select>
+                <button class="btn btn-primary" onclick="addPlayerToSquad()"><i class="fas fa-plus"></i> Oyuncu
+                    Ekle</button>
+            </div>
+
+            <div id="squadEditorList"></div>
+
+            <hr style="border-color: var(--border); margin: 30px 0;">
+
+            <div class="panel-title" style="font-size: 1.4rem;"><i class="fas fa-palette"></i> Takım Renkleri</div>
+            <div id="teamColorsList" class="grid-2"></div>
         </div>
     </div>
 
@@ -1265,21 +1289,128 @@
             }
         }
 
-        // Render Teams
+        // Render Teams & Squad Editor
         function renderTeams() {
+            // Populate team select dropdown
+            const select = document.getElementById('squadTeamSelect');
+            select.innerHTML = Object.keys(localData.teams).map(name =>
+                `<option value="${name}">${name}</option>`
+            ).join('');
+
+            renderSquadEditor();
+            renderTeamColors();
+        }
+
+        function renderSquadEditor() {
+            const teamName = document.getElementById('squadTeamSelect').value;
+            if (!teamName) return;
+
+            const team = localData.teams[teamName];
+            const players = team.players || [];
+
+            if (players.length === 0) {
+                document.getElementById('squadEditorList').innerHTML = `
+                    <div style="text-align:center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-users-slash" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p style="margin-top: 15px;">Bu takımda henüz oyuncu yok</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by number
+            const sorted = [...players].sort((a, b) => a.number - b.number);
+
+            let html = '';
+            sorted.forEach((player, idx) => {
+                const realIdx = players.indexOf(player);
+                const posColors = { GK: '#ff9800', DF: '#2196f3', MF: '#4caf50', FW: '#f44336' };
+
+                html += `
+                    <div class="player-row">
+                        <div class="player-rank" style="font-size: 1.8rem;">${player.number}</div>
+                        <input type="text" value="${player.name}" onchange="updatePlayer('${teamName}', ${realIdx}, 'name', this.value)" style="flex: 2;">
+                        <select onchange="updatePlayer('${teamName}', ${realIdx}, 'position', this.value)" style="background: ${posColors[player.position] || '#666'}; color: #fff; border: none; font-weight: bold;">
+                            <option value="GK" ${player.position === 'GK' ? 'selected' : ''}>GK</option>
+                            <option value="DF" ${player.position === 'DF' ? 'selected' : ''}>DF</option>
+                            <option value="MF" ${player.position === 'MF' ? 'selected' : ''}>MF</option>
+                            <option value="FW" ${player.position === 'FW' ? 'selected' : ''}>FW</option>
+                        </select>
+                        <button class="btn btn-danger" onclick="deletePlayer('${teamName}', ${realIdx})" style="padding: 8px 12px;"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('squadEditorList').innerHTML = html;
+        }
+
+        function addPlayerToSquad() {
+            const teamName = document.getElementById('squadTeamSelect').value;
+            const number = parseInt(document.getElementById('newPlayerNumber').value);
+            const name = document.getElementById('newPlayerName').value.trim();
+            const position = document.getElementById('newPlayerPosition').value;
+
+            if (!number || !name) {
+                alert('Lütfen numara ve isim girin!');
+                return;
+            }
+
+            if (!localData.teams[teamName].players) {
+                localData.teams[teamName].players = [];
+            }
+
+            localData.teams[teamName].players.push({ number, name, position });
+            renderSquadEditor();
+            showSaved();
+
+            document.getElementById('newPlayerNumber').value = '';
+            document.getElementById('newPlayerName').value = '';
+        }
+
+        function updatePlayer(teamName, idx, field, value) {
+            if (field === 'number') {
+                localData.teams[teamName].players[idx].number = parseInt(value) || 0;
+            } else {
+                localData.teams[teamName].players[idx][field] = value;
+            }
+            renderSquadEditor();
+            showSaved();
+        }
+
+        function deletePlayer(teamName, idx) {
+            localData.teams[teamName].players.splice(idx, 1);
+            renderSquadEditor();
+            showSaved();
+        }
+
+        function renderTeamColors() {
             let html = '';
             Object.entries(localData.teams).forEach(([name, info]) => {
+                const colors = info.colors || { primary: '#c4ff0e', secondary: '#141419' };
                 html += `
-                    <div style="background: var(--bg-glass); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 15px;">
-                        <img src="${info.logo}" alt="${name}" style="width: 50px; height: 50px; object-fit: contain;">
-                        <div>
-                            <div style="font-weight: 600;">${name}</div>
-                            <div style="color: var(--text-muted); font-size: 0.85rem;">${info.shortName}</div>
+                    <div style="background: var(--bg-glass); border: 1px solid var(--border); border-radius: 12px; padding: 15px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <img src="${info.logo}" alt="${name}" style="width: 40px; height: 40px; object-fit: contain;">
+                            <span style="font-weight: 600;">${name}</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="color: var(--text-muted); font-size: 0.8rem;">Ana:</label>
+                            <input type="color" value="${colors.primary}" onchange="updateTeamColor('${name}', 'primary', this.value)" style="width: 40px; height: 30px; border: none; cursor: pointer;">
+                            <label style="color: var(--text-muted); font-size: 0.8rem;">İkincil:</label>
+                            <input type="color" value="${colors.secondary}" onchange="updateTeamColor('${name}', 'secondary', this.value)" style="width: 40px; height: 30px; border: none; cursor: pointer;">
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('teamsList').innerHTML = html;
+            document.getElementById('teamColorsList').innerHTML = html;
+        }
+
+        function updateTeamColor(teamName, colorType, value) {
+            if (!localData.teams[teamName].colors) {
+                localData.teams[teamName].colors = { primary: '#c4ff0e', secondary: '#141419' };
+            }
+            localData.teams[teamName].colors[colorType] = value;
+            showSaved();
         }
 
         // Status

@@ -10,20 +10,90 @@ const TribeData = {
     // 🏆 TAKIM BİLGİLERİ
     // ═══════════════════════════════════════════════════════════════
     teams: {
-        "Galatasaray": { logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png", shortName: "GS" },
-        "Fenerbahçe": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png", shortName: "FB" },
-        "Beşiktaş": { logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png", shortName: "BJK" },
-        "Trabzonspor": { logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png", shortName: "TS" },
-        "Başakşehir": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png", shortName: "IBFK" },
-        "Alanyaspor": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png", shortName: "ALN" },
-        "Antalyaspor": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png", shortName: "ANT" },
-        "Konyaspor": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png", shortName: "KON" },
-        "Samsunspor": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png", shortName: "SAM" },
-        "Kayserispor": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png", shortName: "KAY" },
-        "Göztepe": { logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png", shortName: "GOZ" },
-        "Gaziantep": { logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png", shortName: "GFK" },
-        "Eyüpspor": { logo: "https://upload.wikimedia.org/wikipedia/commons/6/62/Ey%C3%BCpspor_Logosu.png", shortName: "EYP" },
-        "Gençlerbirliği": { logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png", shortName: "GB" }
+        "Galatasaray": {
+            logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
+            shortName: "GS",
+            colors: { primary: "#FFD700", secondary: "#C8102E" },
+            players: []
+        },
+        "Fenerbahçe": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
+            shortName: "FB",
+            colors: { primary: "#FFED00", secondary: "#00205B" },
+            players: []
+        },
+        "Beşiktaş": {
+            logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
+            shortName: "BJK",
+            colors: { primary: "#ffffff", secondary: "#1a1a1a" },
+            players: []
+        },
+        "Trabzonspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
+            shortName: "TS",
+            colors: { primary: "#6D1E2A", secondary: "#0E4C92" },
+            players: []
+        },
+        "Başakşehir": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
+            shortName: "IBFK",
+            colors: { primary: "#f26522", secondary: "#273a7e" },
+            players: []
+        },
+        "Alanyaspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
+            shortName: "ALN",
+            colors: { primary: "#ff6600", secondary: "#228B22" },
+            players: []
+        },
+        "Antalyaspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
+            shortName: "ANT",
+            colors: { primary: "#CC0000", secondary: "#1a0000" },
+            players: []
+        },
+        "Konyaspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
+            shortName: "KON",
+            colors: { primary: "#2E7D32", secondary: "#1a3d1c" },
+            players: []
+        },
+        "Samsunspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
+            shortName: "SAM",
+            colors: { primary: "#e31e24", secondary: "#1a0505" },
+            players: []
+        },
+        "Kayserispor": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
+            shortName: "KAY",
+            colors: { primary: "#FFD700", secondary: "#D4001F" },
+            players: []
+        },
+        "Göztepe": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
+            shortName: "GOZ",
+            colors: { primary: "#FFCC00", secondary: "#D4001F" },
+            players: []
+        },
+        "Gaziantep": {
+            logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
+            shortName: "GFK",
+            colors: { primary: "#D4001F", secondary: "#000000" },
+            players: []
+        },
+        "Eyüpspor": {
+            logo: "https://upload.wikimedia.org/wikipedia/commons/6/62/Ey%C3%BCpspor_Logosu.png",
+            shortName: "EYP",
+            colors: { primary: "#8B0000", secondary: "#FFD700" },
+            players: []
+        },
+        "Gençlerbirliği": {
+            logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png",
+            shortName: "GB",
+            colors: { primary: "#d20000", secondary: "#000000" },
+            players: []
+        }
     },
 
     // ═══════════════════════════════════════════════════════════════
