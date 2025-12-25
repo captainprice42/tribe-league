@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziraat Türkiye Kupası - Son 16 Tur</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #050508;
+            --bg-card: #0d0d12;
+            --bg-card-alt: #12121a;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.5);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --red: #e63946;
+            --green: #28a745;
+            --blue: #4361ee;
+            --purple: #7209b7;
+            --text-main: #ffffff;
+            --text-muted: #6b6b78;
+            --border: rgba(255, 255, 255, 0.06);
+            --glass: rgba(255, 255, 255, 0.03);
+            --radius: 20px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(196, 255, 14, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(114, 9, 183, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(67, 97, 238, 0.05) 0%, transparent 60%);
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(196, 255, 14, 0.15);
+            top: 10%;
+            left: 10%;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 215, 0, 0.1);
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: rgba(114, 9, 183, 0.1);
+            bottom: 20%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+
+            50% {
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+
+            75% {
+                transform: translate(20px, 30px) scale(1.02);
+            }
+        }
+
+        /* Main Wrapper */
+        .ztk-main-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 30px;
+            display: block !important;
+            grid-template-columns: unset !important;
+            max-width: 100% !important;
+        }
+
+        /* Header */
+        .ztk-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 200px;
+            background: radial-gradient(ellipse, rgba(196, 255, 14, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
+        .trophy-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .trophy-icon {
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 30%, var(--gold) 60%, #b8860b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px var(--gold-glow));
+            animation: trophy-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes trophy-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px var(--gold-glow));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 50px var(--gold));
+            }
+        }
+
+        .ztk-main-title {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ztk-sub-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--gold);
+            letter-spacing: 10px;
+            opacity: 0.9;
+        }
+
+        .round-badge {
+            display: inline-block;
+            padding: 8px 25px;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffed4a 100%);
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 30px;
+            margin-top: 15px;
+            letter-spacing: 3px;
+            box-shadow: 0 5px 20px var(--gold-glow);
+        }
+
+        /* Content Grid */
+        .ztk-content-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 30px !important;
+            max-width: 1600px !important;
+            margin: 0 auto !important;
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: linear-gradient(180deg, rgba(13, 13, 18, 0.95) 0%, rgba(18, 18, 26, 0.9) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(196, 255, 14, 0.3), transparent);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 2px;
+        }
+
+        .panel-title i {
+            color: var(--gold);
+        }
+
+        /* Fixture Cards */
+        .fixtures-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .fixture-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fixture-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(196, 255, 14, 0.05), transparent);
+            transition: 0.6s;
+        }
+
+        .fixture-card:hover::before {
+            left: 100%;
+        }
+
+        .fixture-card:hover {
+            border-color: rgba(196, 255, 14, 0.3);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 40px rgba(196, 255, 14, 0.1);
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-info.away {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .team-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s;
+        }
+
+        .fixture-card:hover .team-logo {
+            transform: scale(1.1);
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .fixture-card:hover .team-name {
+            color: var(--primary);
+        }
+
+        .match-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .vs-badge {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold-glow);
+            position: relative;
+        }
+
+        .score-display {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            padding: 5px 20px;
+            background: rgba(196, 255, 14, 0.1);
+            border-radius: 10px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .match-number {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 10px;
+            border-radius: 10px;
+        }
+
+        /* Standings Table */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .standings-table th:first-child,
+        .standings-table td:first-child {
+            text-align: center;
+            width: 40px;
+        }
+
+        .standings-table th:nth-child(2),
+        .standings-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            vertical-align: middle;
+            transition: background 0.3s;
+        }
+
+        .standings-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .standings-table tbody tr:hover {
+            background: rgba(196, 255, 14, 0.05);
+        }
+
+        .rank-cell {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-logo-sm {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .points-box {
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            display: inline-block;
+            min-width: 35px;
+        }
+
+        /* Form Guide */
+        .form-container {
+            display: flex;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .form-box {
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-G {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .form-B {
+            background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+            color: #000;
+        }
+
+        .form-M {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c5e 100%);
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Edit Mode */
+        .edit-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px var(--primary-glow);
+            z-index: 1000;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 380px;
+            box-shadow: 0 0 60px var(--primary-glow);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin: 0 0 25px;
+            color: #fff;
+        }
+
+        .login-title i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 14px 16px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .login-error {
+            color: #ff4466;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #666;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-close:hover {
+            color: #fff;
+        }
+
+        /* Edit Toolbar */
+        .edit-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .edit-toolbar.active {
+            display: flex;
+        }
+
+        .toolbar-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .toolbar-btn:hover {
+            background: #333;
+        }
+
+        .toolbar-btn.primary {
+            background: var(--primary);
+            color: #000;
+            border: none;
+        }
+
+        .toolbar-btn.primary:hover {
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .toolbar-btn.danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        /* Export Modal */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal.active {
+            display: flex;
+        }
+
+        .export-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 700px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .export-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
+            color: #e0e0e0;
+            border: 2px solid var(--border);
+            font-family: 'Outfit', 'Consolas', monospace;
+            font-size: 0.85rem;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .edit-mode [contenteditable="true"] {
+            outline: 2px dashed var(--primary);
+            outline-offset: 2px;
+            background: rgba(196, 255, 14, 0.05);
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+
+        /* Süper Kupa Section */
+        .super-kupa-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sk-section-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 2px;
+        }
+
+        .sk-section-title i {
+            filter: drop-shadow(0 0 10px var(--gold-glow));
+        }
+
+        .sk-bracket-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .sk-semi-finals {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sk-match-card {
+            background: rgba(255, 215, 0, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 14px;
+            padding: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .sk-match-card:hover {
+            border-color: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 5px 25px rgba(255, 215, 0, 0.1);
+        }
+
+        .sk-match-label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: linear-gradient(135deg, var(--gold) 0%, #ffed4a 100%);
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .sk-match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .sk-team-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .sk-team-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sk-team-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .sk-team-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .sk-team-score {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+
+        .sk-bracket-lines {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .sk-line-top,
+        .sk-line-bottom {
+            width: 30px;
+            height: 40px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-left: none;
+        }
+
+        .sk-line-top {
+            border-bottom: none;
+            border-radius: 0 8px 0 0;
+        }
+
+        .sk-line-bottom {
+            border-top: none;
+            border-radius: 0 0 8px 0;
+        }
+
+        .sk-final-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sk-final-match {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.02) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 20px;
+            min-width: 220px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+        }
+
+        .sk-final-match .sk-match-label {
+            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 100%);
+        }
+
+        @media (max-width: 900px) {
+            .sk-bracket-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .sk-bracket-lines {
+                display: none;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .ztk-content-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ztk-main-title {
+                font-size: 2.5rem;
+            }
+
+            .fixture-card {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .team-info,
+            .team-info.away {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="login-overlay" id="loginOverlay">
+        <span class="login-close" onclick="closeLogin()">×</span>
+        <div class="login-box">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
+            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" class="login-input" placeholder="Şifre">
+            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
+            <p class="login-error" id="loginError" style="display: none;">Hatalı kullanıcı adı veya şifre!</p>
+        </div>
+    </div>
+
+    <!-- Edit Toolbar -->
+    <div class="edit-toolbar" id="editToolbar">
+        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
+        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
+    </div>
+
+    <!-- Edit Button -->
+    <button class="edit-btn" id="editBtn" onclick="openLogin()">
+        <i class="fas fa-edit"></i> DÜZENLE
+    </button>
+
+    <!-- Main Content -->
+    <div class="ztk-main-wrapper" id="mainContainer">
+        <!-- Header -->
+        <div class="ztk-header">
+            <div class="header-glow"></div>
+            <div class="trophy-container">
+                <i class="fas fa-trophy trophy-icon"></i>
+            </div>
+            <h1 class="ztk-main-title">ZİRAAT TÜRKİYE KUPASI</h1>
+            <p class="ztk-sub-title">SON 16 TUR</p>
+            <span class="round-badge">2024-2025 SEZONU</span>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="ztk-content-grid">
+            <!-- Fixtures Panel -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><i class="fas fa-futbol"></i> FİKSTÜR</h2>
+                </div>
+
+                <div class="fixtures-list">
+                    <!-- Match 1 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png"
+                                class="team-logo" alt="Başakşehir">
+                            <span class="team-name" contenteditable="true">Başakşehir</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 1</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png"
+                                class="team-logo" alt="Konyaspor">
+                            <span class="team-name" contenteditable="true">Konyaspor</span>
+                        </div>
+                    </div>
+
+                    <!-- Match 2 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png"
+                                class="team-logo" alt="Beşiktaş">
+                            <span class="team-name" contenteditable="true">Beşiktaş</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 2</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png"
+                                class="team-logo" alt="Antalyaspor">
+                            <span class="team-name" contenteditable="true">Antalyaspor</span>
+                        </div>
+                    </div>
+
+                    <!-- Match 3 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png"
+                                class="team-logo" alt="Gaziantep">
+                            <span class="team-name" contenteditable="true">Gaziantep FK</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 3</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png"
+                                class="team-logo" alt="Kayserispor">
+                            <span class="team-name" contenteditable="true">Kayserispor</span>
+                        </div>
+                    </div>
+
+                    <!-- Match 4 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png"
+                                class="team-logo" alt="Trabzonspor">
+                            <span class="team-name" contenteditable="true">Trabzonspor</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 4</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
+                                class="team-logo" alt="Gençlerbirliği">
+                            <span class="team-name" contenteditable="true">Gençlerbirliği</span>
+                        </div>
+                    </div>
+
+                    <!-- Match 5 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png"
+                                class="team-logo" alt="Galatasaray">
+                            <span class="team-name" contenteditable="true">Galatasaray</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 5</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png"
+                                class="team-logo" alt="Samsunspor">
+                            <span class="team-name" contenteditable="true">Samsunspor</span>
+                        </div>
+                    </div>
+
+                    <!-- Match 6 -->
+                    <div class="fixture-card">
+                        <div class="team-info home">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png"
+                                class="team-logo" alt="Alanyaspor">
+                            <span class="team-name" contenteditable="true">Alanyaspor</span>
+                        </div>
+                        <div class="match-center">
+                            <span class="match-number">Maç 6</span>
+                            <div class="score-display" contenteditable="true">- - -</div>
+                        </div>
+                        <div class="team-info away">
+                            <img src="https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png"
+                                class="team-logo" alt="Fenerbahçe">
+                            <span class="team-name" contenteditable="true">Fenerbahçe</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Toplam Maç</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Takım</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">SON 16</div>
+                        <div class="stat-label">Tur</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standings Panel -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><i class="fas fa-list-ol"></i> PUAN DURUMU</h2>
+                </div>
+
+                <table class="standings-table" id="standingsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>TAKIM</th>
+                            <th>O</th>
+                            <th>G</th>
+                            <th>B</th>
+                            <th>M</th>
+                            <th>AV</th>
+                            <th>P</th>
+                            <th>FORM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsBody">
+                        <tr>
+                            <td class="rank-cell">1</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png"><span>Galatasaray</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">2</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png"><span>Fenerbahçe</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">3</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png"><span>Beşiktaş</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">4</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png"><span>Trabzonspor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">5</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png"><span>Başakşehir</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">6</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png"><span>Alanyaspor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">7</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png"><span>Samsunspor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">8</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"><span>Gençlerbirliği</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">9</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png"><span>Konyaspor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">10</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png"><span>Antalyaspor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">11</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png"><span>Gaziantep
+                                        FK</span></div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="rank-cell">12</td>
+                            <td>
+                                <div class="team-cell"><img class="team-logo-sm"
+                                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png"><span>Kayserispor</span>
+                                </div>
+                            </td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td contenteditable="true">0</td>
+                            <td><span class="points-box">0</span></td>
+                            <td>
+                                <div class="form-container">-</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Ziraat Kupası Turnuva Ağacı -->
+        <div class="super-kupa-section glass-panel">
+            <h2 class="sk-section-title"><i class="fas fa-sitemap"></i> TURNUVA AĞACI</h2>
+
+            <div class="sk-bracket-container">
+                <!-- Çeyrek Final (Sol) -->
+                <div class="sk-semi-finals">
+                    <div class="sk-match-card">
+                        <span class="sk-match-label">ÇEYREK FİNAL 1</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 1</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 2</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sk-match-card">
+                        <span class="sk-match-label">ÇEYREK FİNAL 2</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 3</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 4</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sk-match-card">
+                        <span class="sk-match-label">ÇEYREK FİNAL 3</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 5</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">S16 Kazananı 6</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bracket Lines -->
+                <div class="sk-bracket-lines">
+                    <div class="sk-line-top"></div>
+                    <div class="sk-line-bottom"></div>
+                </div>
+
+                <!-- Yarı Final & Final -->
+                <div class="sk-final-section">
+                    <div class="sk-match-card" style="margin-bottom: 15px;">
+                        <span class="sk-match-label">YARI FİNAL 1</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">ÇF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">ÇF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sk-match-card sk-final-match">
+                        <span class="sk-match-label"><i class="fas fa-crown"></i> FİNAL</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">YF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">YF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sk-match-card" style="margin-top: 15px;">
+                        <span class="sk-match-label">YARI FİNAL 2</span>
+                        <div class="sk-match-teams">
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">ÇF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                            <div class="sk-team-row">
+                                <div class="sk-team-info">
+                                    <img class="sk-team-logo" src="https://via.placeholder.com/28?text=?">
+                                    <span class="sk-team-name">ÇF Kazananı</span>
+                                </div>
+                                <span class="sk-team-score">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="export-modal" id="exportModal">
+        <div class="export-box">
+            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
+            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın</p>
+            <textarea id="exportCode" class="export-textarea" readonly=""></textarea>
+            <div class="export-actions">
+                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
+                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const _uHash = "b6f360c00899c231d3580106b4512d74253cbd2265d855edc8a2581d671032f2";
+        const _pHash = "69dd2706f9ebf21c1ae2654b3d5cd3b0e36afeb1cfb0ac71c01689226963456e";
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        let isEditMode = false;
+
+        function openLogin() {
+            document.getElementById('loginOverlay').classList.add('active');
+            document.getElementById('username').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        async function tryLogin() {
+            const uInput = document.getElementById('username').value.trim().toLowerCase();
+            const pInput = document.getElementById('password').value.trim();
+
+            try {
+                const uH = await sha256(uInput);
+                const pH = await sha256(pInput);
+
+                if (uH === _uHash && pH === _pHash) {
+                    closeLogin();
+                    enterEditMode();
+                } else {
+                    throw new Error("Mismatch");
+                }
+            } catch (e) {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') tryLogin();
+        });
+
+        function enterEditMode() {
+            isEditMode = true;
+            document.getElementById('mainContainer').classList.add('edit-mode');
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('editToolbar').classList.add('active');
+
+            document.querySelectorAll('.team-name, .score-display').forEach(el => {
+                el.setAttribute('contenteditable', 'true');
+            });
+
+            document.querySelectorAll('#standingsBody td:nth-child(3), #standingsBody td:nth-child(4), #standingsBody td:nth-child(5), #standingsBody td:nth-child(6), #standingsBody td:nth-child(7)').forEach(el => {
+                el.setAttribute('contenteditable', 'true');
+            });
+        }
+
+        function exitEditMode() {
+            isEditMode = false;
+            document.getElementById('mainContainer').classList.remove('edit-mode');
+            document.getElementById('editBtn').style.display = 'flex';
+            document.getElementById('editToolbar').classList.remove('active');
+
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+        }
+
+        function exportHTML() {
+            // Temporarily exit edit mode for clean export
+            const wasEditMode = isEditMode;
+
+            // Remove edit-mode class
+            document.getElementById('mainContainer').classList.remove('edit-mode');
+            document.getElementById('editToolbar').classList.remove('active');
+            document.getElementById('editBtn').style.display = 'flex';
+
+            // Remove contenteditable attributes
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+
+            // Remove any injected styles/elements from extensions
+            const toRemove = document.querySelectorAll('#preact-border-shadow-host, #highlight-mouse-move-container, #antigravity-scroll-lock-style, style[id*="antigravity"]');
+            toRemove.forEach(el => el.remove());
+
+            // Remove empty body class
+            document.body.className = '';
+
+            // Get clean HTML
+            let html = document.documentElement.outerHTML;
+
+            // Clean up any remaining extension artifacts
+            html = html.replace(/<div id="preact-border-shadow-host"[^>]*>[\s\S]*?<\/div>/gi, '');
+            html = html.replace(/<div id="highlight-mouse-move-container"[^>]*>[\s\S]*?<\/div>/gi, '');
+            html = html.replace(/<style id="antigravity-scroll-lock-style">[\s\S]*?<\/style>/gi, '');
+
+            document.getElementById('exportCode').value = '<!DOCTYPE html>\n' + html;
+            document.getElementById('exportModal').classList.add('active');
+
+            // Restore edit mode if it was active
+            if (wasEditMode) {
+                document.getElementById('mainContainer').classList.add('edit-mode');
+                document.getElementById('editToolbar').classList.add('active');
+                document.getElementById('editBtn').style.display = 'none';
+                document.querySelectorAll('.team-name, .score-display').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+                document.querySelectorAll('#standingsBody td:nth-child(3), #standingsBody td:nth-child(4), #standingsBody td:nth-child(5), #standingsBody td:nth-child(6), #standingsBody td:nth-child(7)').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+            }
+        }
+
+        function closeExport() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function copyCode() {
+            const textarea = document.getElementById('exportCode');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Kod kopyalandı!');
+        }
+    </script>
+    <!-- Theme Switcher -->
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

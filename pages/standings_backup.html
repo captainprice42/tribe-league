@@ -1,0 +1,1719 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puan Durumu - Tribe League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --secondary: #5742f5;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 1000px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .header-banner {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(135deg, #222 0%, #111 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            z-index: 100;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--primary-glow);
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 380px;
+            box-shadow: 0 0 60px var(--primary-glow);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin: 0 0 25px;
+            color: #fff;
+        }
+
+        .login-title i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 14px 16px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .login-error {
+            color: #ff4466;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #666;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-close:hover {
+            color: #fff;
+        }
+
+        /* Table Styles */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .modern-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            text-transform: uppercase;
+        }
+
+        .modern-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .rank-cell {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .team-flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-logo-sm {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .points-box {
+            background: var(--primary);
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-family: var(--font-head);
+        }
+
+        .form-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            margin: 0 2px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-G {
+            background: #28a745;
+        }
+
+        .form-B {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .form-M {
+            background: #dc3545;
+        }
+
+        /* Interactive Form Guide */
+        .form-container {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .form-results {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            min-width: 100px;
+        }
+
+        .form-item {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-item .form-remove {
+            display: none;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 14px;
+            height: 14px;
+            background: #dc3545;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 10px;
+            line-height: 14px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .edit-mode .form-item:hover .form-remove {
+            display: block;
+        }
+
+        /* Modern Form Controls */
+        .form-controls {
+            display: none;
+            gap: 4px;
+            align-items: center;
+            margin-left: 8px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .edit-mode .form-controls {
+            display: flex;
+        }
+
+        .form-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-btn-G {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: #fff;
+        }
+
+        .form-btn-G:hover {
+            background: linear-gradient(135deg, #2ed158 0%, #28d9a2 100%);
+        }
+
+        .form-btn-B {
+            background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+            color: #000;
+        }
+
+        .form-btn-B:hover {
+            background: linear-gradient(135deg, #ffd32a 0%, #ffe066 100%);
+        }
+
+        .form-btn-M {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c5e 100%);
+            color: #fff;
+        }
+
+        .form-btn-M:hover {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b7a 100%);
+        }
+
+        .form-btn-clear {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+        }
+
+        .form-btn-clear:hover {
+            background: rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+        }
+
+        /* Edit Mode Styles */
+        .edit-mode [contenteditable="true"] {
+            outline: 2px dashed var(--primary);
+            outline-offset: 2px;
+            background: rgba(196, 255, 14, 0.05);
+            border-radius: 4px;
+            min-width: 30px;
+            padding: 2px 4px;
+        }
+
+        .edit-mode [contenteditable="true"]:focus {
+            outline: 2px solid var(--primary);
+            background: rgba(196, 255, 14, 0.15);
+        }
+
+        .edit-mode .delete-row {
+            display: inline-block !important;
+        }
+
+        .delete-row {
+            display: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+
+        .delete-row:hover {
+            color: #ff6b6b;
+            transform: scale(1.2);
+        }
+
+        /* Drag Handle */
+        .drag-handle {
+            display: none;
+            color: #666;
+            cursor: grab;
+            font-size: 1.2rem;
+            padding: 5px;
+            transition: 0.3s;
+        }
+
+        .drag-handle:hover {
+            color: var(--primary);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .edit-mode .drag-handle {
+            display: inline-block !important;
+        }
+
+        /* Dragging State */
+        .dragging {
+            opacity: 0.5;
+            background: rgba(196, 255, 14, 0.1) !important;
+        }
+
+        .drag-over {
+            border-top: 3px solid var(--primary) !important;
+        }
+
+        #standingsBody tr {
+            transition: background 0.2s;
+        }
+
+        /* Edit Toolbar */
+        .edit-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .edit-toolbar.active {
+            display: flex;
+        }
+
+        .toolbar-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .toolbar-btn:hover {
+            background: #333;
+        }
+
+        .toolbar-btn.primary {
+            background: var(--primary);
+            color: #000;
+            border: none;
+        }
+
+        .toolbar-btn.primary:hover {
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .toolbar-btn.danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        .toolbar-btn.danger:hover {
+            background: #c82333;
+        }
+
+        /* Export Modal */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal.active {
+            display: flex;
+        }
+
+        .export-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 700px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .export-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
+            color: #e0e0e0;
+            border: 2px solid var(--border);
+            font-family: 'Outfit', 'Consolas', monospace;
+            font-size: 0.85rem;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            resize: none;
+            line-height: 1.5;
+            transition: 0.3s;
+        }
+
+        .export-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(196, 255, 14, 0.15);
+            outline: none;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN MODAL -->
+    <div class="login-overlay" id="loginOverlay">
+        <span class="login-close" onclick="closeLogin()">&times;</span>
+        <div class="login-box">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
+            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" class="login-input" placeholder="Şifre">
+            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
+            <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
+        </div>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div class="export-modal" id="exportModal">
+        <div class="export-box">
+            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
+            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın (CTRL+A sonra CTRL+C)</p>
+            <textarea id="exportCode" class="export-textarea" readonly></textarea>
+            <div class="export-actions">
+                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
+                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT TOOLBAR -->
+    <div class="edit-toolbar" id="editToolbar">
+        <button class="toolbar-btn" onclick="addNewRow()"><i class="fas fa-plus"></i> Satır Ekle</button>
+        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
+        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="special-container" id="mainContainer">
+        <button class="edit-btn" id="editBtn" onclick="openLogin()">
+            <i class="fas fa-edit"></i> DÜZENLE
+        </button>
+
+        <div class="header-banner">
+            <h1>PUAN DURUMU</h1>
+        </div>
+
+        <table class="modern-table" id="standingsTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TAKIM</th>
+                    <th>O</th>
+                    <th>G</th>
+                    <th>B</th>
+                    <th>M</th>
+                    <th>AV</th>
+                    <th>P</th>
+                    <th>FORM</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="standingsBody">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <tr class="">
+                    <td class="rank-cell">1</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"><span
+                                class="team-name" contenteditable="true">Gençlerbirliği FK</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">6</td>
+                    <td><span class="points-box">6</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-G">G</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-G">G</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">2</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png"><span
+                                class="team-name" contenteditable="true">Samsunspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">2</td>
+                    <td><span class="points-box">4</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-G">G</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-B">B</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">3</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png"><span
+                                class="team-name" contenteditable="true">Fenerbahçe</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">2</td>
+                    <td><span class="points-box">4</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-G">G</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">4</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png"><span
+                                class="team-name" contenteditable="true">Göztepe</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td><span class="points-box">4</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-G">G</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">5</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png"><span
+                                class="team-name" contenteditable="true">Başakşehir</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td><span class="points-box">3</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-G">G</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-M">M</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">6</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png"><span
+                                class="team-name" contenteditable="true">Beşiktaş</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td><span class="points-box">3</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-M">M</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-G">G</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">7</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png"><span
+                                class="team-name" contenteditable="true">Trabzonspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">3</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-G">G</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-M">M</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">8</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png"><span
+                                class="team-name" contenteditable="true">Konyaspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">2</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-B">B</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">9</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png"><span
+                                class="team-name" contenteditable="true">Antalyaspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">2</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-B">B</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">10</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png"><span
+                                class="team-name" contenteditable="true">Galatasaray</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">1</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-M">M</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">11</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png"><span
+                                class="team-name" contenteditable="true">Eyüpspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">1</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-M">M</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-B">B</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">12</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png"><span
+                                class="team-name" contenteditable="true">Kayserispor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">0</td>
+                    <td><span class="points-box">1</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-M">M</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-B">B</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">13</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png"><span
+                                class="team-name" contenteditable="true">Alanyaspor</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">-1</td>
+                    <td><span class="points-box">1</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-M">M</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+                <tr class="">
+                    <td class="rank-cell">14</td>
+                    <td>
+                        <div class="team-flex"><img class="team-logo-sm"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png"><span
+                                class="team-name" contenteditable="true">Gaziantep</span></div>
+                    </td>
+                    <td>2</td>
+                    <td contenteditable="true">0</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">1</td>
+                    <td contenteditable="true">-2</td>
+                    <td><span class="points-box">1</span></td>
+                    <td>
+                        <div class="form-container">
+                            <div class="form-results"><span class="form-item">
+                                    <span class="form-box form-B">B</span>
+                                    <span class="form-remove" onclick="removeFormItem(this)">×</span>
+                                </span><span class="form-item"><span class="form-box form-M">M</span><span
+                                        class="form-remove" onclick="removeFormItem(this)">×</span></span></div>
+                            <div class="form-controls"><button class="form-btn form-btn-G"
+                                    onclick="addFormResult(this, 'G')" title="Galibiyet">G</button><button
+                                    class="form-btn form-btn-B" onclick="addFormResult(this, 'B')"
+                                    title="Beraberlik">B</button><button class="form-btn form-btn-M"
+                                    onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button><button
+                                    class="form-btn form-btn-clear" onclick="clearLastForm(this)"
+                                    title="Son Sonucu Sil">⌫</button></div>
+                        </div>
+                    </td>
+                    <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row"
+                            onclick="deleteRow(this)"></i></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // --- TEAM LOGOS ---
+        const TEAM_LOGOS = {
+            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
+            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
+            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
+            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
+            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
+            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
+            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
+            "Adanademirspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/5/5f/Adanademirspor.png/250px-Adanademirspor.png",
+            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
+            "Rizespor": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/f6/%C3%87aykur_Rizespor_Logo.png/250px-%C3%87aykur_Rizespor_Logo.png",
+            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
+            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
+            "Hatayspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/0/08/Hatayspor.png/250px-Hatayspor.png",
+            "Kasımpaşa": "https://upload.wikimedia.org/wikipedia/tr/thumb/6/68/Kasimpasa_2012.png/250px-Kasimpasa_2012.png",
+            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
+            "Sivasspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/80/Sivasspor.png/250px-Sivasspor.png",
+            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
+            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
+            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png",
+            "Gençlerbirliği FK": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
+        };
+
+        function getLogoUrl(name) {
+            if (!name) return "https://via.placeholder.com/30?text=?";
+            const exact = TEAM_LOGOS[name.trim()];
+            if (exact) return exact;
+            const lower = name.trim().toLowerCase();
+            const foundKey = Object.keys(TEAM_LOGOS).find(k => k.toLowerCase() === lower);
+            if (foundKey) return TEAM_LOGOS[foundKey];
+            return "https://via.placeholder.com/30?text=?";
+        }
+
+        // --- SHA-256 LOGIN ---
+        const _uHash = "b6f360c00899c231d3580106b4512d74253cbd2265d855edc8a2581d671032f2";
+        const _pHash = "69dd2706f9ebf21c1ae2654b3d5cd3b0e36afeb1cfb0ac71c01689226963456e";
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        let isEditMode = false;
+
+        function openLogin() {
+            document.getElementById('loginOverlay').classList.add('active');
+            document.getElementById('username').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        async function tryLogin() {
+            const uInput = document.getElementById('username').value.trim().toLowerCase();
+            const pInput = document.getElementById('password').value.trim();
+
+            try {
+                const uH = await sha256(uInput);
+                const pH = await sha256(pInput);
+
+                if (uH === _uHash && pH === _pHash) {
+                    closeLogin();
+                    enterEditMode();
+                } else {
+                    throw new Error("Mismatch");
+                }
+            } catch (e) {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // Enter on password field
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') tryLogin();
+        });
+
+        function enterEditMode() {
+            isEditMode = true;
+            document.getElementById('mainContainer').classList.add('edit-mode');
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('editToolbar').classList.add('active');
+
+            // Make cells editable (except rank and points - they're auto-calculated)
+            document.querySelectorAll('#standingsBody tr').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                // Rank - NOT editable (auto-calculated)
+                // Team name
+                const teamName = cells[1].querySelector('.team-name');
+                if (teamName) teamName.setAttribute('contenteditable', 'true');
+                // O (matches played) - NOT editable (auto-calculated from G+B+M)
+                // G, B, M - editable
+                for (let i = 3; i <= 5; i++) {
+                    cells[i].setAttribute('contenteditable', 'true');
+                }
+                // AV - editable
+                cells[6].setAttribute('contenteditable', 'true');
+                // Points - NOT editable (auto-calculated)
+                // Form - handled by buttons
+                setupFormGuide(row);
+            });
+        }
+
+        function setupFormGuide(row) {
+            const formCell = row.querySelectorAll('td')[8];
+            let formContainer = formCell.querySelector('.form-container');
+
+            if (!formContainer) {
+                // Get existing form boxes
+                const oldDiv = formCell.querySelector('div');
+                const existingForms = oldDiv ? oldDiv.querySelectorAll('.form-box') : [];
+
+                formContainer = document.createElement('div');
+                formContainer.className = 'form-container';
+
+                // Results container
+                const resultsDiv = document.createElement('div');
+                resultsDiv.className = 'form-results';
+
+                // Add existing form items
+                existingForms.forEach(f => {
+                    const type = f.textContent.trim();
+                    resultsDiv.appendChild(createFormItem(type));
+                });
+                formContainer.appendChild(resultsDiv);
+
+                // Modern control panel (no + button, just G B M and clear)
+                const controlsPanel = document.createElement('div');
+                controlsPanel.className = 'form-controls';
+                controlsPanel.innerHTML = `
+                    <button class="form-btn form-btn-G" onclick="addFormResult(this, 'G')" title="Galibiyet">G</button>
+                    <button class="form-btn form-btn-B" onclick="addFormResult(this, 'B')" title="Beraberlik">B</button>
+                    <button class="form-btn form-btn-M" onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button>
+                    <button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>
+                `;
+                formContainer.appendChild(controlsPanel);
+
+                formCell.innerHTML = '';
+                formCell.appendChild(formContainer);
+            } else {
+                // Check if form-controls exist, if not add them
+                let controlsPanel = formContainer.querySelector('.form-controls');
+                if (!controlsPanel) {
+                    // Form controls missing (e.g., after export), add them
+                    controlsPanel = document.createElement('div');
+                    controlsPanel.className = 'form-controls';
+                    controlsPanel.innerHTML = `
+                        <button class="form-btn form-btn-G" onclick="addFormResult(this, 'G')" title="Galibiyet">G</button>
+                        <button class="form-btn form-btn-B" onclick="addFormResult(this, 'B')" title="Beraberlik">B</button>
+                        <button class="form-btn form-btn-M" onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button>
+                        <button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>
+                    `;
+                    formContainer.appendChild(controlsPanel);
+                }
+
+                // If form-container exists, check if it's the old format with form-add-btn
+                const oldAddBtn = formContainer.querySelector('.form-add-btn');
+                const oldBtnPanel = formContainer.querySelector('.form-buttons');
+
+                if (oldAddBtn || oldBtnPanel) {
+                    // Convert old format to new
+                    const existingItems = formContainer.querySelectorAll('.form-item');
+                    const existingBoxes = formContainer.querySelectorAll('.form-box:not(.form-item .form-box)');
+
+                    // Clear and rebuild
+                    const resultsDiv = document.createElement('div');
+                    resultsDiv.className = 'form-results';
+
+                    existingItems.forEach(item => {
+                        resultsDiv.appendChild(item);
+                    });
+                    existingBoxes.forEach(box => {
+                        const type = box.textContent.trim();
+                        resultsDiv.appendChild(createFormItem(type));
+                    });
+
+                    const newControlsPanel = document.createElement('div');
+                    newControlsPanel.className = 'form-controls';
+                    newControlsPanel.innerHTML = `
+                        <button class="form-btn form-btn-G" onclick="addFormResult(this, 'G')" title="Galibiyet">G</button>
+                        <button class="form-btn form-btn-B" onclick="addFormResult(this, 'B')" title="Beraberlik">B</button>
+                        <button class="form-btn form-btn-M" onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button>
+                        <button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>
+                    `;
+
+                    formContainer.innerHTML = '';
+                    formContainer.appendChild(resultsDiv);
+                    formContainer.appendChild(newControlsPanel);
+                }
+            }
+        }
+
+        function createFormItem(type) {
+            const item = document.createElement('span');
+            item.className = 'form-item';
+            item.innerHTML = `
+                <span class="form-box form-${type}">${type}</span>
+                <span class="form-remove" onclick="removeFormItem(this)">×</span>
+            `;
+            return item;
+        }
+
+        function addFormResult(btn, type) {
+            const container = btn.closest('.form-container');
+            const resultsDiv = container.querySelector('.form-results');
+            const formItems = resultsDiv.querySelectorAll('.form-item');
+
+            // Max 5 form items
+            if (formItems.length >= 5) {
+                // Remove the oldest (first) one
+                formItems[0].remove();
+            }
+
+            resultsDiv.appendChild(createFormItem(type));
+        }
+
+        function removeFormItem(removeBtn) {
+            removeBtn.closest('.form-item').remove();
+        }
+
+        function clearLastForm(btn) {
+            const container = btn.closest('.form-container');
+            const resultsDiv = container.querySelector('.form-results');
+            const formItems = resultsDiv.querySelectorAll('.form-item');
+
+            if (formItems.length > 0) {
+                formItems[formItems.length - 1].remove();
+            }
+        }
+
+        // Auto-calculate points and matches played
+        function calculateRowStats(row) {
+            const cells = row.querySelectorAll('td');
+            const wins = parseInt(cells[3].textContent) || 0;
+            const draws = parseInt(cells[4].textContent) || 0;
+            const losses = parseInt(cells[5].textContent) || 0;
+
+            // Calculate matches played
+            const played = wins + draws + losses;
+            cells[2].textContent = played;
+
+            // Calculate points
+            const points = (wins * 3) + (draws * 1);
+            cells[7].querySelector('.points-box').textContent = points;
+
+            return points;
+        }
+
+        // Sort table by points
+        function sortTableByPoints() {
+            const tbody = document.getElementById('standingsBody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const pointsA = parseInt(a.querySelectorAll('td')[7].querySelector('.points-box').textContent) || 0;
+                const pointsB = parseInt(b.querySelectorAll('td')[7].querySelector('.points-box').textContent) || 0;
+                return pointsB - pointsA; // Descending order
+            });
+
+            // Re-append in sorted order
+            rows.forEach(row => tbody.appendChild(row));
+
+            // Update ranks
+            updateRanks();
+        }
+
+        function exitEditMode() {
+            isEditMode = false;
+            document.getElementById('mainContainer').classList.remove('edit-mode');
+            document.getElementById('editBtn').style.display = 'flex';
+            document.getElementById('editToolbar').classList.remove('active');
+
+            // Remove contenteditable
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+        }
+
+        function deleteRow(btn) {
+            btn.closest('tr').remove();
+            updateRanks();
+        }
+
+        function updateRanks() {
+            document.querySelectorAll('#standingsBody tr').forEach((row, index) => {
+                row.querySelector('.rank-cell').textContent = index + 1;
+            });
+        }
+
+        // --- DRAG AND DROP ---
+        let draggedRow = null;
+
+        function initDragDrop() {
+            const tbody = document.getElementById('standingsBody');
+
+            tbody.addEventListener('mousedown', function (e) {
+                if (e.target.classList.contains('drag-handle') && isEditMode) {
+                    draggedRow = e.target.closest('tr');
+                    draggedRow.classList.add('dragging');
+                    draggedRow.setAttribute('draggable', 'true');
+                }
+            });
+
+            tbody.addEventListener('dragstart', function (e) {
+                if (draggedRow) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/html', draggedRow.innerHTML);
+                }
+            });
+
+            tbody.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                const targetRow = e.target.closest('tr');
+                if (targetRow && targetRow !== draggedRow) {
+                    document.querySelectorAll('#standingsBody tr').forEach(r => r.classList.remove('drag-over'));
+                    targetRow.classList.add('drag-over');
+                }
+            });
+
+            tbody.addEventListener('drop', function (e) {
+                e.preventDefault();
+                const targetRow = e.target.closest('tr');
+                if (targetRow && draggedRow && targetRow !== draggedRow) {
+                    const allRows = Array.from(tbody.querySelectorAll('tr'));
+                    const draggedIndex = allRows.indexOf(draggedRow);
+                    const targetIndex = allRows.indexOf(targetRow);
+
+                    if (draggedIndex < targetIndex) {
+                        targetRow.parentNode.insertBefore(draggedRow, targetRow.nextSibling);
+                    } else {
+                        targetRow.parentNode.insertBefore(draggedRow, targetRow);
+                    }
+                    updateRanks();
+                }
+            });
+
+            tbody.addEventListener('dragend', function (e) {
+                if (draggedRow) {
+                    draggedRow.classList.remove('dragging');
+                    draggedRow.removeAttribute('draggable');
+                    document.querySelectorAll('#standingsBody tr').forEach(r => r.classList.remove('drag-over'));
+                    draggedRow = null;
+                }
+            });
+        }
+
+        // Initialize drag-drop on page load
+        document.addEventListener('DOMContentLoaded', initDragDrop);
+
+        function addNewRow() {
+            const tbody = document.getElementById('standingsBody');
+            const rowCount = tbody.querySelectorAll('tr').length + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="rank-cell">${rowCount}</td>
+                <td><div class="team-flex"><img src="https://via.placeholder.com/30?text=?" class="team-logo-sm"><span class="team-name" contenteditable="true">Takım Adı</span></div></td>
+                <td>0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td><span class="points-box">0</span></td>
+                <td>
+                    <div class="form-container">
+                        <div class="form-results"></div>
+                        <div class="form-controls">
+                            <button class="form-btn form-btn-G" onclick="addFormResult(this, 'G')" title="Galibiyet">G</button>
+                            <button class="form-btn form-btn-B" onclick="addFormResult(this, 'B')" title="Beraberlik">B</button>
+                            <button class="form-btn form-btn-M" onclick="addFormResult(this, 'M')" title="Mağlubiyet">M</button>
+                            <button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>
+                        </div>
+                    </div>
+                </td>
+                <td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row" onclick="deleteRow(this)"></i></td>
+            `;
+            tbody.appendChild(newRow);
+            // Not auto-sorting on add - user positions manually
+        }
+
+        // Auto-update team logos when name changes AND calculate points
+        document.addEventListener('input', function (e) {
+            if (e.target.classList.contains('team-name')) {
+                const name = e.target.innerText.trim();
+                const logoUrl = getLogoUrl(name);
+                const img = e.target.closest('.team-flex').querySelector('img');
+                if (img) img.src = logoUrl;
+            }
+
+            // Auto-calculate when G, B, or M changes (columns 4, 5, 6 = index 3, 4, 5)
+            // NOTE: No longer auto-sorting the table to prevent losing focus during editing
+            const row = e.target.closest('tr');
+            if (row && e.target.closest('td')) {
+                const cellIndex = Array.from(row.querySelectorAll('td')).indexOf(e.target.closest('td'));
+                // If editing G (3), B (4), or M (5) columns
+                if (cellIndex >= 3 && cellIndex <= 5) {
+                    calculateRowStats(row);
+                    // Table sorting will happen on export, not during editing
+                }
+            }
+        });
+
+        function exportHTML() {
+            // Clone table body to get current data
+            const tableBody = document.getElementById('standingsBody').cloneNode(true);
+
+            // Clean contenteditable but keep structure
+            tableBody.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+
+            // Remove edit-only elements (form controls and remove buttons)
+            tableBody.querySelectorAll('.form-controls').forEach(el => el.remove());
+            tableBody.querySelectorAll('.form-remove').forEach(el => el.remove());
+
+            // Get table HTML
+            const tableHTML = tableBody.innerHTML;
+
+            const fullHTML = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puan Durumu - Tribe League</title>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<style>
+:root { --bg-body: #0a0a0e; --bg-card: #141419; --primary: #c4ff0e; --primary-glow: rgba(196, 255, 14, 0.4); --secondary: #5742f5; --text-main: #ffffff; --text-muted: #8b8b96; --border: rgba(255, 255, 255, 0.08); --radius: 16px; --font-head: 'Teko', sans-serif; --font-body: 'Outfit', sans-serif; }
+* { box-sizing: border-box; }
+body { background: var(--bg-body); color: var(--text-main); font-family: var(--font-body); padding: 0; margin: 0; }
+.special-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; max-width: 1000px; margin: 30px auto; position: relative; }
+.header-banner { position: relative; overflow: hidden; text-align: center; background: linear-gradient(135deg, #222 0%, #111 100%); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+.header-banner h1 { font-family: var(--font-head); font-size: 3.5rem; color: var(--primary); margin: 0; line-height: 1; text-transform: uppercase; }
+.edit-btn { position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%); color: #000; border: none; padding: 12px 24px; border-radius: 10px; font-family: var(--font-head); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 15px var(--primary-glow); z-index: 100; }
+.edit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px var(--primary-glow); }
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: none; align-items: center; justify-content: center; }
+.login-overlay.active { display: flex; }
+.login-box { background: var(--bg-card); border: 1px solid var(--border); padding: 40px; border-radius: 20px; text-align: center; width: 380px; box-shadow: 0 0 60px var(--primary-glow); animation: slideUp 0.4s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.login-title { font-family: var(--font-head); font-size: 2.5rem; margin: 0 0 25px; color: #fff; }
+.login-title i { color: var(--primary); margin-right: 10px; }
+.login-input { width: 100%; background: #000; border: 2px solid var(--border); color: #fff; padding: 14px 16px; margin-bottom: 15px; border-radius: 10px; font-family: var(--font-body); font-size: 1rem; outline: none; transition: 0.3s; }
+.login-input:focus { border-color: var(--primary); }
+.login-btn { width: 100%; background: var(--primary); color: #000; border: none; padding: 14px; font-weight: bold; font-family: var(--font-head); font-size: 1.3rem; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+.login-btn:hover { box-shadow: 0 0 25px var(--primary-glow); }
+.login-error { color: #ff4466; margin-top: 15px; display: none; font-size: 0.9rem; }
+.login-close { position: absolute; top: 20px; right: 25px; color: #666; font-size: 2rem; cursor: pointer; transition: 0.3s; }
+.login-close:hover { color: #fff; }
+.modern-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.modern-table th { text-align: left; padding: 15px; background: rgba(255, 255, 255, 0.05); color: var(--primary); font-family: var(--font-head); font-size: 1.4rem; text-transform: uppercase; }
+.modern-table td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.rank-cell { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
+.team-flex { display: flex; align-items: center; gap: 10px; }
+.team-logo-sm { width: 30px; height: 30px; object-fit: contain; }
+.points-box { background: var(--primary); color: #000; padding: 5px 10px; border-radius: 6px; font-weight: 800; font-family: var(--font-head); }
+.form-box { display: inline-block; width: 20px; height: 20px; line-height: 20px; margin: 0 2px; text-align: center; border-radius: 4px; font-size: 10px; font-weight: bold; color: #fff; }
+.form-G { background: #28a745; }
+.form-B { background: #ffc107; color: #000; }
+.form-M { background: #dc3545; }
+.form-container { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
+.form-results { display: flex; gap: 3px; align-items: center; min-width: 100px; }
+.form-item { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.form-item .form-remove { display: none; position: absolute; top: -5px; right: -5px; width: 14px; height: 14px; background: #dc3545; color: #fff; border-radius: 50%; font-size: 10px; line-height: 14px; text-align: center; cursor: pointer; z-index: 5; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.edit-mode .form-item:hover .form-remove { display: block; }
+.form-controls { display: none; gap: 4px; align-items: center; margin-left: 8px; padding: 4px 8px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+.edit-mode .form-controls { display: flex; }
+.form-btn { width: 28px; height: 28px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.form-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.form-btn-G { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: #fff; }
+.form-btn-B { background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%); color: #000; }
+.form-btn-M { background: linear-gradient(135deg, #dc3545 0%, #e74c5e 100%); color: #fff; }
+.form-btn-clear { background: rgba(255,255,255,0.1); color: #888; font-size: 14px; width: 24px; height: 24px; }
+.form-btn-clear:hover { background: rgba(220, 53, 69, 0.3); color: #ff6b6b; }
+.edit-mode [contenteditable="true"] { outline: 2px dashed var(--primary); outline-offset: 2px; background: rgba(196, 255, 14, 0.05); border-radius: 4px; min-width: 30px; padding: 2px 4px; }
+.edit-mode [contenteditable="true"]:focus { outline: 2px solid var(--primary); background: rgba(196, 255, 14, 0.15); }
+.edit-mode .delete-row { display: inline-block !important; }
+.delete-row { display: none; color: #dc3545; cursor: pointer; font-size: 1.1rem; margin-left: 10px; transition: 0.3s; }
+.delete-row:hover { color: #ff6b6b; transform: scale(1.2); }
+.drag-handle { display: none; color: #666; cursor: grab; font-size: 1.2rem; padding: 5px; transition: 0.3s; }
+.drag-handle:hover { color: var(--primary); }
+.drag-handle:active { cursor: grabbing; }
+.edit-mode .drag-handle { display: inline-block !important; }
+.dragging { opacity: 0.5; background: rgba(196, 255, 14, 0.1) !important; }
+.drag-over { border-top: 3px solid var(--primary) !important; }
+#standingsBody tr { transition: background 0.2s; }
+.edit-toolbar { display: none; position: fixed; bottom: 30px; right: 30px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px 20px; gap: 12px; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+.edit-toolbar.active { display: flex; }
+.toolbar-btn { background: #222; color: #fff; border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: var(--font-head); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+.toolbar-btn:hover { background: #333; }
+.toolbar-btn.primary { background: var(--primary); color: #000; border: none; }
+.toolbar-btn.primary:hover { box-shadow: 0 0 20px var(--primary-glow); }
+.toolbar-btn.danger { background: #dc3545; border: none; }
+.toolbar-btn.danger:hover { background: #c82333; }
+.export-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; display: none; align-items: center; justify-content: center; }
+.export-modal.active { display: flex; }
+.export-box { background: var(--bg-card); border: 1px solid var(--border); width: 700px; max-width: 90%; padding: 30px; border-radius: 16px; }
+.export-title { font-family: var(--font-head); font-size: 2rem; color: var(--primary); margin: 0 0 10px; display: flex; align-items: center; gap: 10px; }
+.export-textarea { width: 100%; height: 250px; background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%); color: #e0e0e0; border: 2px solid rgba(255,255,255,0.08); font-family: 'Outfit', monospace; font-size: 0.85rem; padding: 20px; margin: 20px 0; border-radius: 12px; resize: none; line-height: 1.5; }
+.export-actions { display: flex; gap: 10px; justify-content: flex-end; }
+</style>
+</head>
+<body>
+<div class="login-overlay" id="loginOverlay">
+    <span class="login-close" onclick="closeLogin()">&times;</span>
+    <div class="login-box">
+        <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
+        <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
+        <input type="password" id="password" class="login-input" placeholder="Şifre">
+        <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
+        <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
+    </div>
+</div>
+<div class="export-modal" id="exportModal">
+    <div class="export-box">
+        <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
+        <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın (CTRL+A sonra CTRL+C)</p>
+        <textarea id="exportCode" class="export-textarea" readonly></textarea>
+        <div class="export-actions">
+            <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
+            <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+        </div>
+    </div>
+</div>
+<div class="edit-toolbar" id="editToolbar">
+    <button class="toolbar-btn" onclick="addNewRow()"><i class="fas fa-plus"></i> Satır Ekle</button>
+    <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
+    <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
+</div>
+<div class="special-container" id="mainContainer">
+    <button class="edit-btn" id="editBtn" onclick="openLogin()"><i class="fas fa-edit"></i> DÜZENLE</button>
+    <div class="header-banner"><h1>PUAN DURUMU</h1></div>
+    <table class="modern-table" id="standingsTable">
+        <thead>
+            <tr>
+                <th>#</th><th>TAKIM</th><th>O</th><th>G</th><th>B</th><th>M</th><th>AV</th><th>P</th><th>FORM</th><th></th>
+            </tr>
+        </thead>
+        <tbody id="standingsBody">${tableHTML}</tbody>
+    </table>
+</div>
+<script>
+const TEAM_LOGOS = { "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png", "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png", "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png", "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png", "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png", "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png", "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png", "Adanademirspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/5/5f/Adanademirspor.png/250px-Adanademirspor.png", "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png", "Rizespor": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/f6/%C3%87aykur_Rizespor_Logo.png/250px-%C3%87aykur_Rizespor_Logo.png", "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png", "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png", "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png", "Sivasspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/80/Sivasspor.png/250px-Sivasspor.png", "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png", "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png", "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png", "Gençlerbirliği FK": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png" };
+function getLogoUrl(name) { if (!name) return "https://via.placeholder.com/30?text=?"; const exact = TEAM_LOGOS[name.trim()]; if (exact) return exact; const lower = name.trim().toLowerCase(); const foundKey = Object.keys(TEAM_LOGOS).find(k => k.toLowerCase() === lower); return foundKey ? TEAM_LOGOS[foundKey] : "https://via.placeholder.com/30?text=?"; }
+const _uHash = "b6f360c00899c231d3580106b4512d74253cbd2265d855edc8a2581d671032f2";
+const _pHash = "69dd2706f9ebf21c1ae2654b3d5cd3b0e36afeb1cfb0ac71c01689226963456e";
+async function sha256(message) { const msgBuffer = new TextEncoder().encode(message); const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer); const hashArray = Array.from(new Uint8Array(hashBuffer)); return hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); }
+let isEditMode = false;
+function openLogin() { document.getElementById('loginOverlay').classList.add('active'); document.getElementById('username').focus(); }
+function closeLogin() { document.getElementById('loginOverlay').classList.remove('active'); document.getElementById('loginError').style.display = 'none'; }
+async function tryLogin() { const uInput = document.getElementById('username').value.trim().toLowerCase(); const pInput = document.getElementById('password').value.trim(); try { const uH = await sha256(uInput); const pH = await sha256(pInput); if (uH === _uHash && pH === _pHash) { closeLogin(); enterEditMode(); } else { throw new Error("Mismatch"); } } catch (e) { document.getElementById('loginError').style.display = 'block'; } }
+document.getElementById('password').addEventListener('keypress', function(e) { if (e.key === 'Enter') tryLogin(); });
+function enterEditMode() { isEditMode = true; document.getElementById('mainContainer').classList.add('edit-mode'); document.getElementById('editBtn').style.display = 'none'; document.getElementById('editToolbar').classList.add('active'); document.querySelectorAll('#standingsBody tr').forEach(row => { const cells = row.querySelectorAll('td'); const teamName = cells[1].querySelector('.team-name'); if (teamName) teamName.setAttribute('contenteditable', 'true'); for (let i = 3; i <= 5; i++) { cells[i].setAttribute('contenteditable', 'true'); } cells[6].setAttribute('contenteditable', 'true'); setupFormGuide(row); }); }
+function setupFormGuide(row) { const formCell = row.querySelectorAll('td')[8]; let formContainer = formCell.querySelector('.form-container'); if (!formContainer) { const oldDiv = formCell.querySelector('div'); const existingForms = oldDiv ? oldDiv.querySelectorAll('.form-box') : []; formContainer = document.createElement('div'); formContainer.className = 'form-container'; const resultsDiv = document.createElement('div'); resultsDiv.className = 'form-results'; existingForms.forEach(f => { const type = f.textContent.trim(); resultsDiv.appendChild(createFormItem(type)); }); formContainer.appendChild(resultsDiv); const controlsPanel = document.createElement('div'); controlsPanel.className = 'form-controls'; controlsPanel.innerHTML = '<button class="form-btn form-btn-G" onclick="addFormResult(this, \\'G\\')" title="Galibiyet">G</button><button class="form-btn form-btn-B" onclick="addFormResult(this, \\'B\\')" title="Beraberlik">B</button><button class="form-btn form-btn-M" onclick="addFormResult(this, \\'M\\')" title="Mağlubiyet">M</button><button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>'; formContainer.appendChild(controlsPanel); formCell.innerHTML = ''; formCell.appendChild(formContainer); } else { let controlsPanel = formContainer.querySelector('.form-controls'); if (!controlsPanel) { controlsPanel = document.createElement('div'); controlsPanel.className = 'form-controls'; controlsPanel.innerHTML = '<button class="form-btn form-btn-G" onclick="addFormResult(this, \\'G\\')" title="Galibiyet">G</button><button class="form-btn form-btn-B" onclick="addFormResult(this, \\'B\\')" title="Beraberlik">B</button><button class="form-btn form-btn-M" onclick="addFormResult(this, \\'M\\')" title="Mağlubiyet">M</button><button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button>'; formContainer.appendChild(controlsPanel); } } }
+function createFormItem(type) { const item = document.createElement('span'); item.className = 'form-item'; item.innerHTML = '<span class="form-box form-' + type + '">' + type + '</span><span class="form-remove" onclick="removeFormItem(this)">×</span>'; return item; }
+function addFormResult(btn, type) { const container = btn.closest('.form-container'); const resultsDiv = container.querySelector('.form-results'); const formItems = resultsDiv.querySelectorAll('.form-item'); if (formItems.length >= 5) { formItems[0].remove(); } resultsDiv.appendChild(createFormItem(type)); }
+function removeFormItem(removeBtn) { removeBtn.closest('.form-item').remove(); }
+function clearLastForm(btn) { const container = btn.closest('.form-container'); const resultsDiv = container.querySelector('.form-results'); const formItems = resultsDiv.querySelectorAll('.form-item'); if (formItems.length > 0) { formItems[formItems.length - 1].remove(); } }
+function calculateRowStats(row) { const cells = row.querySelectorAll('td'); const wins = parseInt(cells[3].textContent) || 0; const draws = parseInt(cells[4].textContent) || 0; const losses = parseInt(cells[5].textContent) || 0; const played = wins + draws + losses; cells[2].textContent = played; const points = (wins * 3) + (draws * 1); cells[7].querySelector('.points-box').textContent = points; return points; }
+function sortTableByPoints() { const tbody = document.getElementById('standingsBody'); const rows = Array.from(tbody.querySelectorAll('tr')); rows.sort((a, b) => { const pointsA = parseInt(a.querySelectorAll('td')[7].querySelector('.points-box').textContent) || 0; const pointsB = parseInt(b.querySelectorAll('td')[7].querySelector('.points-box').textContent) || 0; return pointsB - pointsA; }); rows.forEach(row => tbody.appendChild(row)); updateRanks(); }
+function exitEditMode() { isEditMode = false; document.getElementById('mainContainer').classList.remove('edit-mode'); document.getElementById('editBtn').style.display = 'flex'; document.getElementById('editToolbar').classList.remove('active'); document.querySelectorAll('[contenteditable]').forEach(el => { el.removeAttribute('contenteditable'); }); }
+function deleteRow(btn) { btn.closest('tr').remove(); updateRanks(); }
+function updateRanks() { document.querySelectorAll('#standingsBody tr').forEach((row, index) => { row.querySelector('.rank-cell').textContent = index + 1; }); }
+let draggedRow = null;
+function initDragDrop() { const tbody = document.getElementById('standingsBody'); tbody.addEventListener('mousedown', function(e) { if (e.target.classList.contains('drag-handle') && isEditMode) { draggedRow = e.target.closest('tr'); draggedRow.classList.add('dragging'); draggedRow.setAttribute('draggable', 'true'); } }); tbody.addEventListener('dragstart', function(e) { if (draggedRow) { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/html', draggedRow.innerHTML); } }); tbody.addEventListener('dragover', function(e) { e.preventDefault(); const targetRow = e.target.closest('tr'); if (targetRow && targetRow !== draggedRow) { document.querySelectorAll('#standingsBody tr').forEach(r => r.classList.remove('drag-over')); targetRow.classList.add('drag-over'); } }); tbody.addEventListener('drop', function(e) { e.preventDefault(); const targetRow = e.target.closest('tr'); if (targetRow && draggedRow && targetRow !== draggedRow) { const allRows = Array.from(tbody.querySelectorAll('tr')); const draggedIndex = allRows.indexOf(draggedRow); const targetIndex = allRows.indexOf(targetRow); if (draggedIndex < targetIndex) { targetRow.parentNode.insertBefore(draggedRow, targetRow.nextSibling); } else { targetRow.parentNode.insertBefore(draggedRow, targetRow); } updateRanks(); } }); tbody.addEventListener('dragend', function(e) { if (draggedRow) { draggedRow.classList.remove('dragging'); draggedRow.removeAttribute('draggable'); document.querySelectorAll('#standingsBody tr').forEach(r => r.classList.remove('drag-over')); draggedRow = null; } }); }
+document.addEventListener('DOMContentLoaded', initDragDrop);
+function addNewRow() { const tbody = document.getElementById('standingsBody'); const rowCount = tbody.querySelectorAll('tr').length + 1; const newRow = document.createElement('tr'); newRow.innerHTML = '<td class="rank-cell">' + rowCount + '</td><td><div class="team-flex"><img src="https://via.placeholder.com/30?text=?" class="team-logo-sm"><span class="team-name" contenteditable="true">Takım Adı</span></div></td><td>0</td><td contenteditable="true">0</td><td contenteditable="true">0</td><td contenteditable="true">0</td><td contenteditable="true">0</td><td><span class="points-box">0</span></td><td><div class="form-container"><div class="form-results"></div><div class="form-controls"><button class="form-btn form-btn-G" onclick="addFormResult(this, \\'G\\')" title="Galibiyet">G</button><button class="form-btn form-btn-B" onclick="addFormResult(this, \\'B\\')" title="Beraberlik">B</button><button class="form-btn form-btn-M" onclick="addFormResult(this, \\'M\\')" title="Mağlubiyet">M</button><button class="form-btn form-btn-clear" onclick="clearLastForm(this)" title="Son Sonucu Sil">⌫</button></div></div></td><td><i class="fas fa-grip-lines drag-handle"></i><i class="fas fa-trash delete-row" onclick="deleteRow(this)"></i></td>'; tbody.appendChild(newRow); }
+document.addEventListener('input', function(e) { if (e.target.classList.contains('team-name')) { const name = e.target.innerText.trim(); const logoUrl = getLogoUrl(name); const img = e.target.closest('.team-flex').querySelector('img'); if (img) img.src = logoUrl; } const row = e.target.closest('tr'); if (row && e.target.closest('td')) { const cellIndex = Array.from(row.querySelectorAll('td')).indexOf(e.target.closest('td')); if (cellIndex >= 3 && cellIndex <= 5) { calculateRowStats(row); } } });
+function exportHTML() { const tBody = document.getElementById('standingsBody').cloneNode(true); tBody.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable')); tBody.querySelectorAll('.form-controls').forEach(el => el.remove()); tBody.querySelectorAll('.form-remove').forEach(el => el.remove()); const tHTML = tBody.innerHTML; const css = ':root{--bg-body:#0a0a0e;--bg-card:#141419;--primary:#c4ff0e;--primary-glow:rgba(196,255,14,0.4);--text-main:#fff;--border:rgba(255,255,255,0.08);--radius:16px;--font-head:Teko,sans-serif;--font-body:Outfit,sans-serif}*{box-sizing:border-box}body{background:var(--bg-body);color:var(--text-main);font-family:var(--font-body);padding:0;margin:0}.special-container{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;max-width:1000px;margin:30px auto;position:relative}.header-banner{text-align:center;background:linear-gradient(135deg,#222,#111);border:1px solid var(--border);border-radius:12px;padding:30px;margin-bottom:30px}.header-banner h1{font-family:var(--font-head);font-size:3.5rem;color:var(--primary);margin:0;text-transform:uppercase}.edit-btn{position:absolute;top:20px;right:20px;background:linear-gradient(135deg,var(--primary),#a8e600);color:#000;border:none;padding:12px 24px;border-radius:10px;font-family:var(--font-head);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 15px var(--primary-glow);z-index:100}.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;display:none;align-items:center;justify-content:center}.login-overlay.active{display:flex}.login-box{background:var(--bg-card);border:1px solid var(--border);padding:40px;border-radius:20px;text-align:center;width:380px;box-shadow:0 0 60px var(--primary-glow)}.login-title{font-family:var(--font-head);font-size:2.5rem;margin:0 0 25px;color:#fff}.login-title i{color:var(--primary);margin-right:10px}.login-input{width:100%;background:#000;border:2px solid var(--border);color:#fff;padding:14px 16px;margin-bottom:15px;border-radius:10px;font-size:1rem}.login-btn{width:100%;background:var(--primary);color:#000;border:none;padding:14px;font-weight:bold;font-family:var(--font-head);font-size:1.3rem;cursor:pointer;border-radius:10px}.login-error{color:#ff4466;margin-top:15px;display:none}.login-close{position:absolute;top:20px;right:25px;color:#666;font-size:2rem;cursor:pointer}.modern-table{width:100%;border-collapse:collapse;margin-top:20px}.modern-table th{text-align:left;padding:15px;background:rgba(255,255,255,0.05);color:var(--primary);font-family:var(--font-head);font-size:1.4rem;text-transform:uppercase}.modern-table td{padding:15px;border-bottom:1px solid var(--border);vertical-align:middle}.rank-cell{font-weight:bold;color:var(--primary);font-size:1.2rem}.team-flex{display:flex;align-items:center;gap:10px}.team-logo-sm{width:30px;height:30px;object-fit:contain}.points-box{background:var(--primary);color:#000;padding:5px 10px;border-radius:6px;font-weight:800;font-family:var(--font-head)}.form-box{display:inline-block;width:20px;height:20px;line-height:20px;margin:0 2px;text-align:center;border-radius:4px;font-size:10px;font-weight:bold;color:#fff}.form-G{background:#28a745}.form-B{background:#ffc107;color:#000}.form-M{background:#dc3545}.form-container{display:flex;gap:4px;align-items:center}.form-results{display:flex;gap:3px;align-items:center;min-width:100px}.form-item{position:relative;display:inline-flex;align-items:center}.form-controls,.form-remove,.delete-row,.drag-handle{display:none}.edit-mode .form-controls{display:flex}.edit-mode .delete-row,.edit-mode .drag-handle{display:inline-block!important}.edit-toolbar{display:none;position:fixed;bottom:30px;right:30px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:15px 20px;gap:12px;z-index:1000}.edit-toolbar.active{display:flex}.toolbar-btn{background:#222;color:#fff;border:1px solid var(--border);padding:12px 20px;border-radius:10px;cursor:pointer;font-family:var(--font-head);font-size:1.1rem;display:flex;align-items:center;gap:8px}.toolbar-btn.primary{background:var(--primary);color:#000;border:none}.toolbar-btn.danger{background:#dc3545;border:none}.export-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:none;align-items:center;justify-content:center}.export-modal.active{display:flex}.export-box{background:var(--bg-card);border:1px solid var(--border);width:700px;max-width:90%;padding:30px;border-radius:16px}.export-title{font-family:var(--font-head);font-size:2rem;color:var(--primary);margin:0 0 10px}.export-textarea{width:100%;height:250px;background:#1a1a1f;color:#e0e0e0;border:2px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;padding:20px;margin:20px 0;border-radius:12px;resize:none}.export-actions{display:flex;gap:10px;justify-content:flex-end}'; const js = document.querySelector('script').textContent; const fullHTML = '<!DOCTYPE html>\\n<html lang=\"tr\">\\n<head>\\n<meta charset=\"UTF-8\">\\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n<title>Puan Durumu - Tribe League</title>\\n<link href=\"https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Outfit:wght@300;400;600&display=swap\" rel=\"stylesheet\">\\n<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\" rel=\"stylesheet\" />\\n<style>' + css + '</style>\\n</head>\\n<body>\\n' + document.querySelector('.login-overlay').outerHTML + '\\n' + document.querySelector('.export-modal').outerHTML + '\\n' + document.querySelector('.edit-toolbar').outerHTML + '\\n<div class=\"special-container\" id=\"mainContainer\"><button class=\"edit-btn\" id=\"editBtn\" onclick=\"openLogin()\"><i class=\"fas fa-edit\"></i> DÜZENLE</button><div class=\"header-banner\"><h1>PUAN DURUMU</h1></div><table class=\"modern-table\" id=\"standingsTable\"><thead><tr><th>#</th><th>TAKIM</th><th>O</th><th>G</th><th>B</th><th>M</th><th>AV</th><th>P</th><th>FORM</th><th></th></tr></thead><tbody id=\"standingsBody\">' + tHTML + '</tbody></table></div>\\n<script>' + js + '<\\/script>\\n</body>\\n</html>'; document.getElementById('exportCode').value = fullHTML; document.getElementById('exportModal').classList.add('active'); }
+function closeExport() { document.getElementById('exportModal').classList.remove('active'); exitEditMode(); }
+function copyCode() { const textarea = document.getElementById('exportCode'); textarea.select(); document.execCommand('copy'); alert('HTML kodu kopyalandı!'); }
+<\/script>
+</body>
+</html>`;
+
+            document.getElementById('exportCode').value = fullHTML;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExport() {
+            document.getElementById('exportModal').classList.remove('active');
+            exitEditMode();
+        }
+
+        function copyCode() {
+            const textarea = document.getElementById('exportCode');
+            textarea.select();
+            document.execCommand('copy');
+            alert('HTML kodu kopyalandı! Blogger\'a yapıştırabilirsiniz.');
+        }
+    </script>
+
+</body>
+
+</html>

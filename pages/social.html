@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sosyal Medya - Tribe League</title>
+    <meta name="description" content="Tribe League sosyal medya kanalları - Discord, YouTube ve daha fazlası">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-card-hover: #1a1a20;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --secondary: #5742f5;
+            --discord: #5865F2;
+            --youtube: #FF0000;
+            --twitter: #1DA1F2;
+            --instagram: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            --twitch: #9146FF;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 1200px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .header-banner {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(135deg, #222 0%, #111 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            opacity: 0.1;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.2;
+            }
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            z-index: 100;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--primary-glow);
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 380px;
+            box-shadow: 0 0 60px var(--primary-glow);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin: 0 0 25px;
+            color: #fff;
+        }
+
+        .login-title i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 14px 16px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .login-error {
+            color: #ff4466;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #666;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-close:hover {
+            color: #fff;
+        }
+
+        /* Social Grid Layout */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Platform Card */
+        .platform-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a22 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .platform-header {
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .platform-icon.discord {
+            background: var(--discord);
+        }
+
+        .platform-icon.youtube {
+            background: var(--youtube);
+        }
+
+        .platform-icon.twitter {
+            background: var(--twitter);
+        }
+
+        .platform-icon.instagram {
+            background: var(--instagram);
+        }
+
+        .platform-icon.twitch {
+            background: var(--twitch);
+        }
+
+        .platform-info h3 {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .platform-info p {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .platform-content {
+            padding: 20px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Discord Widget Wrapper */
+        .discord-widget-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .discord-widget-wrapper iframe {
+            border-radius: 12px;
+            border: none;
+        }
+
+        /* YouTube Embed */
+        .youtube-wrapper {
+            width: 100%;
+        }
+
+        .youtube-embed {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            border: none;
+        }
+
+        .youtube-channel-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: var(--youtube);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .youtube-channel-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        /* Discord Invite Card */
+        .discord-invite-card {
+            background: linear-gradient(135deg, #36393f 0%, #2f3136 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .discord-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--discord);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.3);
+        }
+
+        .discord-title {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0 0 10px;
+        }
+
+        .discord-desc {
+            color: #b9bbbe;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .discord-join-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: var(--discord);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .discord-join-btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+        }
+
+        /* Quick Links Section */
+        .quick-links-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-link-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .quick-link-card:hover::before {
+            left: 100%;
+        }
+
+        .quick-link-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+
+        .quick-link-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .quick-link-icon.discord {
+            background: var(--discord);
+        }
+
+        .quick-link-icon.youtube {
+            background: var(--youtube);
+        }
+
+        .quick-link-icon.twitter {
+            background: var(--twitter);
+        }
+
+        .quick-link-icon.instagram {
+            background: var(--instagram);
+        }
+
+        .quick-link-icon.twitch {
+            background: var(--twitch);
+        }
+
+        .quick-link-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quick-link-text strong {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+        }
+
+        .quick-link-text span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            margin-top: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(196, 255, 14, 0.05) 0%, rgba(87, 66, 245, 0.05) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(196, 255, 14, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-icon.discord {
+            color: var(--discord);
+        }
+
+        .stat-icon.youtube {
+            color: var(--youtube);
+        }
+
+        .stat-icon.twitter {
+            color: var(--twitter);
+        }
+
+        .stat-icon.twitch {
+            color: var(--twitch);
+        }
+
+        .stat-value {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Edit Mode */
+        .edit-mode [contenteditable="true"] {
+            outline: 2px dashed var(--primary);
+            outline-offset: 2px;
+            background: rgba(196, 255, 14, 0.05);
+            border-radius: 4px;
+            min-width: 30px;
+            padding: 2px 4px;
+        }
+
+        .edit-mode [contenteditable="true"]:focus {
+            outline: 2px solid var(--primary);
+            background: rgba(196, 255, 14, 0.15);
+        }
+
+        /* Edit Toolbar */
+        .edit-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .edit-toolbar.active {
+            display: flex;
+        }
+
+        .toolbar-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .toolbar-btn:hover {
+            background: #333;
+        }
+
+        .toolbar-btn.primary {
+            background: var(--primary);
+            color: #000;
+            border: none;
+        }
+
+        .toolbar-btn.primary:hover {
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .toolbar-btn.danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        .toolbar-btn.danger:hover {
+            background: #c82333;
+        }
+
+        /* Export Modal */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal.active {
+            display: flex;
+        }
+
+        .export-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 700px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .export-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
+            color: #e0e0e0;
+            border: 2px solid var(--border);
+            font-family: 'Outfit', 'Consolas', monospace;
+            font-size: 0.85rem;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            resize: none;
+            line-height: 1.5;
+            transition: 0.3s;
+        }
+
+        .export-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(196, 255, 14, 0.15);
+            outline: none;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Live Indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 0, 0, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #ff4444;
+            margin-left: 10px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: livePulse 1.5s infinite;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN MODAL -->
+    <div class="login-overlay" id="loginOverlay">
+        <span class="login-close" onclick="closeLogin()">&times;</span>
+        <div class="login-box">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
+            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" class="login-input" placeholder="Şifre">
+            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
+            <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
+        </div>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div class="export-modal" id="exportModal">
+        <div class="export-box">
+            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
+            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın (CTRL+A sonra CTRL+C)</p>
+            <textarea id="exportCode" class="export-textarea" readonly></textarea>
+            <div class="export-actions">
+                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
+                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT TOOLBAR -->
+    <div class="edit-toolbar" id="editToolbar">
+        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
+        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="special-container" id="mainContainer">
+        <button class="edit-btn" id="editBtn" onclick="openLogin()">
+            <i class="fas fa-edit"></i> DÜZENLE
+        </button>
+
+        <div class="header-banner">
+            <h1>SOSYAL MEDYA</h1>
+            <p class="header-subtitle">Tribe League ile tüm platformlarda bağlantıda kalın!</p>
+        </div>
+
+        <!-- Main Platform Cards -->
+        <div class="social-grid">
+            <!-- Discord Card -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <div class="platform-icon discord">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div class="platform-info">
+                        <h3>Discord Sunucusu</h3>
+                        <p>Topluluğumuza katılın, sohbet edin!</p>
+                    </div>
+                </div>
+                <div class="platform-content">
+                    <div class="discord-invite-card">
+                        <div class="discord-logo">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h3 class="discord-title">TRIBE LEAGUE</h3>
+                        <p class="discord-desc">Türkiye'nin en büyük RP futbol topluluğuna katıl!</p>
+                        <div class="discord-stats"
+                            style="display: flex; gap: 30px; margin: 20px 0; justify-content: center;">
+                            <div style="text-align: center;">
+                                <div style="font-family: var(--font-head); font-size: 2rem; color: var(--primary);"
+                                    contenteditable="true">1,250</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">Üye</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-family: var(--font-head); font-size: 2rem; color: #43b581;">●</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">Çevrimiçi</div>
+                            </div>
+                        </div>
+                        <a href="https://discord.gg/tribeleague" target="_blank" class="discord-join-btn">
+                            <i class="fab fa-discord"></i> Sunucuya Katıl
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- YouTube Card -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <div class="platform-icon youtube">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="platform-info">
+                        <h3>YouTube
+                            <span class="live-indicator">
+                                <span class="live-dot"></span>
+                                CANLI YAYINLAR
+                            </span>
+                        </h3>
+                        <p>Maçları canlı izleyin!</p>
+                    </div>
+                </div>
+                <div class="platform-content">
+                    <div class="youtube-wrapper">
+                        <iframe class="youtube-embed"
+                            src="https://www.youtube.com/embed/live_stream?channel=UC_CHANNEL_ID" title="YouTube Live"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <a href="https://www.youtube.com/@TribeLeague1/streams" target="_blank"
+                        class="youtube-channel-link">
+                        <i class="fab fa-youtube"></i> Tüm Yayınlar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links-section">
+            <h2 class="section-title"><i class="fas fa-link"></i> Hızlı Bağlantılar</h2>
+            <div class="quick-links-grid">
+                <a href="https://discord.gg/tribeleague" target="_blank" class="quick-link-card">
+                    <div class="quick-link-icon discord"><i class="fab fa-discord"></i></div>
+                    <div class="quick-link-text">
+                        <strong>Discord</strong>
+                        <span>discord.gg/tribeleague</span>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/@TribeLeague1" target="_blank" class="quick-link-card">
+                    <div class="quick-link-icon youtube"><i class="fab fa-youtube"></i></div>
+                    <div class="quick-link-text">
+                        <strong>YouTube</strong>
+                        <span>@TribeLeague1</span>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/@TribeLeague1/streams" target="_blank" class="quick-link-card">
+                    <div class="quick-link-icon youtube"><i class="fas fa-broadcast-tower"></i></div>
+                    <div class="quick-link-text">
+                        <strong>Canlı Yayınlar</strong>
+                        <span>YouTube Streams</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Topluluk İstatistikleri</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon discord"><i class="fab fa-discord"></i></div>
+                    <div class="stat-value" contenteditable="true">1,250</div>
+                    <div class="stat-label">Discord Üyesi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon youtube"><i class="fab fa-youtube"></i></div>
+                    <div class="stat-value" contenteditable="true">500</div>
+                    <div class="stat-label">YouTube Abonesi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon youtube"><i class="fas fa-eye"></i></div>
+                    <div class="stat-value" contenteditable="true">10K+</div>
+                    <div class="stat-label">Toplam İzlenme</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: var(--primary);"><i class="fas fa-futbol"></i></div>
+                    <div class="stat-value" contenteditable="true">16</div>
+                    <div class="stat-label">Sezon</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Encoded credentials (same as other pages)
+        const validUsers = [
+            { u: atob('YWRtaW4='), p: atob('dHJpYmUyMDI0') },
+            { u: atob('bW9k'), p: atob('bGVhZ3VlMTIz') }
+        ];
+
+        let isEditMode = false;
+
+        function openLogin() {
+            document.getElementById('loginOverlay').classList.add('active');
+            document.getElementById('username').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function tryLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            const isValid = validUsers.some(v => v.u === user && v.p === pass);
+
+            if (isValid) {
+                closeLogin();
+                enterEditMode();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // Enter on password field
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') tryLogin();
+        });
+
+        function enterEditMode() {
+            isEditMode = true;
+            document.getElementById('mainContainer').classList.add('edit-mode');
+            document.getElementById('editToolbar').classList.add('active');
+            document.getElementById('editBtn').style.display = 'none';
+
+            // Enable contenteditable
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.setAttribute('contenteditable', 'true');
+            });
+        }
+
+        function exitEditMode() {
+            isEditMode = false;
+            document.getElementById('mainContainer').classList.remove('edit-mode');
+            document.getElementById('editToolbar').classList.remove('active');
+            document.getElementById('editBtn').style.display = 'flex';
+        }
+
+        function exportHTML() {
+            // Clone the main container
+            const container = document.getElementById('mainContainer');
+            const clone = container.cloneNode(true);
+
+            // Remove edit-mode class
+            clone.classList.remove('edit-mode');
+
+            // Reset contenteditable to false for display
+            clone.querySelectorAll('[contenteditable]').forEach(el => {
+                el.setAttribute('contenteditable', 'false');
+            });
+
+            // Show edit button in export
+            const editBtn = clone.querySelector('.edit-btn');
+            if (editBtn) editBtn.style.display = 'flex';
+
+            // Get current page HTML
+            const fullHTML = document.documentElement.outerHTML;
+
+            // Create clean HTML by parsing and rebuilding
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(fullHTML, 'text/html');
+
+            // Remove edit-mode class from body elements
+            doc.querySelector('#mainContainer')?.classList.remove('edit-mode');
+
+            // Reset contenteditable
+            doc.querySelectorAll('[contenteditable]').forEach(el => {
+                el.setAttribute('contenteditable', 'false');
+            });
+
+            // Hide modals and toolbar
+            const loginOverlay = doc.querySelector('#loginOverlay');
+            if (loginOverlay) loginOverlay.classList.remove('active');
+
+            const editToolbar = doc.querySelector('#editToolbar');
+            if (editToolbar) editToolbar.classList.remove('active');
+
+            const exportModal = doc.querySelector('#exportModal');
+            if (exportModal) exportModal.classList.remove('active');
+
+            // Show edit button
+            const expEditBtn = doc.querySelector('#editBtn');
+            if (expEditBtn) expEditBtn.style.display = 'flex';
+
+            // Get final HTML
+            const finalHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+            // Show export modal
+            document.getElementById('exportCode').value = finalHTML;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExport() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function copyCode() {
+            const textarea = document.getElementById('exportCode');
+            textarea.select();
+            document.execCommand('copy');
+
+            // Visual feedback
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        }
+
+        // Prevent links from navigating in edit mode when clicking on editable content
+        document.querySelectorAll('.quick-link-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (isEditMode && e.target.hasAttribute('contenteditable')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

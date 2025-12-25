@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziraat Türkiye Kupası Kura Çekimi</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #050508;
+            --bg-card: #0d0d12;
+            --bg-card-alt: #12121a;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.5);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --red: #e63946;
+            --blue: #4361ee;
+            --purple: #7209b7;
+            --text-main: #ffffff;
+            --text-muted: #6b6b78;
+            --border: rgba(255, 255, 255, 0.06);
+            --glass: rgba(255, 255, 255, 0.03);
+            --radius: 20px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(196, 255, 14, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(114, 9, 183, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(67, 97, 238, 0.05) 0%, transparent 60%);
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-particle 8s infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(1);
+            }
+        }
+
+        .main-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 200px;
+            background: radial-gradient(ellipse, rgba(196, 255, 14, 0.15) 0%, transparent 70%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .trophy-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .trophy-icon {
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 30%, var(--gold) 60%, #b8860b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px var(--gold-glow));
+            animation: trophy-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes trophy-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px var(--gold-glow));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 50px var(--gold));
+            }
+        }
+
+        .trophy-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            animation: ring-rotate 10s linear infinite;
+        }
+
+        .trophy-ring::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        @keyframes ring-rotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .main-title {
+            font-family: var(--font-head);
+            font-size: 4.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px var(--primary-glow);
+        }
+
+        .sub-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            letter-spacing: 15px;
+            opacity: 0.9;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .teams-pool {
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-alt) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            backdrop-filter: blur(20px);
+        }
+
+        .pool-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pool-title {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-count {
+            background: rgba(196, 255, 14, 0.15);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .teams-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        .teams-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .teams-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .team-item:hover {
+            background: rgba(196, 255, 14, 0.05);
+            border-color: rgba(196, 255, 14, 0.2);
+            transform: translateX(5px);
+        }
+
+        .team-item.drawn {
+            opacity: 0.3;
+            pointer-events: none;
+            text-decoration: line-through;
+        }
+
+        .team-item.drawing {
+            animation: team-pulse 0.5s ease infinite;
+            background: rgba(196, 255, 14, 0.2);
+            border-color: var(--primary);
+        }
+
+        @keyframes team-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(196, 255, 14, 0);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 20px var(--primary-glow);
+            }
+        }
+
+        .team-logo {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+        }
+
+        .team-name-pool {
+            font-weight: 500;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .team-number {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            min-width: 25px;
+        }
+
+        .draw-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .draw-machine {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .machine-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(196, 255, 14, 0.3);
+            border-radius: 50%;
+            animation: outer-ring-spin 20s linear infinite;
+        }
+
+        .machine-outer::before,
+        .machine-outer::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .machine-outer::before {
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .machine-outer::after {
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes outer-ring-spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .machine-inner {
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: inner-ring-spin 15s linear infinite reverse;
+        }
+
+        @keyframes inner-ring-spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .draw-ball {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--bg-card-alt) 0%, var(--bg-card) 100%);
+            border: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow:
+                0 0 40px rgba(0, 0, 0, 0.5),
+                inset 0 -20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 20px 40px rgba(255, 255, 255, 0.05);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .draw-ball.spinning {
+            animation: ball-spin 0.1s linear infinite;
+        }
+
+        @keyframes ball-spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .draw-ball.revealed {
+            animation: ball-reveal 0.8s ease forwards;
+            background: linear-gradient(135deg, rgba(196, 255, 14, 0.2) 0%, var(--bg-card) 100%);
+            border-color: var(--primary);
+            box-shadow:
+                0 0 60px var(--primary-glow),
+                inset 0 -20px 40px rgba(196, 255, 14, 0.1);
+        }
+
+        @keyframes ball-reveal {
+            0% {
+                transform: scale(0.8) rotate(720deg);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1) rotate(360deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .ball-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            filter: drop-shadow(0 0 15px rgba(196, 255, 14, 0.5));
+        }
+
+        .draw-ball.spinning .ball-logo {
+            opacity: 1;
+            animation: logo-cycle 0.15s ease infinite;
+        }
+
+        @keyframes logo-cycle {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 15px rgba(196, 255, 14, 0.5));
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 25px rgba(196, 255, 14, 0.8));
+            }
+        }
+
+        .draw-ball.revealed .ball-logo {
+            opacity: 1;
+            animation: logo-reveal 0.6s ease forwards;
+        }
+
+        @keyframes logo-reveal {
+            0% {
+                transform: scale(0.5) rotate(180deg);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .ball-text {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--primary);
+            text-align: center;
+            max-width: 140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .draw-ball.revealed .ball-text {
+            opacity: 1;
+            animation: text-fade-in 0.5s ease 0.3s forwards;
+        }
+
+        @keyframes text-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ball-placeholder {
+            font-size: 3rem;
+            color: var(--text-muted);
+            animation: placeholder-pulse 2s ease infinite;
+        }
+
+        @keyframes placeholder-pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .draw-ball.spinning .ball-placeholder,
+        .draw-ball.revealed .ball-placeholder {
+            display: none;
+        }
+
+        .draw-button {
+            position: relative;
+            padding: 20px 60px;
+            font-family: var(--font-head);
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #000;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px var(--primary-glow);
+        }
+
+        .draw-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px var(--primary-glow);
+        }
+
+        .draw-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .draw-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .draw-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .draw-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .button-icon {
+            margin-right: 10px;
+        }
+
+        .status-display {
+            text-align: center;
+            padding: 15px 30px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            min-width: 300px;
+        }
+
+        .status-text {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .status-text.active {
+            color: var(--primary);
+            animation: status-pulse 1s ease infinite;
+        }
+
+        @keyframes status-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .matches-panel {
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-alt) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            backdrop-filter: blur(20px);
+        }
+
+        .matches-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .matches-title {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 550px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) rgba(255, 255, 255, 0.05);
+        }
+
+        .matches-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .matches-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .matches-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary) 0%, #a8e600 100%);
+            border-radius: 3px;
+        }
+
+        .matches-list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .match-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 15px;
+            animation: match-appear 0.5s ease;
+        }
+
+        @keyframes match-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .match-number {
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            color: #000;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        .matches-counter {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(196, 255, 14, 0.05);
+            border: 1px solid rgba(196, 255, 14, 0.1);
+            border-radius: 10px;
+        }
+
+        .counter-text {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .counter-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+
+        .match-teams-drawn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .match-team {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .match-team:last-child {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .match-team-logo {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .match-team-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .match-vs {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: var(--gold);
+            padding: 4px 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.danger {
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
+        .control-btn.danger:hover {
+            background: rgba(220, 53, 69, 0.2);
+            border-color: var(--red);
+        }
+
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .celebration-overlay.active {
+            display: block;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100vh) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 12px 20px;
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 1400px) {
+            .content-grid {
+                grid-template-columns: 300px 1fr 300px;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .teams-pool,
+            .matches-panel {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+                letter-spacing: 5px;
+            }
+
+            .sub-title {
+                font-size: 1.3rem;
+                letter-spacing: 8px;
+            }
+
+            .draw-machine {
+                width: 250px;
+                height: 250px;
+            }
+
+            .draw-ball {
+                width: 140px;
+                height: 140px;
+            }
+        }
+
+        /* === CINEMATIC INTRO OVERLAY === */
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 5000;
+            transition: opacity 0.5s ease;
+        }
+
+        .intro-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-trophy {
+            font-size: 8rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 30%, var(--gold) 60%, #b8860b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: intro-trophy-glow 2s ease-in-out infinite, intro-trophy-bounce 1s ease-out;
+            filter: drop-shadow(0 0 50px var(--gold-glow));
+        }
+
+        @keyframes intro-trophy-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 50px var(--gold-glow));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 80px var(--gold));
+            }
+        }
+
+        @keyframes intro-trophy-bounce {
+            0% {
+                transform: scale(0) rotate(-180deg);
+            }
+
+            60% {
+                transform: scale(1.3) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .intro-title {
+            font-family: var(--font-head);
+            font-size: 5rem;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            margin-top: 30px;
+            opacity: 0;
+            animation: intro-title-reveal 1s ease-out 0.5s forwards;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes intro-title-reveal {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .intro-subtitle {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--primary);
+            letter-spacing: 20px;
+            opacity: 0;
+            animation: intro-title-reveal 1s ease-out 1s forwards;
+        }
+
+        .intro-start-btn {
+            margin-top: 50px;
+            padding: 20px 60px;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: #000;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            opacity: 0;
+            animation: intro-title-reveal 1s ease-out 1.5s forwards;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 40px var(--primary-glow);
+        }
+
+        .intro-start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px var(--primary-glow);
+        }
+
+        /* === POT SYSTEM === */
+        .pot-indicator {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-family: var(--font-head);
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .pot-1 {
+            background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
+            color: #000;
+        }
+
+        .pot-2 {
+            background: linear-gradient(135deg, #c0c0c0 0%, #808080 100%);
+            color: #000;
+        }
+
+        .pool-pot-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .pot-label {
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+        }
+
+        .pot-label.pot-1-label {
+            color: var(--gold);
+        }
+
+        .pot-label.pot-2-label {
+            color: #c0c0c0;
+        }
+
+        /* === MATCH NOTES === */
+        .match-note {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(196, 255, 14, 0.1);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .match-note i {
+            opacity: 0.7;
+        }
+
+        .note-input-container {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .edit-mode .note-input-container {
+            display: block;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .note-input:focus {
+            border-color: var(--primary);
+        }
+
+        .note-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* === COUNTDOWN OVERLAY === */
+        .countdown-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .countdown-overlay.active {
+            display: flex;
+        }
+
+        .countdown-number {
+            font-family: var(--font-head);
+            font-size: 15rem;
+            color: var(--primary);
+            text-shadow: 0 0 100px var(--primary-glow),
+                0 0 200px var(--primary-glow);
+            animation: countdown-pulse 1s ease-in-out;
+        }
+
+        @keyframes countdown-pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            30% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* === SAVE CODE MODAL === */
+        .save-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+
+        .save-modal.active {
+            display: flex;
+        }
+
+        .save-card {
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 0 60px var(--primary-glow);
+        }
+
+        .save-header {
+            background: var(--primary);
+            color: #000;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .save-header-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .save-header-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .save-body {
+            padding: 25px;
+        }
+
+        .save-code-box {
+            background: #000;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .save-code-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .save-code-value {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: var(--primary);
+            word-break: break-all;
+            background: rgba(196, 255, 14, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .save-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .save-btn-copy {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .save-btn-close {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: #fff;
+        }
+
+        /* === LOAD CODE SECTION === */
+        .load-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .load-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .load-input:focus {
+            border-color: var(--primary);
+        }
+
+        .load-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* === BIG 4 SPECIAL EFFECT === */
+        .big4-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            flex-direction: column;
+        }
+
+        .big4-overlay.active {
+            display: flex;
+        }
+
+        .big4-logo {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            animation: big4-zoom 1.5s ease forwards;
+            filter: drop-shadow(0 0 50px currentColor);
+        }
+
+        .big4-name {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            margin-top: 30px;
+            animation: big4-text 1s ease 0.5s forwards;
+            opacity: 0;
+        }
+
+        .big4-gs {
+            color: #ffd100;
+        }
+
+        .big4-fb {
+            color: #ffed00;
+        }
+
+        .big4-bjk {
+            color: #ffffff;
+        }
+
+        .big4-ts {
+            color: #8b0000;
+        }
+
+        @keyframes big4-zoom {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.3) rotate(10deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes big4-text {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === CONTROL BUTTONS ROW === */
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn.success {
+            border-color: rgba(196, 255, 14, 0.3);
+        }
+
+        .control-btn.success:hover {
+            background: rgba(196, 255, 14, 0.2);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cinematic Intro Overlay -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="intro-trophy"><i class="fas fa-trophy"></i></div>
+        <div class="intro-title">ZİRAAT TÜRKİYE KUPASI</div>
+        <div class="intro-subtitle">KURA ÇEKİMİ</div>
+        <button class="intro-start-btn" onclick="startIntro()">
+            <i class="fas fa-play"></i> KURAYA BAŞLA
+        </button>
+    </div>
+
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+    </div>
+
+    <div class="celebration-overlay" id="celebrationOverlay"></div>
+
+    <!-- Countdown Overlay -->
+    <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-number" id="countdownNumber">3</div>
+    </div>
+
+    <!-- Big 4 Special Effect Overlay -->
+    <div class="big4-overlay" id="big4Overlay">
+        <img class="big4-logo" id="big4Logo" src="">
+        <div class="big4-name" id="big4Name"></div>
+    </div>
+
+    <!-- Save Code Modal -->
+    <div class="save-modal" id="saveModal">
+        <div class="save-card">
+            <div class="save-header">
+                <div class="save-header-icon"><i class="fas fa-save"></i></div>
+                <h2 class="save-header-title">KURA KODU</h2>
+            </div>
+            <div class="save-body">
+                <div class="save-code-box">
+                    <div class="save-code-label">🔐 Şifreli Kura Kodu</div>
+                    <div class="save-code-value" id="saveCodeValue">---</div>
+                </div>
+                <div class="save-btns">
+                    <button class="save-btn save-btn-copy" onclick="copyCode()">
+                        <i class="fas fa-copy"></i> Kopyala
+                    </button>
+                    <button class="save-btn save-btn-close" onclick="closeSaveModal()">Kapat</button>
+                </div>
+
+                <div class="load-section">
+                    <div class="save-code-label" style="margin-bottom: 15px;">📂 Kayıtlı Kurayı Yükle</div>
+                    <textarea class="load-input" id="loadCodeInput" rows="3"
+                        placeholder="Kura kodunu buraya yapıştırın..."></textarea>
+                    <button class="load-btn" onclick="loadCode()"><i class="fas fa-upload"></i> YÜKLE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">
+        <i class="fas fa-expand"></i> TAM EKRAN
+    </button>
+
+    <div class="main-wrapper">
+
+        <div class="header">
+            <div class="header-glow"></div>
+            <div class="trophy-container">
+                <div class="trophy-ring"></div>
+                <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
+            </div>
+            <h1 class="main-title">ZİRAAT TÜRKİYE KUPASI</h1>
+            <div class="sub-title">KURA ÇEKİMİ</div>
+        </div>
+
+        <div class="content-grid">
+
+            <div class="teams-pool">
+                <div class="pool-header">
+                    <div class="pool-title">
+                        <i class="fas fa-users"></i> TAKIMLAR
+                    </div>
+                    <span class="team-count" id="teamCount">15 Takım</span>
+                </div>
+                <div class="teams-list" id="teamsList">
+                </div>
+            </div>
+
+            <div class="draw-area">
+
+                <div class="draw-machine">
+                    <div class="machine-outer"></div>
+                    <div class="machine-inner"></div>
+                    <div class="draw-ball" id="drawBall">
+                        <i class="fas fa-futbol ball-placeholder"></i>
+                        <img class="ball-logo" id="ballLogo" src="">
+                        <div class="ball-text" id="ballText"></div>
+                    </div>
+                </div>
+
+                <div class="status-display">
+                    <div class="status-text" id="statusText">KURA BAŞLATMAK İÇİN HAZIR</div>
+                </div>
+
+                <button class="draw-button" id="drawButton" onclick="startDraw()">
+                    <i class="fas fa-dice button-icon"></i> KURA ÇEK
+                </button>
+
+                <div class="controls-bar">
+                    <button class="control-btn success" onclick="openSaveModal()">
+                        <i class="fas fa-save"></i> KAYDET
+                    </button>
+                    <button class="control-btn danger" onclick="resetDraw()">
+                        <i class="fas fa-redo"></i> SIFIRLA
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="matches-panel">
+                <div class="matches-header">
+                    <div class="matches-title">
+                        <i class="fas fa-random"></i> EŞLEŞMELER
+                    </div>
+                </div>
+                <div class="matches-list" id="matchesList">
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <i class="fas fa-hourglass-start" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Kura çekimi bekleniyor...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  🏆 POT SİSTEMİ                                              ║
+        // ║  Pot 1 (Altın): 7 Takım | Pot 2 (Gümüş): 7 Takım            ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        const POT1 = [
+            { name: "Galatasaray", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png", pot: 1 },
+            { name: "Beşiktaş", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png", pot: 1 },
+            { name: "Trabzonspor", logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png", pot: 1 },
+            { name: "Başakşehir", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png", pot: 1 },
+            { name: "Alanyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png", pot: 1 },
+            { name: "Eyüpspor", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png", pot: 1 },
+            { name: "Gaziantep", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png", pot: 1 }
+        ];
+
+        const POT2 = [
+            { name: "Fenerbahçe", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png", pot: 2 },
+            { name: "Konyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png", pot: 2 },
+            { name: "Samsunspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png", pot: 2 },
+            { name: "Antalyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png", pot: 2 },
+            { name: "Kayserispor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png", pot: 2 },
+            { name: "Göztepe", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png", pot: 2 },
+            { name: "Gençlerbirliği FK", logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png", pot: 2 }
+        ];
+
+        const TEAMS = [...POT1, ...POT2];
+
+        let availableTeams = [...TEAMS];
+        let availablePot1 = [...POT1];
+        let availablePot2 = [...POT2];
+        let drawnTeams = [];
+        let matches = [];
+        let matchNotes = {}; // Store notes for each match
+        let currentPair = [];
+        let isDrawing = false;
+        let currentDrawPot = 1; // Alternate between pots
+
+        const teamsList = document.getElementById('teamsList');
+        const matchesList = document.getElementById('matchesList');
+        const drawBall = document.getElementById('drawBall');
+        const ballLogo = document.getElementById('ballLogo');
+        const ballText = document.getElementById('ballText');
+        const statusText = document.getElementById('statusText');
+        const drawButton = document.getElementById('drawButton');
+        const teamCount = document.getElementById('teamCount');
+
+        function init() {
+            renderTeamsList();
+            createParticles();
+        }
+
+        function startIntro() {
+            document.getElementById('introOverlay').classList.add('hidden');
+        }
+
+        function renderTeamsList() {
+            teamsList.innerHTML = '';
+
+            // Pot 1 Header
+            const pot1Header = document.createElement('div');
+            pot1Header.className = 'pool-pot-header';
+            pot1Header.innerHTML = `
+                <span class="pot-label pot-1-label"><i class="fas fa-crown"></i> POT 1</span>
+                <span class="pot-label pot-1-label">${availablePot1.length} Takım</span>
+            `;
+            teamsList.appendChild(pot1Header);
+
+            // Pot 1 Teams
+            POT1.forEach((team, index) => {
+                const isDrawn = drawnTeams.includes(team.name);
+                const div = document.createElement('div');
+                div.className = `team-item ${isDrawn ? 'drawn' : ''}`;
+                div.id = `team-${index}`;
+                div.innerHTML = `
+                    <span class="team-number">${index + 1}</span>
+                    <img class="team-logo" src="${team.logo}" alt="${team.name}">
+                    <span class="team-name-pool">${team.name}</span>
+                    <span class="pot-indicator pot-1">POT 1</span>
+                `;
+                teamsList.appendChild(div);
+            });
+
+            // Pot 2 Header
+            const pot2Header = document.createElement('div');
+            pot2Header.className = 'pool-pot-header';
+            pot2Header.style.marginTop = '15px';
+            pot2Header.innerHTML = `
+                <span class="pot-label pot-2-label"><i class="fas fa-shield-alt"></i> POT 2</span>
+                <span class="pot-label pot-2-label">${availablePot2.length} Takım</span>
+            `;
+            teamsList.appendChild(pot2Header);
+
+            // Pot 2 Teams
+            POT2.forEach((team, index) => {
+                const globalIndex = POT1.length + index;
+                const isDrawn = drawnTeams.includes(team.name);
+                const div = document.createElement('div');
+                div.className = `team-item ${isDrawn ? 'drawn' : ''}`;
+                div.id = `team-${globalIndex}`;
+                div.innerHTML = `
+                    <span class="team-number">${globalIndex + 1}</span>
+                    <img class="team-logo" src="${team.logo}" alt="${team.name}">
+                    <span class="team-name-pool">${team.name}</span>
+                    <span class="pot-indicator pot-2">POT 2</span>
+                `;
+                teamsList.appendChild(div);
+            });
+
+            teamCount.textContent = availablePot1.length + availablePot2.length;
+        }
+
+        function updateTeamCount() {
+            const remaining = availablePot1.length + availablePot2.length;
+            teamCount.textContent = `${remaining} Takım`;
+        }
+
+        function createParticles() {
+            const bgAnimation = document.querySelector('.bg-animation');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                const colors = ['#c4ff0e', '#ffd700', '#5742f5', '#7209b7'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                bgAnimation.appendChild(particle);
+            }
+        }
+
+        async function startDraw() {
+            if (isDrawing) return;
+
+            // Check if both pots still have teams
+            if (availablePot1.length === 0 || availablePot2.length === 0) {
+                statusText.textContent = 'KURA ÇEKİMİ TAMAMLANDI!';
+                statusText.classList.add('active');
+                drawButton.disabled = true;
+                drawButton.innerHTML = '<i class="fas fa-check button-icon"></i> TAMAMLANDI';
+                return;
+            }
+
+            isDrawing = true;
+            drawButton.disabled = true;
+
+            // Determine which pot to draw from
+            const currentPot = currentPair.length === 0 ? availablePot1 : availablePot2;
+            const potLabel = currentPair.length === 0 ? 'POT 1' : 'POT 2';
+
+            // Show countdown only for first team of pair
+            if (currentPair.length === 0) {
+                await showCountdown();
+                statusText.textContent = `${potLabel}'DEN EV SAHİBİ ÇEKİLİYOR...`;
+            } else {
+                statusText.textContent = `${potLabel}'DEN DEPLASMAN ÇEKİLİYOR...`;
+            }
+            statusText.classList.add('active');
+
+            drawBall.classList.add('spinning');
+            drawBall.classList.remove('revealed');
+            ballText.style.opacity = '0';
+
+            let cycles = 0;
+            const maxCycles = 20;
+            const cycleInterval = setInterval(() => {
+                const randomTeam = currentPot[Math.floor(Math.random() * currentPot.length)];
+                highlightTeam(randomTeam.name);
+                cycles++;
+
+                if (cycles >= maxCycles) {
+                    clearInterval(cycleInterval);
+                    revealTeamFromPot(currentPot);
+                }
+            }, 100);
+        }
+
+        function highlightTeam(teamName) {
+            document.querySelectorAll('.team-item').forEach(el => {
+                el.classList.remove('drawing');
+            });
+            const index = TEAMS.findIndex(t => t.name === teamName);
+            if (index >= 0) {
+                document.getElementById(`team-${index}`)?.classList.add('drawing');
+                // Show the team logo in the ball while cycling
+                ballLogo.src = TEAMS[index].logo;
+            }
+        }
+
+        async function revealTeamFromPot(pot) {
+            const randomIndex = Math.floor(Math.random() * pot.length);
+            const selectedTeam = pot[randomIndex];
+
+            // Remove from the correct pot
+            if (selectedTeam.pot === 1) {
+                const idx = availablePot1.findIndex(t => t.name === selectedTeam.name);
+                if (idx !== -1) availablePot1.splice(idx, 1);
+            } else {
+                const idx = availablePot2.findIndex(t => t.name === selectedTeam.name);
+                if (idx !== -1) availablePot2.splice(idx, 1);
+            }
+            drawnTeams.push(selectedTeam.name);
+
+            drawBall.classList.remove('spinning');
+            drawBall.classList.add('revealed');
+            ballLogo.src = selectedTeam.logo;
+            ballText.textContent = selectedTeam.name;
+
+            document.querySelectorAll('.team-item').forEach(el => {
+                el.classList.remove('drawing');
+            });
+
+            // Check if Big 4 team - show special effect
+            if (isBig4(selectedTeam.name)) {
+                await showBig4Effect(selectedTeam);
+            }
+
+            currentPair.push(selectedTeam);
+
+            if (currentPair.length === 2) {
+                setTimeout(() => {
+                    createMatch();
+                    currentPair = [];
+                    statusText.textContent = 'EŞLEŞME TAMAMLANDI!';
+                    statusText.classList.remove('active');
+                    triggerCelebration();
+
+                    setTimeout(() => {
+                        resetBall();
+                        isDrawing = false;
+                        drawButton.disabled = false;
+                        checkDrawComplete();
+                    }, 2000);
+                }, 1500);
+            } else {
+                statusText.textContent = `${selectedTeam.name} ÇEKİLDİ! (POT ${selectedTeam.pot})`;
+                setTimeout(() => {
+                    isDrawing = false;
+                    drawButton.disabled = false;
+                    statusText.textContent = 'POT 2\'DEN RAKİP ÇEKİLMEYİ BEKLİYOR...';
+                }, 1500);
+            }
+
+            renderTeamsList();
+        }
+
+        function createMatch() {
+            const matchNum = matches.length + 1;
+            matches.push({
+                home: currentPair[0],
+                away: currentPair[1],
+                note: ''
+            });
+
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match-item';
+            matchDiv.id = `match-${matchNum}`;
+            matchDiv.innerHTML = `
+                <div class="match-number">
+                    <i class="fas fa-futbol"></i> MAÇ ${matchNum}
+                </div>
+                <div class="match-teams-drawn">
+                    <div class="match-team">
+                        <img class="match-team-logo" src="${currentPair[0].logo}" alt="${currentPair[0].name}">
+                        <span class="match-team-name">${currentPair[0].name}</span>
+                        <span class="pot-indicator pot-${currentPair[0].pot}">P${currentPair[0].pot}</span>
+                    </div>
+                    <span class="match-vs">VS</span>
+                    <div class="match-team">
+                        <span class="pot-indicator pot-${currentPair[1].pot}">P${currentPair[1].pot}</span>
+                        <span class="match-team-name">${currentPair[1].name}</span>
+                        <img class="match-team-logo" src="${currentPair[1].logo}" alt="${currentPair[1].name}">
+                    </div>
+                </div>
+                <div class="match-note" id="note-display-${matchNum}" style="display: none;">
+                    <i class="fas fa-comment"></i>
+                    <span id="note-text-${matchNum}"></span>
+                </div>
+                <div class="note-input-container">
+                    <input type="text" class="note-input" placeholder="Not ekle (örn: Derbi!, Anadolu Klasiği)" 
+                           oninput="updateMatchNote(${matchNum}, this.value)">
+                </div>
+            `;
+
+            if (matches.length === 1) {
+                matchesList.innerHTML = '';
+            }
+
+            matchesList.appendChild(matchDiv);
+        }
+
+        function updateMatchNote(matchNum, note) {
+            if (matches[matchNum - 1]) {
+                matches[matchNum - 1].note = note;
+                matchNotes[matchNum] = note;
+
+                const noteDisplay = document.getElementById(`note-display-${matchNum}`);
+                const noteText = document.getElementById(`note-text-${matchNum}`);
+
+                if (note.trim()) {
+                    noteDisplay.style.display = 'flex';
+                    noteText.textContent = note;
+                } else {
+                    noteDisplay.style.display = 'none';
+                }
+            }
+        }
+
+        function resetBall() {
+            drawBall.classList.remove('spinning', 'revealed');
+            ballLogo.src = '';
+            ballLogo.style.opacity = '0';
+            ballText.textContent = '';
+            ballText.style.opacity = '0';
+        }
+
+        function checkDrawComplete() {
+            if (availablePot1.length === 0 && availablePot2.length === 0) {
+                statusText.textContent = 'KURA ÇEKİMİ TAMAMLANDI!';
+                statusText.classList.add('active');
+                drawButton.disabled = true;
+                drawButton.innerHTML = '<i class="fas fa-check button-icon"></i> TAMAMLANDI';
+            } else if (availablePot1.length > 0 && availablePot2.length > 0) {
+                statusText.textContent = 'BİR SONRAKİ KURA İÇİN HAZIR';
+                statusText.classList.remove('active');
+            }
+        }
+
+        function resetDraw() {
+            if (confirm('Tüm kura çekimi sıfırlanacak. Emin misiniz?')) {
+                availableTeams = [...TEAMS];
+                availablePot1 = [...POT1];
+                availablePot2 = [...POT2];
+                drawnTeams = [];
+                matches = [];
+                matchNotes = {};
+                currentPair = [];
+                isDrawing = false;
+
+                renderTeamsList();
+                matchesList.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <i class="fas fa-hourglass-start" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Kura çekimi bekleniyor...</p>
+                    </div>
+                `;
+                resetBall();
+
+                drawButton.disabled = false;
+                drawButton.innerHTML = '<i class="fas fa-dice button-icon"></i> KURA ÇEK';
+                statusText.textContent = 'KURA BAŞLATMAK İÇİN HAZIR';
+                statusText.classList.remove('active');
+            }
+        }
+
+        function triggerCelebration() {
+            const overlay = document.getElementById('celebrationOverlay');
+            overlay.classList.add('active');
+            overlay.innerHTML = '';
+
+            const colors = ['#c4ff0e', '#ffd700', '#ff4444', '#4444ff', '#ffffff'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confetti-fall ${Math.random() * 2 + 2}s ease forwards`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                overlay.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 3000);
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  🔐 ŞİFRELEME SİSTEMİ (Kura sonuçları için)                  ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        function encodeDrawResult(data) {
+            const json = JSON.stringify(data);
+            const encoded = btoa(unescape(encodeURIComponent(json)));
+            return encoded.split('').reverse().join('') + '_ZK';
+        }
+
+        function decodeDrawResult(code) {
+            try {
+                if (!code.endsWith('_ZK')) return null;
+                const cleaned = code.slice(0, -3).split('').reverse().join('');
+                const json = decodeURIComponent(escape(atob(cleaned)));
+                return JSON.parse(json);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  💾 KAYDET / YÜKLE                                           ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        function openSaveModal() {
+            const data = {
+                d: new Date().toLocaleString('tr-TR'),
+                t: TEAMS.map(t => t.name),
+                m: matches.map(m => ({
+                    h: m.home.name,
+                    a: m.away.name
+                })),
+                r: drawnTeams
+            };
+            const code = encodeDrawResult(data);
+            document.getElementById('saveCodeValue').textContent = code;
+            document.getElementById('saveModal').classList.add('active');
+        }
+
+        function closeSaveModal() {
+            document.getElementById('saveModal').classList.remove('active');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('saveCodeValue').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Kura kodu kopyalandı!');
+            });
+        }
+
+        function loadCode() {
+            const code = document.getElementById('loadCodeInput').value.trim();
+            if (!code) {
+                alert('Lütfen kura kodunu girin!');
+                return;
+            }
+
+            const data = decodeDrawResult(code);
+            if (!data) {
+                alert('Geçersiz veya bozuk kura kodu!');
+                return;
+            }
+
+            // Restore state
+            drawnTeams = data.r || [];
+            matches = data.m.map(m => ({
+                home: TEAMS.find(t => t.name === m.h) || { name: m.h, logo: '' },
+                away: TEAMS.find(t => t.name === m.a) || { name: m.a, logo: '' }
+            }));
+            availableTeams = TEAMS.filter(t => !drawnTeams.includes(t.name));
+            currentPair = [];
+            isDrawing = false;
+
+            // Re-render
+            renderTeamsList();
+            renderLoadedMatches();
+            resetBall();
+
+            drawButton.disabled = availableTeams.length === 0;
+            if (availableTeams.length === 0) {
+                drawButton.innerHTML = '<i class="fas fa-check button-icon"></i> TAMAMLANDI';
+                statusText.textContent = 'KURA ÇEKİMİ TAMAMLANDI!';
+                statusText.classList.add('active');
+            } else {
+                drawButton.innerHTML = '<i class="fas fa-dice button-icon"></i> KURA ÇEK';
+                statusText.textContent = 'KAYITLI KURA YÜKLENDİ';
+            }
+
+            closeSaveModal();
+            alert(`Kura yüklendi! (${data.d})`);
+        }
+
+        function renderLoadedMatches() {
+            if (matches.length === 0) {
+                matchesList.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <i class="fas fa-hourglass-start" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Kura çekimi bekleniyor...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            matchesList.innerHTML = '';
+            matches.forEach((m, idx) => {
+                const matchDiv = document.createElement('div');
+                matchDiv.className = 'match-item';
+                matchDiv.innerHTML = `
+                    <div class="match-number">
+                        <i class="fas fa-futbol"></i> MAÇ ${idx + 1}
+                    </div>
+                    <div class="match-teams-drawn">
+                        <div class="match-team">
+                            <img class="match-team-logo" src="${m.home.logo}" alt="${m.home.name}">
+                            <span class="match-team-name">${m.home.name}</span>
+                        </div>
+                        <span class="match-vs">VS</span>
+                        <div class="match-team">
+                            <span class="match-team-name">${m.away.name}</span>
+                            <img class="match-team-logo" src="${m.away.logo}" alt="${m.away.name}">
+                        </div>
+                    </div>
+                `;
+                matchesList.appendChild(matchDiv);
+            });
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  ⏱️ GERİ SAYIM ANİMASYONU                                    ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        async function showCountdown() {
+            const overlay = document.getElementById('countdownOverlay');
+            const numberEl = document.getElementById('countdownNumber');
+
+            overlay.classList.add('active');
+
+            for (let i = 3; i >= 1; i--) {
+                numberEl.textContent = i;
+                numberEl.style.animation = 'none';
+                numberEl.offsetHeight; // Reflow
+                numberEl.style.animation = 'countdown-pulse 1s ease-in-out';
+                await sleep(1000);
+            }
+
+            overlay.classList.remove('active');
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  🎭 BÜYÜK 4 ÖZEL EFEKTİ                                      ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        const BIG4_TEAMS = {
+            'Galatasaray': 'gs',
+            'Fenerbahçe': 'fb',
+            'Beşiktaş': 'bjk',
+            'Trabzonspor': 'ts'
+        };
+
+        async function showBig4Effect(team) {
+            const overlay = document.getElementById('big4Overlay');
+            const logoEl = document.getElementById('big4Logo');
+            const nameEl = document.getElementById('big4Name');
+
+            const teamClass = BIG4_TEAMS[team.name];
+            if (!teamClass) return;
+
+            logoEl.src = team.logo;
+            nameEl.textContent = team.name;
+            nameEl.className = `big4-name big4-${teamClass}`;
+
+            overlay.classList.add('active');
+
+            // Extra fireworks for Big 4
+            triggerFireworks();
+
+            await sleep(2500);
+            overlay.classList.remove('active');
+        }
+
+        function isBig4(teamName) {
+            return Object.keys(BIG4_TEAMS).includes(teamName);
+        }
+
+        function triggerFireworks() {
+            const overlay = document.getElementById('celebrationOverlay');
+            overlay.classList.add('active');
+            overlay.innerHTML = '';
+
+            const colors = ['#ffd700', '#ff4444', '#c4ff0e', '#4444ff', '#ffffff', '#ff00ff'];
+
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confetti-fall ${Math.random() * 2 + 1}s ease forwards`;
+                confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 15 + 10) + 'px';
+                overlay.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Maç - Tribe League</title>
+    <meta name="description" content="Tribe League Canlı Maç Takibi">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.9);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --gold: #ffd700;
+            --red: #ff4757;
+            --green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(196, 255, 14, 0.08) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 1000px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        /* Live Badge */
+        .live-badge {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: var(--red);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+        }
+
+        .live-badge.halftime {
+            background: var(--gold);
+            color: #000;
+            animation: none;
+        }
+
+        .live-badge.ended {
+            background: #555;
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Scoreboard */
+        .scoreboard {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(196, 255, 14, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scoreboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--gold));
+        }
+
+        .teams-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .team-box {
+            text-align: center;
+        }
+
+        .team-logo-big {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s;
+        }
+
+        .team-logo-big:hover {
+            transform: scale(1.1);
+        }
+
+        .team-name-big {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-num {
+            font-family: var(--font-head);
+            font-size: 6rem;
+            line-height: 1;
+            color: var(--primary);
+            text-shadow: 0 0 40px var(--primary-glow);
+            min-width: 80px;
+            transition: transform 0.3s;
+        }
+
+        .score-num.goal-animation {
+            animation: goalPop 0.5s ease;
+        }
+
+        @keyframes goalPop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+                color: #fff;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .score-separator {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            color: var(--text-muted);
+        }
+
+        /* Minute Display */
+        .minute-display {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .minute-num {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .minute-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Progress Bar */
+        .match-progress {
+            margin-top: 20px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .match-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            transition: width 1s linear;
+        }
+
+        /* Field Visualization */
+        .field-container {
+            margin: 30px 0;
+            background: linear-gradient(180deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .field-svg {
+            width: 100%;
+            height: 200px;
+        }
+
+        .ball-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transition: all 0.5s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Events Timeline */
+        .events-section {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .events-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .event-item.goal {
+            border-left-color: var(--green);
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .event-item.yellow-card {
+            border-left-color: var(--gold);
+        }
+
+        .event-item.red-card {
+            border-left-color: var(--red);
+        }
+
+        .event-item.substitution {
+            border-left-color: var(--accent);
+        }
+
+        .event-minute {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 50px;
+        }
+
+        .event-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .event-icon.goal {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .event-icon.yellow-card {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .event-icon.red-card {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .event-icon.substitution {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-player {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .event-team {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #000;
+            border: none;
+        }
+
+        .control-btn.primary:hover {
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+
+        .control-btn.danger {
+            background: var(--red);
+            border: none;
+        }
+
+        /* Goal Celebration Overlay */
+        .goal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .goal-overlay.active {
+            display: flex;
+        }
+
+        .goal-content {
+            text-align: center;
+            animation: goalZoom 0.6s ease;
+        }
+
+        @keyframes goalZoom {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .goal-text {
+            font-family: var(--font-head);
+            font-size: 8rem;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+        }
+
+        .goal-scorer {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                top: 100vh;
+                transform: rotate(720deg);
+            }
+        }
+
+        /* Match Selector */
+        .match-selector {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .selector-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .team-input-box {
+            text-align: center;
+        }
+
+        .team-label {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .team-select {
+            width: 100%;
+            background: #1a1a20;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .team-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .vs-text {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .teams-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .score-box {
+                justify-content: center;
+            }
+
+            .score-num {
+                font-size: 4rem;
+            }
+
+            .team-logo-big {
+                width: 70px;
+                height: 70px;
+            }
+
+            .team-name-big {
+                font-size: 1.5rem;
+            }
+
+            .goal-text {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GOAL CELEBRATION OVERLAY -->
+    <div class="goal-overlay" id="goalOverlay">
+        <div class="goal-content">
+            <div class="goal-text">GOOOL!</div>
+            <div class="goal-scorer" id="goalScorer"></div>
+        </div>
+    </div>
+
+    <div class="special-container">
+        <!-- Live Badge -->
+        <div class="live-badge" id="liveBadge">
+            <span class="live-dot"></span>
+            <span id="matchStatus">CANLI</span>
+        </div>
+
+        <!-- Match Selector -->
+        <div class="match-selector">
+            <h3 class="section-title"><i class="fas fa-futbol"></i> Maç Seçimi</h3>
+            <div class="selector-row">
+                <div class="team-input-box">
+                    <span class="team-label">EV SAHİBİ</span>
+                    <select class="team-select" id="homeTeamSelect" onchange="updateTeams()">
+                        <option value="Galatasaray">Galatasaray</option>
+                        <option value="Fenerbahçe">Fenerbahçe</option>
+                        <option value="Beşiktaş">Beşiktaş</option>
+                        <option value="Trabzonspor">Trabzonspor</option>
+                        <option value="Başakşehir">Başakşehir</option>
+                        <option value="Alanyaspor">Alanyaspor</option>
+                        <option value="Antalyaspor">Antalyaspor</option>
+                        <option value="Konyaspor">Konyaspor</option>
+                        <option value="Kayserispor">Kayserispor</option>
+                        <option value="Samsunspor">Samsunspor</option>
+                        <option value="Eyüpspor">Eyüpspor</option>
+                        <option value="Gaziantep">Gaziantep</option>
+                        <option value="Göztepe">Göztepe</option>
+                        <option value="Gençlerbirliği">Gençlerbirliği</option>
+                    </select>
+                </div>
+                <div class="vs-text">VS</div>
+                <div class="team-input-box">
+                    <span class="team-label">DEPLASMAN</span>
+                    <select class="team-select" id="awayTeamSelect" onchange="updateTeams()">
+                        <option value="Fenerbahçe">Fenerbahçe</option>
+                        <option value="Galatasaray">Galatasaray</option>
+                        <option value="Beşiktaş">Beşiktaş</option>
+                        <option value="Trabzonspor">Trabzonspor</option>
+                        <option value="Başakşehir">Başakşehir</option>
+                        <option value="Alanyaspor">Alanyaspor</option>
+                        <option value="Antalyaspor">Antalyaspor</option>
+                        <option value="Konyaspor">Konyaspor</option>
+                        <option value="Kayserispor">Kayserispor</option>
+                        <option value="Samsunspor">Samsunspor</option>
+                        <option value="Eyüpspor">Eyüpspor</option>
+                        <option value="Gaziantep">Gaziantep</option>
+                        <option value="Göztepe">Göztepe</option>
+                        <option value="Gençlerbirliği">Gençlerbirliği</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard">
+            <div class="teams-row">
+                <div class="team-box">
+                    <img id="homeTeamLogo"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png"
+                        class="team-logo-big">
+                    <div class="team-name-big" id="homeTeamName">Galatasaray</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-num" id="homeScore">0</div>
+                    <div class="score-separator">:</div>
+                    <div class="score-num" id="awayScore">0</div>
+                </div>
+                <div class="team-box">
+                    <img id="awayTeamLogo"
+                        src="https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png"
+                        class="team-logo-big">
+                    <div class="team-name-big" id="awayTeamName">Fenerbahçe</div>
+                </div>
+            </div>
+
+            <div class="minute-display">
+                <span class="minute-num" id="matchMinute">0'</span>
+                <span class="minute-label">DAKİKA</span>
+            </div>
+
+            <div class="match-progress">
+                <div class="match-progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Field Visualization -->
+        <div class="field-container">
+            <svg class="field-svg" viewBox="0 0 400 200">
+                <!-- Field -->
+                <rect x="5" y="5" width="390" height="190" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"
+                    rx="5" />
+                <!-- Center line -->
+                <line x1="200" y1="5" x2="200" y2="195" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <!-- Center circle -->
+                <circle cx="200" cy="100" r="30" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <circle cx="200" cy="100" r="3" fill="rgba(255,255,255,0.6)" />
+                <!-- Penalty areas -->
+                <rect x="5" y="50" width="50" height="100" fill="none" stroke="rgba(255,255,255,0.4)"
+                    stroke-width="2" />
+                <rect x="345" y="50" width="50" height="100" fill="none" stroke="rgba(255,255,255,0.4)"
+                    stroke-width="2" />
+                <!-- Goal areas -->
+                <rect x="5" y="70" width="20" height="60" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                <rect x="375" y="70" width="20" height="60" fill="none" stroke="rgba(255,255,255,0.4)"
+                    stroke-width="2" />
+            </svg>
+            <div class="ball-indicator" id="ballIndicator" style="left: 50%; top: 50%"></div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="control-panel">
+            <button class="control-btn primary" onclick="startMatch()" id="startBtn">
+                <i class="fas fa-play"></i> Maçı Başlat
+            </button>
+            <button class="control-btn" onclick="addGoal('home')">
+                <i class="fas fa-futbol"></i> Ev Gol
+            </button>
+            <button class="control-btn" onclick="addGoal('away')">
+                <i class="fas fa-futbol"></i> Dep. Gol
+            </button>
+            <button class="control-btn" onclick="addEvent('yellow')">
+                <i class="fas fa-square" style="color: #ffd700"></i> Sarı Kart
+            </button>
+            <button class="control-btn" onclick="addEvent('red')">
+                <i class="fas fa-square" style="color: #ff4757"></i> Kırmızı Kart
+            </button>
+            <button class="control-btn danger" onclick="resetMatch()">
+                <i class="fas fa-redo"></i> Sıfırla
+            </button>
+        </div>
+
+        <!-- Events Timeline -->
+        <div class="events-section">
+            <h3 class="section-title"><i class="fas fa-stream"></i> Maç Olayları</h3>
+            <div class="events-list" id="eventsList">
+                <div style="text-align: center; color: var(--text-muted); padding: 30px;">
+                    <i class="fas fa-futbol" style="font-size: 2rem; opacity: 0.3; margin-bottom: 10px;"></i>
+                    <p>Maç henüz başlamadı</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Team Logos
+        const TEAM_LOGOS = {
+            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
+            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
+            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
+            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
+            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
+            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
+            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
+            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
+            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
+            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
+            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
+            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
+            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
+            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
+        };
+
+        // Match State
+        let matchState = {
+            isRunning: false,
+            minute: 0,
+            homeScore: 0,
+            awayScore: 0,
+            homeTeam: 'Galatasaray',
+            awayTeam: 'Fenerbahçe',
+            events: [],
+            intervalId: null,
+            isHalftime: false,
+            isEnded: false
+        };
+
+        // Players for random events
+        const players = {
+            "Galatasaray": ["Icardi", "Mertens", "Ziyech", "Torreira", "Nelsson", "Muslera"],
+            "Fenerbahçe": ["Dzeko", "Tadic", "Fred", "Szymanski", "Djiku", "Livakovic"],
+            "Beşiktaş": ["Rashica", "Gedson", "Rafa Silva", "Saiss", "Topçu", "Günok"],
+            "Trabzonspor": ["Trezeguet", "Bardhi", "Bakasetas", "Elmali", "Uğurcan"],
+            "Başakşehir": ["Okaka", "Deniz Türüç", "Berkay", "Duarte"],
+            "default": ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"]
+        };
+
+        function getRandomPlayer(team) {
+            const teamPlayers = players[team] || players["default"];
+            return teamPlayers[Math.floor(Math.random() * teamPlayers.length)];
+        }
+
+        function updateTeams() {
+            const homeTeam = document.getElementById('homeTeamSelect').value;
+            const awayTeam = document.getElementById('awayTeamSelect').value;
+
+            matchState.homeTeam = homeTeam;
+            matchState.awayTeam = awayTeam;
+
+            document.getElementById('homeTeamName').textContent = homeTeam;
+            document.getElementById('awayTeamName').textContent = awayTeam;
+            document.getElementById('homeTeamLogo').src = TEAM_LOGOS[homeTeam] || '';
+            document.getElementById('awayTeamLogo').src = TEAM_LOGOS[awayTeam] || '';
+        }
+
+        function startMatch() {
+            if (matchState.isRunning) {
+                // Pause
+                matchState.isRunning = false;
+                clearInterval(matchState.intervalId);
+                document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Devam Et';
+                return;
+            }
+
+            if (matchState.isEnded) {
+                resetMatch();
+            }
+
+            matchState.isRunning = true;
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-pause"></i> Duraklat';
+
+            // Clear initial message
+            if (matchState.events.length === 0) {
+                document.getElementById('eventsList').innerHTML = '';
+                addEventToList(0, 'start', 'Maç Başladı!', '');
+            }
+
+            matchState.intervalId = setInterval(() => {
+                matchState.minute++;
+                updateDisplay();
+
+                // Halftime
+                if (matchState.minute === 45 && !matchState.isHalftime) {
+                    matchState.isHalftime = true;
+                    matchState.isRunning = false;
+                    clearInterval(matchState.intervalId);
+                    document.getElementById('liveBadge').classList.add('halftime');
+                    document.getElementById('matchStatus').textContent = 'DEVRE ARASI';
+                    document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> 2. Yarı';
+                    addEventToList(45, 'whistle', 'İlk Yarı Bitti', '');
+                }
+
+                // Full time
+                if (matchState.minute >= 90) {
+                    matchState.isEnded = true;
+                    matchState.isRunning = false;
+                    clearInterval(matchState.intervalId);
+                    document.getElementById('liveBadge').classList.remove('halftime');
+                    document.getElementById('liveBadge').classList.add('ended');
+                    document.getElementById('matchStatus').textContent = 'BİTTİ';
+                    document.getElementById('startBtn').innerHTML = '<i class="fas fa-redo"></i> Yeni Maç';
+                    addEventToList(90, 'whistle', 'Maç Bitti!', '');
+                }
+
+                // Random ball movement
+                moveBall();
+
+            }, 1000); // 1 second = 1 minute (for demo, adjust as needed)
+        }
+
+        function updateDisplay() {
+            document.getElementById('matchMinute').textContent = matchState.minute + "'";
+            document.getElementById('homeScore').textContent = matchState.homeScore;
+            document.getElementById('awayScore').textContent = matchState.awayScore;
+
+            const progress = (matchState.minute / 90) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function addGoal(team) {
+            const scorer = getRandomPlayer(team === 'home' ? matchState.homeTeam : matchState.awayTeam);
+            const teamName = team === 'home' ? matchState.homeTeam : matchState.awayTeam;
+
+            if (team === 'home') {
+                matchState.homeScore++;
+                document.getElementById('homeScore').classList.add('goal-animation');
+                setTimeout(() => document.getElementById('homeScore').classList.remove('goal-animation'), 500);
+            } else {
+                matchState.awayScore++;
+                document.getElementById('awayScore').classList.add('goal-animation');
+                setTimeout(() => document.getElementById('awayScore').classList.remove('goal-animation'), 500);
+            }
+
+            updateDisplay();
+            addEventToList(matchState.minute, 'goal', scorer, teamName);
+            showGoalCelebration(scorer);
+        }
+
+        function addEvent(type) {
+            const teams = [matchState.homeTeam, matchState.awayTeam];
+            const randomTeam = teams[Math.floor(Math.random() * 2)];
+            const player = getRandomPlayer(randomTeam);
+
+            if (type === 'yellow') {
+                addEventToList(matchState.minute, 'yellow-card', player + ' - Sarı Kart', randomTeam);
+            } else if (type === 'red') {
+                addEventToList(matchState.minute, 'red-card', player + ' - Kırmızı Kart', randomTeam);
+            }
+        }
+
+        function addEventToList(minute, type, text, team) {
+            const eventsList = document.getElementById('eventsList');
+
+            let iconClass = 'fas fa-info-circle';
+            let eventClass = '';
+
+            switch (type) {
+                case 'goal':
+                    iconClass = 'fas fa-futbol';
+                    eventClass = 'goal';
+                    break;
+                case 'yellow-card':
+                    iconClass = 'fas fa-square';
+                    eventClass = 'yellow-card';
+                    break;
+                case 'red-card':
+                    iconClass = 'fas fa-square';
+                    eventClass = 'red-card';
+                    break;
+                case 'substitution':
+                    iconClass = 'fas fa-exchange-alt';
+                    eventClass = 'substitution';
+                    break;
+                case 'whistle':
+                    iconClass = 'fas fa-whistle';
+                    break;
+                case 'start':
+                    iconClass = 'fas fa-flag';
+                    break;
+            }
+
+            const eventHtml = `
+                <div class="event-item ${eventClass}">
+                    <span class="event-minute">${minute}'</span>
+                    <div class="event-icon ${eventClass}">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-player">${text}</div>
+                        ${team ? `<div class="event-team">${team}</div>` : ''}
+                    </div>
+                </div>
+            `;
+
+            eventsList.insertAdjacentHTML('afterbegin', eventHtml);
+            matchState.events.push({ minute, type, text, team });
+        }
+
+        function showGoalCelebration(scorer) {
+            const overlay = document.getElementById('goalOverlay');
+            document.getElementById('goalScorer').textContent = scorer;
+            overlay.classList.add('active');
+
+            // Confetti
+            createConfetti();
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 2500);
+        }
+
+        function createConfetti() {
+            const colors = ['#c4ff0e', '#00d4ff', '#ffd700', '#ff4757', '#2ecc71'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        function moveBall() {
+            const ball = document.getElementById('ballIndicator');
+            const x = 10 + Math.random() * 80;
+            const y = 10 + Math.random() * 80;
+            ball.style.left = x + '%';
+            ball.style.top = y + '%';
+        }
+
+        function resetMatch() {
+            matchState = {
+                isRunning: false,
+                minute: 0,
+                homeScore: 0,
+                awayScore: 0,
+                homeTeam: document.getElementById('homeTeamSelect').value,
+                awayTeam: document.getElementById('awayTeamSelect').value,
+                events: [],
+                intervalId: null,
+                isHalftime: false,
+                isEnded: false
+            };
+
+            clearInterval(matchState.intervalId);
+            updateDisplay();
+
+            document.getElementById('liveBadge').classList.remove('halftime', 'ended');
+            document.getElementById('matchStatus').textContent = 'CANLI';
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Maçı Başlat';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('eventsList').innerHTML = `
+                <div style="text-align: center; color: var(--text-muted); padding: 30px;">
+                    <i class="fas fa-futbol" style="font-size: 2rem; opacity: 0.3; margin-bottom: 10px;"></i>
+                    <p>Maç henüz başlamadı</p>
+                </div>
+            `;
+        }
+
+        // Initialize
+        updateTeams();
+    </script>
+
+</body>
+
+</html>

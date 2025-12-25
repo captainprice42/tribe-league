@@ -1,0 +1,582 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puan Durumu - Tribe League</title>
+    <meta name="description" content="Tribe League puan durumu tablosu">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .header-banner {
+            text-align: center;
+            background: var(--header-bg, linear-gradient(135deg, #222 0%, #111 100%));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            color: var(--header-text, var(--primary));
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Table Styles */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .standings-table th:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .standings-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table tbody tr:hover {
+            background: rgba(196, 255, 14, 0.05);
+        }
+
+        .rank-cell {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            font-weight: 700;
+            width: 40px;
+        }
+
+        .rank-1 {
+            color: #ffd700;
+        }
+
+        .rank-2 {
+            color: #c0c0c0;
+        }
+
+        .rank-3 {
+            color: #cd7f32;
+        }
+
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-logo-sm {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .team-name-cell {
+            font-weight: 600;
+        }
+
+        .points-box {
+            background: var(--primary);
+            color: var(--text-on-primary, #000);
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 40px;
+        }
+
+        .form-container {
+            display: flex;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .form-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .form-G {
+            background: #28a745;
+        }
+
+        .form-B {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .form-M {
+            background: #dc3545;
+        }
+
+        .av-positive {
+            color: #28a745;
+        }
+
+        .av-negative {
+            color: #dc3545;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .standings-table th,
+            .standings-table td {
+                padding: 8px 5px;
+                font-size: 0.85rem;
+            }
+
+            .team-logo-sm {
+                width: 24px;
+                height: 24px;
+            }
+
+            .form-box {
+                width: 18px;
+                height: 18px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="special-container">
+        <div class="header-banner">
+            <h1><i class="fas fa-trophy"></i> PUAN DURUMU</h1>
+        </div>
+
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>TAKIM</th>
+                    <th>O</th>
+                    <th>G</th>
+                    <th>B</th>
+                    <th>M</th>
+                    <th>A</th>
+                    <th>Y</th>
+                    <th>AV</th>
+                    <th>P</th>
+                    <th>FORM</th>
+                </tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  📋 VERİ GİRİŞİ - Maç Sonuçları                             ║
+        // ╚══════════════════════════════════════════════════════════════╝
+
+        const macsonuclari = [
+            // Hafta 1
+            "Konyaspor 0 3 Beşiktaş",
+            "Samsunspor 0 0 Trabzonspor",
+            "Alanyaspor 1 2 Antalyaspor",
+            "Kayserispor 0 2 Fenerbahçe",
+            "Göztepe 0 1 Galatasaray",
+            "Başakşehir 0 1 Gaziantep",
+            "Gençlerbirliği 0 1 Eyüpspor",
+            // Hafta 2
+            "Eyüpspor 0 1 Alanyaspor",
+            "Trabzonspor 0 0 Konyaspor",
+            "Gençlerbirliği 0 1 Başakşehir",
+            "Gaziantep 1 1 Kayserispor",
+            "Galatasaray 1 1 Beşiktaş",
+            "Antalyaspor 1 0 Göztepe",
+            "Fenerbahçe 0 1 Samsunspor",
+            // Hafta 3
+            "Göztepe 0 1 Eyüpspor",
+            "Gençlerbirliği 0 0 Alanyaspor",
+            "Beşiktaş 1 1 Antalyaspor",
+            "Galatasaray 1 2 Trabzonspor",
+            "Gaziantep 1 0 Samsunspor",
+            "Konyaspor 0 2 Fenerbahçe",
+            "Başakşehir 0 0 Kayserispor",
+            // Hafta 4
+            "Eyüpspor 0 1 Beşiktaş",
+            "Gaziantep 1 0 Konyaspor",
+            "Antalyaspor 0 0 Trabzonspor",
+            "Gençlerbirliği 2 1 Göztepe",
+            "Kayserispor 0 0 Samsunspor",
+            "Göztepe 1 0 Alanyaspor",
+            "Konyaspor 0 0 Kayserispor",
+            // Hafta 5
+            "Trabzonspor 1 2 Eyüpspor",
+            "Fenerbahçe 0 4 Galatasaray",
+            "Alanyaspor 1 2 Başakşehir",
+            "Beşiktaş 3 1 Gençlerbirliği",
+            "Antalyaspor 0 0 Fenerbahçe",
+            "Galatasaray 0 0 Gaziantep",
+            // Hafta 6
+            "Başakşehir 0 0 Samsunspor",
+            "Beşiktaş 0 0 Alanyaspor",
+            "Gençlerbirliği 0 2 Trabzonspor",
+            "Gaziantep 1 1 Antalyaspor",
+            "Eyüpspor 2 1 Fenerbahçe",
+            "Kayserispor 1 2 Galatasaray",
+            "Samsunspor 2 1 Konyaspor",
+            // Hafta 7
+            "Trabzonspor 3 0 Alanyaspor",
+            "Antalyaspor 1 1 Kayserispor",
+            "Eyüpspor 0 1 Gaziantep",
+            "Beşiktaş 0 0 Göztepe",
+            "Fenerbahçe 1 0 Gençlerbirliği",
+            "Başakşehir 2 0 Konyaspor",
+            "Galatasaray 2 0 Samsunspor",
+            // Hafta 8
+            "Göztepe 2 1 Trabzonspor",
+            "Gençlerbirliği 0 2 Gaziantep",
+            "Galatasaray 1 1 Konyaspor",
+            "Antalyaspor 0 0 Samsunspor",
+            "Alanyaspor 0 2 Fenerbahçe",
+            "Beşiktaş 1 0 Başakşehir",
+            "Göztepe 0 1 Eyüpspor",
+            // Hafta 9
+            "Gençlerbirliği 4 0 Kayserispor",
+            "Gaziantep 0 0 Alanyaspor",
+            "Trabzonspor 1 0 Beşiktaş",
+            "Eyüpspor 0 2 Samsunspor",
+            "Başakşehir 2 0 Galatasaray",
+            "Konyaspor 0 0 Antalyaspor",
+            "Fenerbahçe 0 0 Göztepe",
+        ];
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  🏆 TAKIM LOGOLARI                                          ║
+        // ╚══════════════════════════════════════════════════════════════╝
+        const TEAM_LOGOS = {
+            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
+            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
+            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
+            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
+            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
+            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
+            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
+            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
+            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
+            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
+            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
+            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
+            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ey%C3%BCpspor_Logosu.png",
+            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
+        };
+
+        function getLogoUrl(teamName) {
+            return TEAM_LOGOS[teamName] || "https://via.placeholder.com/32?text=?";
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  🔧 HESAPLAMA FONKSİYONLARI                                 ║
+        // ╚══════════════════════════════════════════════════════════════╝
+
+        // Parse result: "Galatasaray 2 1 Fenerbahçe" → object
+        function parseResult(resultStr) {
+            const regex = /^(.+?)\s+(\d+)\s+(\d+)\s+(.+)$/;
+            const match = resultStr.match(regex);
+            if (!match) return null;
+
+            return {
+                home: match[1].trim(),
+                homeScore: parseInt(match[2]),
+                awayScore: parseInt(match[3]),
+                away: match[4].trim()
+            };
+        }
+
+        // Calculate standings from results
+        function calculateStandings() {
+            const teams = {};
+
+            // Initialize teams from logos
+            Object.keys(TEAM_LOGOS).forEach(name => {
+                teams[name] = {
+                    name,
+                    played: 0,
+                    won: 0,
+                    draw: 0,
+                    lost: 0,
+                    gf: 0,
+                    ga: 0,
+                    points: 0,
+                    form: []
+                };
+            });
+
+            // Process each result
+            macsonuclari.forEach(r => {
+                const result = parseResult(r);
+                if (!result) return;
+
+                const home = teams[result.home];
+                const away = teams[result.away];
+
+                if (!home || !away) return;
+
+                // Update stats
+                home.played++;
+                away.played++;
+                home.gf += result.homeScore;
+                home.ga += result.awayScore;
+                away.gf += result.awayScore;
+                away.ga += result.homeScore;
+
+                if (result.homeScore > result.awayScore) {
+                    // Home win
+                    home.won++;
+                    home.points += 3;
+                    home.form.push('G');
+                    away.lost++;
+                    away.form.push('M');
+                } else if (result.homeScore < result.awayScore) {
+                    // Away win
+                    away.won++;
+                    away.points += 3;
+                    away.form.push('G');
+                    home.lost++;
+                    home.form.push('M');
+                } else {
+                    // Draw
+                    home.draw++;
+                    away.draw++;
+                    home.points++;
+                    away.points++;
+                    home.form.push('B');
+                    away.form.push('B');
+                }
+            });
+
+            // Sort by points, then goal difference, then goals scored
+            const sorted = Object.values(teams)
+                .filter(t => t.played > 0 || TEAM_LOGOS[t.name]) // Include all teams with logos
+                .sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    const gdA = a.gf - a.ga;
+                    const gdB = b.gf - b.ga;
+                    if (gdB !== gdA) return gdB - gdA;
+                    return b.gf - a.gf;
+                });
+
+            return sorted;
+        }
+
+        // ╔══════════════════════════════════════════════════════════════╗
+        // ║  📊 RENDER                                                  ║
+        // ╚══════════════════════════════════════════════════════════════╝
+
+        function renderStandings() {
+            const standings = calculateStandings();
+            const tbody = document.getElementById('standingsBody');
+
+            let html = '';
+            standings.forEach((team, index) => {
+                const rank = index + 1;
+                const gd = team.gf - team.ga;
+                const gdClass = gd > 0 ? 'av-positive' : (gd < 0 ? 'av-negative' : '');
+                const gdDisplay = gd > 0 ? `+${gd}` : gd;
+
+                // Last 5 form
+                const formHtml = team.form.slice(-5).map(f =>
+                    `<span class="form-box form-${f}">${f}</span>`
+                ).join('');
+
+                let rankClass = '';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                html += `
+                    <tr>
+                        <td class="rank-cell ${rankClass}">${rank}</td>
+                        <td>
+                            <div class="team-cell">
+                                <img class="team-logo-sm" src="${getLogoUrl(team.name)}" alt="${team.name}">
+                                <span class="team-name-cell">${team.name}</span>
+                            </div>
+                        </td>
+                        <td>${team.played}</td>
+                        <td>${team.won}</td>
+                        <td>${team.draw}</td>
+                        <td>${team.lost}</td>
+                        <td>${team.gf}</td>
+                        <td>${team.ga}</td>
+                        <td class="${gdClass}">${gdDisplay}</td>
+                        <td><span class="points-box">${team.points}</span></td>
+                        <td>
+                            <div class="form-container">${formHtml || '-'}</div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // Initialize
+        renderStandings();
+
+
+    </script>
+
+    <!-- TEMA DEĞİŞTİRİCİ - Bu kodu </body> tagından önce yapıştır -->
+    <script>
+        (function () {
+            'use strict';
+            const STORAGE_KEY = 'tribe-league-theme';
+            const THEMES = {
+                dark: { name: "Karanlık", icon: "fa-moon", vars: { "--bg-body": "#0a0a0e", "--bg-card": "#141419", "--bg-glass": "rgba(20,20,25,0.95)", "--primary": "#c4ff0e", "--primary-glow": "rgba(196,255,14,0.4)", "--accent": "#00d4ff", "--text-main": "#ffffff", "--text-muted": "#8b8b96", "--text-on-primary": "#000000", "--header-text": "#c4ff0e", "--border": "rgba(255,255,255,0.08)", "--header-bg": "linear-gradient(135deg,#222 0%,#111 100%)" } },
+                light: { name: "Aydınlık", icon: "fa-sun", vars: { "--bg-body": "#f0f2f5", "--bg-card": "#ffffff", "--bg-glass": "rgba(255,255,255,0.95)", "--primary": "#1a1a1a", "--primary-glow": "rgba(0,0,0,0.2)", "--accent": "#555555", "--text-main": "#1a1a1a", "--text-muted": "#666666", "--text-on-primary": "#ffffff", "--header-text": "#ffffff", "--border": "rgba(0,0,0,0.1)", "--header-bg": "linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%)" } },
+                galatasaray: { name: "Galatasaray", icon: "fa-futbol", vars: { "--bg-body": "#1a0808", "--bg-card": "#2a1212", "--bg-glass": "rgba(42,18,18,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#ff0000", "--text-main": "#ffffff", "--text-muted": "#ffcccc", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#8b0000 0%,#4a0000 100%)" } },
+                fenerbahce: { name: "Fenerbahçe", icon: "fa-futbol", vars: { "--bg-body": "#0a0a1a", "--bg-card": "#12123a", "--bg-glass": "rgba(18,18,58,0.95)", "--primary": "#ffed00", "--primary-glow": "rgba(255,237,0,0.4)", "--accent": "#0033a0", "--text-main": "#ffffff", "--text-muted": "#ccccff", "--text-on-primary": "#000000", "--border": "rgba(255,237,0,0.2)", "--header-bg": "linear-gradient(135deg,#0033a0 0%,#001a50 100%)" } },
+                besiktas: { name: "Beşiktaş", icon: "fa-futbol", vars: { "--bg-body": "#0a0a0a", "--bg-card": "#1a1a1a", "--bg-glass": "rgba(26,26,26,0.95)", "--primary": "#ffffff", "--primary-glow": "rgba(255,255,255,0.3)", "--accent": "#e0e0e0", "--text-main": "#ffffff", "--text-muted": "#999999", "--text-on-primary": "#000000", "--border": "rgba(255,255,255,0.15)", "--header-bg": "linear-gradient(135deg,#333333 0%,#1a1a1a 100%)" } },
+                trabzonspor: { name: "Trabzonspor", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#1a1025", "--bg-glass": "rgba(26,16,37,0.95)", "--primary": "#00bfff", "--primary-glow": "rgba(0,191,255,0.4)", "--accent": "#8b0000", "--text-main": "#ffffff", "--text-muted": "#ccaaff", "--text-on-primary": "#000000", "--border": "rgba(0,191,255,0.2)", "--header-bg": "linear-gradient(135deg,#6b0000 0%,#400000 100%)" } },
+                basaksehir: { name: "Başakşehir", icon: "fa-futbol", vars: { "--bg-body": "#100a05", "--bg-card": "#201510", "--bg-glass": "rgba(32,21,16,0.95)", "--primary": "#ff6600", "--primary-glow": "rgba(255,102,0,0.4)", "--accent": "#1a1a80", "--text-main": "#ffffff", "--text-muted": "#ffcc99", "--text-on-primary": "#000000", "--border": "rgba(255,102,0,0.2)", "--header-bg": "linear-gradient(135deg,#1a1a80 0%,#0d0d40 100%)" } },
+                alanyaspor: { name: "Alanyaspor", icon: "fa-futbol", vars: { "--bg-body": "#051005", "--bg-card": "#0a200a", "--bg-glass": "rgba(10,32,10,0.95)", "--primary": "#ff8c00", "--primary-glow": "rgba(255,140,0,0.4)", "--accent": "#228b22", "--text-main": "#ffffff", "--text-muted": "#aaffaa", "--text-on-primary": "#000000", "--border": "rgba(255,140,0,0.2)", "--header-bg": "linear-gradient(135deg,#228b22 0%,#145214 100%)" } },
+                antalyaspor: { name: "Antalyaspor", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#200a0a", "--bg-glass": "rgba(32,10,10,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+                konyaspor: { name: "Konyaspor", icon: "fa-futbol", vars: { "--bg-body": "#051005", "--bg-card": "#0a1f0a", "--bg-glass": "rgba(10,31,10,0.95)", "--primary": "#00cc00", "--primary-glow": "rgba(0,204,0,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#aaffaa", "--text-on-primary": "#000000", "--border": "rgba(0,204,0,0.2)", "--header-bg": "linear-gradient(135deg,#228b22 0%,#145214 100%)" } },
+                samsunspor: { name: "Samsunspor", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#1f0a0a", "--bg-glass": "rgba(31,10,10,0.95)", "--primary": "#ff4444", "--primary-glow": "rgba(255,68,68,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,68,68,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+                kayserispor: { name: "Kayserispor", icon: "fa-futbol", vars: { "--bg-body": "#0f0a00", "--bg-card": "#1f1505", "--bg-glass": "rgba(31,21,5,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#cc0000", "--text-main": "#ffffff", "--text-muted": "#ffeeaa", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+                goztepe: { name: "Göztepe", icon: "fa-futbol", vars: { "--bg-body": "#0f0a00", "--bg-card": "#1f1500", "--bg-glass": "rgba(31,21,0,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#cc0000", "--text-main": "#ffffff", "--text-muted": "#ffeeaa", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+                gaziantep: { name: "Gaziantep FK", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#1f0a0a", "--bg-glass": "rgba(31,10,10,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#1a1a1a", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+                eyupspor: { name: "Eyüpspor", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#150a1f", "--bg-glass": "rgba(21,10,31,0.95)", "--primary": "#9932cc", "--primary-glow": "rgba(153,50,204,0.4)", "--accent": "#ffd700", "--text-main": "#ffffff", "--text-muted": "#ddaaff", "--text-on-primary": "#ffffff", "--border": "rgba(153,50,204,0.2)", "--header-bg": "linear-gradient(135deg,#6b0099 0%,#3d0057 100%)" } },
+                genclerbirligi: { name: "Gençlerbirliği", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#150a1a", "--bg-glass": "rgba(21,10,26,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#1a1a1a", "--text-main": "#ffffff", "--text-muted": "#ffaacc", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } }
+            };
+
+            function applyTheme(key) {
+                const t = THEMES[key];
+                if (!t) return;
+                Object.entries(t.vars).forEach(function (e) { document.documentElement.style.setProperty(e[0], e[1]) });
+                localStorage.setItem(STORAGE_KEY, key);
+                document.querySelectorAll('.tribe-theme-option').forEach(function (o) { o.classList.toggle('active', o.dataset.theme === key) });
+                var btn = document.querySelector('.tribe-theme-btn i');
+                if (btn) btn.className = 'fas ' + t.icon;
+            }
+
+            function createSwitcher() {
+                if (document.getElementById('tribeThemeSwitcher')) return;
+                var c = document.createElement('div');
+                c.id = 'tribeThemeSwitcher';
+                var css = '#tribeThemeSwitcher{position:fixed;bottom:25px;right:25px;z-index:9999;font-family:Outfit,sans-serif}' +
+                    '.tribe-theme-btn{width:55px;height:55px;border-radius:50%;background:var(--bg-card,#141419);border:2px solid var(--border,rgba(255,255,255,0.1));color:var(--primary,#c4ff0e);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,0.4)}' +
+                    '.tribe-theme-btn:hover{transform:scale(1.1);border-color:var(--primary,#c4ff0e)}' +
+                    '.tribe-theme-dropdown{position:absolute;bottom:65px;right:0;background:var(--bg-card,#141419);border:1px solid var(--border);border-radius:16px;padding:15px;min-width:200px;max-height:60vh;overflow-y:auto;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.5)}' +
+                    '.tribe-theme-dropdown.active{display:block}' +
+                    '.tribe-theme-title{font-family:Teko,sans-serif;font-size:1.2rem;color:var(--primary,#c4ff0e);margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}' +
+                    '.tribe-theme-section{font-size:.7rem;color:var(--text-muted,#888);text-transform:uppercase;padding:10px 0 5px;letter-spacing:1px}' +
+                    '.tribe-theme-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:.2s;margin-bottom:4px;background:transparent;border:none;width:100%;color:var(--text-main,#fff);font-family:Outfit,sans-serif;font-size:.9rem;text-align:left}' +
+                    '.tribe-theme-option:hover{background:rgba(255,255,255,0.1)}' +
+                    '.tribe-theme-option.active{background:var(--primary,#c4ff0e);color:var(--text-on-primary,#000)}' +
+                    '.tribe-theme-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem}';
+
+                var html = '<style>' + css + '</style>' +
+                    '<button class="tribe-theme-btn" id="themeToggleBtn"><i class="fas fa-palette"></i></button>' +
+                    '<div class="tribe-theme-dropdown" id="tribeThemeDropdown">' +
+                    '<div class="tribe-theme-title"><i class="fas fa-paint-brush"></i> Tema Seç</div>' +
+                    '<div class="tribe-theme-section">Ana Temalar</div>';
+
+                Object.keys(THEMES).forEach(function (k) {
+                    var t = THEMES[k];
+                    html += '<button class="tribe-theme-option" data-theme="' + k + '"><span class="tribe-theme-icon"><i class="fas ' + t.icon + '"></i></span><span>' + t.name + '</span></button>';
+                });
+                html += '</div>';
+                c.innerHTML = html;
+                document.body.appendChild(c);
+
+                document.getElementById('themeToggleBtn').onclick = function () {
+                    document.getElementById('tribeThemeDropdown').classList.toggle('active');
+                };
+                c.querySelectorAll('.tribe-theme-option').forEach(function (btn) {
+                    btn.onclick = function () { applyTheme(this.dataset.theme) };
+                });
+                document.addEventListener('click', function (e) {
+                    if (!c.contains(e.target)) document.getElementById('tribeThemeDropdown').classList.remove('active');
+                });
+            }
+
+            function init() {
+                createSwitcher();
+                var saved = localStorage.getItem(STORAGE_KEY) || 'dark';
+                applyTheme(saved);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+
+
+</body>
+
+</html>
