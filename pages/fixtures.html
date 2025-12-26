@@ -170,6 +170,24 @@
             text-align: center;
         }
 
+        .score-box.upcoming {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            color: var(--text-muted);
+            border: 2px dashed var(--border);
+            font-size: 1.5rem;
+            min-width: 80px;
+        }
+
+        .fixture-card.upcoming-match {
+            opacity: 0.8;
+            border-style: dashed;
+        }
+
+        .fixture-card.upcoming-match:hover {
+            opacity: 1;
+            border-color: var(--accent);
+        }
+
         .vs-text {
             color: var(--text-muted);
             font-family: var(--font-head);
@@ -225,20 +243,25 @@
 
             let html = '';
             weekFixtures.forEach((match, idx) => {
-                const homeScore = match.homeScore ?? '-';
-                const awayScore = match.awayScore ?? '-';
                 const matchIndex = fixturesData.indexOf(match);
 
+                // Maç oynanmış mı kontrolü (her iki skor da 0'dan büyükse veya played flag'i varsa)
+                const isPlayed = match.played === true || (match.homeScore > 0 || match.awayScore > 0);
+
+                const homeScore = isPlayed ? (match.homeScore ?? 0) : '';
+                const awayScore = isPlayed ? (match.awayScore ?? 0) : '';
+                const scoreDisplay = isPlayed
+                    ? `<span class="score-box">${homeScore}</span><span class="vs-text">-</span><span class="score-box">${awayScore}</span>`
+                    : `<span class="score-box upcoming">vs</span>`;
+
                 html += `
-                    <div class="fixture-card" onclick="window.location.href='match-detail.html?id=${matchIndex}'" style="cursor: pointer;">
+                    <div class="fixture-card ${!isPlayed ? 'upcoming-match' : ''}" onclick="window.location.href='match-detail.html?id=${matchIndex}'" style="cursor: pointer;">
                         <div class="team-side">
                             <img class="team-logo" src="${getLogoUrl(match.home)}">
                             <span class="team-name">${match.home}</span>
                         </div>
                         <div class="score-center">
-                            <span class="score-box">${homeScore}</span>
-                            <span class="vs-text">-</span>
-                            <span class="score-box">${awayScore}</span>
+                            ${scoreDisplay}
                         </div>
                         <div class="team-side away">
                             <img class="team-logo" src="${getLogoUrl(match.away)}">
