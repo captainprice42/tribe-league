@@ -407,20 +407,21 @@
     <!-- Data -->
     <script src="../data.js"></script>
     <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // TribeData'dan veri yükle
         function init() {
             renderMatches();
             renderStandings();
-        }
 
-        // Firebase güncellemelerini dinle
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log('🔥 Süper Kupa sayfası güncelleniyor...');
-            init();
-        });
+            // 🔥 Firebase real-time listener
+            listenSuperKupa((data) => {
+                console.log('🔥 Süper Kupa güncellemesi alındı!');
+                TribeData.superKupa = data;
+                renderMatches();
+                renderStandings();
+            });
+        }
 
         function getLogoUrl(name) {
             if (!name) return "https://via.placeholder.com/32?text=?";

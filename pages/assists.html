@@ -12,22 +12,17 @@
         :root {
             --bg-body: #0a0a0e;
             --bg-card: #141419;
-            --bg-glass: rgba(20, 20, 25, 0.9);
             --primary: #c4ff0e;
-            --primary-glow: rgba(196, 255, 14, 0.4);
             --accent: #00d4ff;
-            --gold: #ffd700;
             --text-main: #ffffff;
             --text-muted: #8b8b96;
             --border: rgba(255, 255, 255, 0.08);
-            --radius: 16px;
             --font-head: 'Teko', sans-serif;
             --font-body: 'Outfit', sans-serif;
         }
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -36,19 +31,15 @@
             font-family: var(--font-body);
             padding: 0;
             margin: 0;
-            overflow-x: hidden;
-            transition: background 0.5s ease;
         }
 
         .special-container {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 30px;
             max-width: 900px;
             margin: 40px auto;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .header-banner {
@@ -58,25 +49,31 @@
             padding: 40px 20px;
             margin-bottom: 30px;
             text-align: center;
-            position: relative;
         }
 
         .header-banner h1 {
             font-family: var(--font-head);
             font-size: 4rem;
-            color: var(--primary);
+            color: var(--accent);
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 4px;
-            text-shadow: 0 0 20px var(--primary-glow);
         }
 
-        /* Table Styles */
+        .firebase-badge {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
         .modern-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 8px;
-            margin-top: 20px;
         }
 
         .modern-table th {
@@ -86,8 +83,6 @@
             font-family: var(--font-head);
             font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border);
         }
 
         .modern-table tbody tr {
@@ -102,45 +97,43 @@
 
         .modern-table td {
             padding: 15px 20px;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .modern-table td:first-child {
-            border-left: 1px solid var(--border);
-            border-radius: 12px 0 0 12px;
-        }
-
-        .modern-table td:last-child {
-            border-right: 1px solid var(--border);
-            border-radius: 0 12px 12px 0;
+            vertical-align: middle;
         }
 
         .rank-cell {
+            width: 60px;
             font-family: var(--font-head);
-            font-size: 1.5rem;
-            color: var(--primary);
-            font-weight: 600;
-            width: 50px;
-            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .rank-1 {
+            color: #ffd700;
+        }
+
+        .rank-2 {
+            color: #c0c0c0;
+        }
+
+        .rank-3 {
+            color: #cd7f32;
         }
 
         .player-info {
             display: flex;
             flex-direction: column;
+            gap: 4px;
         }
 
         .player-name {
             font-weight: 600;
-            font-size: 1.2rem;
-            color: #fff;
+            font-size: 1.1rem;
         }
 
         .team-flex {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 4px;
         }
 
         .team-logo-sm {
@@ -150,429 +143,109 @@
         }
 
         .team-name-sub {
-            font-size: 0.85rem;
             color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
         .points-box {
-            background: var(--primary);
+            background: var(--accent);
             color: #000;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 800;
             font-family: var(--font-head);
-            font-size: 1.3rem;
-            display: inline-block;
-            min-width: 45px;
-            text-align: center;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        /* Edit Mode Styles */
-        .edit-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-family: var(--font-head);
-            font-size: 1.3rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
-            box-shadow: 0 5px 20px var(--primary-glow);
-            z-index: 100;
-        }
-
-        .edit-mode [contenteditable="true"] {
-            outline: 1px dashed var(--primary);
-            background: rgba(196, 255, 14, 0.05);
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-
-        .delete-row {
-            display: none;
-            color: #ff4757;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .edit-mode .delete-row {
-            display: inline-block;
-        }
-
-        .edit-toolbar {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-card);
-            border: 1px solid var(--primary);
-            padding: 15px 30px;
-            border-radius: 50px;
-            display: flex;
-            gap: 15px;
-            z-index: 2000;
-            transition: 0.5s;
-        }
-
-        .edit-toolbar.active {
-            bottom: 40px;
-        }
-
-        .toolbar-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-family: var(--font-head);
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toolbar-btn.primary {
-            background: var(--primary);
-            color: #000;
-            border: none;
-            font-weight: bold;
-        }
-
-        /* Modals */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            width: 400px;
-            box-shadow: 0 0 50px var(--primary-glow);
-        }
-
-        .login-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .login-error {
-            color: #ff4757;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: none;
-        }
-
-        /* Success toast */
-        #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: var(--primary);
-            color: #000;
-            padding: 12px 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 8px 16px;
             border-radius: 10px;
-            font-weight: bold;
-            transform: translateX(-150%);
-            transition: 0.5s;
-            z-index: 9999;
+            display: inline-block;
         }
 
-        #toast.show {
-            transform: translateX(0);
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
         }
     </style>
 </head>
 
 <body>
-
-    <div id="toast">İşlem Başarılı!</div>
-
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h2 style="font-family:var(--font-head); font-size:2.5rem; margin:0 0 20px;">DÜZENLEME MODU</h2>
-            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" class="login-input" placeholder="Şifre">
-            <button class="toolbar-btn primary" style="width:100%" onclick="TribeAssists.tryLogin()">GİRİŞ YAP</button>
-            <p class="login-error" id="loginError">Hatalı bilgi!</p>
-            <button class="toolbar-btn" style="width:100%; margin-top:10px;"
-                onclick="TribeAssists.closeModal('loginModal')">İptal</button>
-        </div>
-    </div>
-
-    <div class="modal" id="exportModal">
-        <div class="modal-content" style="width:800px; max-width:95%;">
-            <h2 style="font-family:var(--font-head); font-size:2.5rem; margin:0 0 20px;">HTML KODU HAZIR</h2>
-            <textarea id="exportCode"
-                style="width:100%; height:350px; background:#050505; color:#0f0; font-family:monospace; border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px; resize:none;"
-                readonly></textarea>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="toolbar-btn" onclick="TribeAssists.closeModal('exportModal')">Kapat</button>
-                <button class="toolbar-btn primary" onclick="TribeAssists.copyCode()">Kodu Kopyala</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="edit-toolbar" id="editToolbar">
-        <button class="toolbar-btn" onclick="TribeAssists.addNewRow()"><i class="fas fa-plus"></i> Oyuncu Ekle</button>
-        <button class="toolbar-btn danger" onclick="TribeAssists.exitEdit()"><i class="fas fa-times"></i> Çıkış</button>
-        <button class="toolbar-btn primary" onclick="TribeAssists.startExport()"><i class="fas fa-save"></i> HTML
-            AL</button>
-    </div>
-
-    <div class="special-container" id="mainWrapper">
-        <button class="edit-btn" id="editTrigger" onclick="TribeAssists.openModal('loginModal')">
-            <i class="fas fa-edit"></i> DÜZENLE
-        </button>
-
+    <div class="special-container">
         <div class="header-banner">
-            <h1>ASİST KRALLIĞI</h1>
+            <h1><i class="fas fa-hands-helping"></i> ASİST KRALLIĞI</h1>
         </div>
 
         <table class="modern-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>OYUNCU</th>
-                    <th>ASİST</th>
-                    <th class="edit-only"></th>
+                    <th>Oyuncu</th>
+                    <th>Asist</th>
                 </tr>
             </thead>
             <tbody id="assistsBody">
-                <!-- Data will be rendered here -->
+                <tr>
+                    <td colspan="3" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td>
+                </tr>
             </tbody>
         </table>
     </div>
 
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
     <script>
-        const LOGOS = {
-            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
-            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
-        };
+        function getLogoUrl(teamName) {
+            return TribeData?.teams?.[teamName]?.logo || "https://via.placeholder.com/24?text=?";
+        }
 
-        const INITIAL_DATA = [
-            { name: "Sane", team: "Galatasaray", value: 4 },
-            { name: "Abreu", team: "Gençlerbirliği", value: 3 },
-            { name: "Maxim", team: "Gaziantep", value: 3 },
-            { name: "King", team: "Samsunspor", value: 2 },
-            { name: "Ntcham", team: "Samsunspor", value: 1 },
-            { name: "Amiri", team: "Galatasaray", value: 2 },
-            { name: "Raskin", team: "Beşiktaş", value: 2 },
-            { name: "Rafa", team: "Beşiktaş", value: 2 },
-            { name: "Muçi", team: "Trabzonspor", value: 2 },
-            { name: "Mayoral", team: "Trabzonspor", value: 1 },
-            { name: "Juan", team: "Göztepe", value: 2 },
-            { name: "Bekiroğlu", team: "Göztepe", value: 1 },
-            { name: "Şimşir", team: "Gençlerbirliği", value: 1 },
-            { name: "Ejuke", team: "Trabzonspor", value: 2 },
-            { name: "Bardhi", team: "Konyaspor", value: 1 },
-            { name: "Orkun", team: "Fenerbahçe", value: 2 },
-            { name: "Duran", team: "Fenerbahçe", value: 1 },
-            { name: "Oğuz Aydın", team: "Fenerbahçe", value: 1 },
-            { name: "Kozlowski", team: "Gaziantep", value: 2 },
-            { name: "Boli", team: "Antalyaspor", value: 2 },
-            { name: "Demirbay", team: "Eyüpspor", value: 1 },
-            { name: "Dorukhan Toköz", team: "Kayserispor", value: 1 }
-        ];
+        function renderAssists(assists, teams) {
+            const tbody = document.getElementById('assistsBody');
 
-        const TribeAssists = {
-            data: [],
-            isEdit: false,
+            if (!assists || assists.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="loading">Henüz asist verisi yok</td></tr>';
+                return;
+            }
 
-            init() {
-                this.data = INITIAL_DATA;
-                this.render();
-            },
+            const sorted = [...assists].sort((a, b) => b.assists - a.assists);
 
-            render() {
-                const body = document.getElementById('assistsBody');
-                body.innerHTML = '';
-                // Sort by value descending
-                this.data.sort((a, b) => b.value - a.value);
+            let html = '';
+            sorted.forEach((player, i) => {
+                const rank = i + 1;
+                let rankClass = rank <= 3 ? `rank-${rank}` : '';
+                const logo = teams?.[player.team]?.logo || getLogoUrl(player.team);
 
-                this.data.forEach((p, i) => {
-                    const logo = this.getLogo(p.team);
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="rank-cell">${i + 1}</td>
+                html += `
+                    <tr>
+                        <td class="rank-cell ${rankClass}">${rank}</td>
                         <td>
                             <div class="player-info">
-                                <span class="player-name" contenteditable="${this.isEdit}">${p.name}</span>
+                                <span class="player-name">${player.name}</span>
                                 <div class="team-flex">
                                     <img src="${logo}" class="team-logo-sm">
-                                    <span class="team-name-sub" oninput="TribeAssists.updateLogo(this)" contenteditable="${this.isEdit}">${p.team}</span>
+                                    <span class="team-name-sub">${player.team}</span>
                                 </div>
                             </div>
                         </td>
-                        <td><span class="points-box" oninput="TribeAssists.triggerSort()" contenteditable="${this.isEdit}">${p.value}</span></td>
-                        <td class="edit-only"><i class="fas fa-trash delete-row" onclick="this.closest('tr').remove(); TribeAssists.triggerSort()"></i></td>
-                    `;
-                    body.appendChild(tr);
-                });
-            },
-
-            getLogo(name) {
-                return LOGOS[name] || LOGOS[Object.keys(LOGOS).find(k => k.toLowerCase() === name.toLowerCase())] || "https://via.placeholder.com/24?text=?";
-            },
-
-            updateLogo(el) {
-                const name = el.textContent.trim();
-                const logo = this.getLogo(name);
-                el.previousElementSibling.src = logo;
-            },
-
-            triggerSort() {
-                // Sorting logic if needed
-            },
-
-            addNewRow() {
-                const body = document.getElementById('assistsBody');
-                const i = body.children.length + 1;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="rank-cell">${i}</td>
-                    <td>
-                        <div class="player-info">
-                            <span class="player-name" contenteditable="true">Yeni Oyuncu</span>
-                            <div class="team-flex">
-                                <img src="https://via.placeholder.com/24" class="team-logo-sm">
-                                <span class="team-name-sub" oninput="TribeAssists.updateLogo(this)" contenteditable="true">Takım</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="points-box" contenteditable="true">0</span></td>
-                    <td class="edit-only"><i class="fas fa-trash delete-row" onclick="this.closest('tr').remove()"></i></td>
+                        <td><span class="points-box">${player.assists}</span></td>
+                    </tr>
                 `;
-                body.appendChild(tr);
-            },
+            });
 
-            openModal(id) { document.getElementById(id).classList.add('active'); },
-            closeModal(id) { document.getElementById(id).classList.remove('active'); },
+            tbody.innerHTML = html;
+        }
 
-            async tryLogin() {
-                const u = document.getElementById('username').value.trim().toLowerCase();
-                const p = document.getElementById('password').value.trim();
-                const uH = await this.hash(u);
-                const pH = await this.hash(p);
-                if (uH === "b6f360c00899c231d3580106b4512d74253cbd2265d855edc8a2581d671032f2" && pH === "69dd2706f9ebf21c1ae2654b3d5cd3b0e36afeb1cfb0ac71c01689226963456e") {
-                    this.enterEdit();
-                    this.closeModal('loginModal');
-                } else { document.getElementById('loginError').style.display = 'block'; }
-            },
-
-            async hash(s) {
-                const m = new TextEncoder().encode(s);
-                const b = await crypto.subtle.digest('SHA-256', m);
-                return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
-            },
-
-            enterEdit() {
-                this.isEdit = true;
-                document.getElementById('mainWrapper').classList.add('edit-mode');
-                document.getElementById('editToolbar').classList.add('active');
-                document.getElementById('editTrigger').style.display = 'none';
-                this.render();
-            },
-
-            exitEdit() {
-                this.isEdit = false;
-                document.getElementById('mainWrapper').classList.remove('edit-mode');
-                document.getElementById('editToolbar').classList.remove('active');
-                document.getElementById('editTrigger').style.display = 'flex';
-                this.render();
-            },
-
-            startExport() {
-                const items = [];
-                document.querySelectorAll('#assistsBody tr').forEach(tr => {
-                    items.push({
-                        name: tr.querySelector('.player-name').textContent.trim(),
-                        team: tr.querySelector('.team-name-sub').textContent.trim(),
-                        value: parseInt(tr.querySelector('.points-box').textContent) || 0
-                    });
-                });
-                this.data = items;
-                this.render();
-
-                const clone = document.documentElement.cloneNode(true);
-                clone.querySelectorAll('.edit-only, .edit-toolbar, #toast, .edit-btn, .modal, #themeSwitcher').forEach(el => el.remove());
-                clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-                clone.querySelector('.special-container').classList.remove('edit-mode');
-
-                document.getElementById('exportCode').value = "<!DOCTYPE html>\n" + clone.outerHTML;
-                this.openModal('exportModal');
-            },
-
-            copyCode() {
-                const area = document.getElementById('exportCode');
-                area.select();
-                document.execCommand('copy');
-                this.showToast("Kopyalandı!");
-            },
-
-            showToast(msg) {
-                const t = document.getElementById('toast');
-                t.textContent = msg;
-                t.classList.add('show');
-                setTimeout(() => t.classList.remove('show'), 3000);
+        function init() {
+            if (typeof TribeData !== 'undefined') {
+                renderAssists(TribeData.assists, TribeData.teams);
             }
-        };
 
-        TribeAssists.init();
+            listenAllData((data) => {
+                console.log('🔥 Firebase güncellemesi alındı!');
+                renderAssists(data.assists, data.teams);
+            });
+        }
 
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("Assists Page: Data updated, refreshing...");
-            TribeAssists.init();
-        });
+        init();
     </script>
 
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 </body>
 

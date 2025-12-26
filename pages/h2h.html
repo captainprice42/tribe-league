@@ -1219,17 +1219,8 @@
 
         // Initialize
         initTeamSelectors();
-
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("H2H Page: Data updated, refreshing...");
-            initTeamSelectors();
-            compare(); // Re-compare if already selected
-        });
     </script>
 
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>

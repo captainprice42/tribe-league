@@ -581,7 +581,6 @@
     <script src="../data.js"></script>
     <script src="../live-match.js"></script>
     <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
 
     <script>
         let currentMatchId = null;
@@ -748,28 +747,36 @@
         }
 
         // Initialize
-        // Firebase'den gelen veriyi işle
+        // Veritabanından gelen veriyi işle
         function handleFirebaseData(data) {
-            if (data && data.matches) {
-                // LiveMatchData'yı güncelle
-                LiveMatchData.activeMatchId = data.activeMatchId || 0;
-                LiveMatchData.matches = data.matches;
+            // LiveMatchData'yı güncelle (boş array durumu dahil)
+            LiveMatchData.activeMatchId = data?.activeMatchId || 0;
+            LiveMatchData.matches = data?.matches || [];
 
-                console.log('🔥 Firebase güncellemesi alındı:', data.matches.length, 'maç');
+            renderMatchesSidebar();
 
-                renderMatchesSidebar();
-
-                // Mevcut seçili maçı güncelle veya ilk canlı maçı seç
-                if (LiveMatchData.matches.length > 0) {
-                    const currentMatch = LiveMatchData.matches.find(m => m.id === currentMatchId);
-                    if (!currentMatch) {
-                        const liveMatch = LiveMatchData.matches.find(m =>
-                            m.status === 'firstHalf' || m.status === 'secondHalf' || m.status === 'halftime'
-                        );
-                        currentMatchId = liveMatch ? liveMatch.id : LiveMatchData.matches[0].id;
-                    }
-                    renderSelectedMatch();
+            // Mevcut seçili maçı güncelle veya ilk canlı maçı seç
+            if (LiveMatchData.matches.length > 0) {
+                const currentMatch = LiveMatchData.matches.find(m => m.id === currentMatchId);
+                if (!currentMatch) {
+                    const liveMatch = LiveMatchData.matches.find(m =>
+                        m.status === 'firstHalf' || m.status === 'secondHalf' || m.status === 'halftime'
+                    );
+                    currentMatchId = liveMatch ? liveMatch.id : LiveMatchData.matches[0].id;
                 }
+                renderSelectedMatch();
+            } else {
+                // Maç yoksa main alanını temizle
+                currentMatchId = null;
+                document.getElementById('homeLogo').src = 'https://via.placeholder.com/100?text=?';
+                document.getElementById('awayLogo').src = 'https://via.placeholder.com/100?text=?';
+                document.getElementById('homeName').textContent = 'Bekliyor';
+                document.getElementById('awayName').textContent = 'Bekliyor';
+                document.getElementById('homeScore').textContent = '0';
+                document.getElementById('awayScore').textContent = '0';
+                document.getElementById('matchStatus').textContent = 'Maç Bekleniyor';
+                document.getElementById('matchMinute').textContent = "0'";
+                document.getElementById('eventsList').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Henüz canlı maç yok</p>';
             }
         }
 

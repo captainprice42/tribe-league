@@ -47,7 +47,7 @@
 
         .header-banner {
             text-align: center;
-            background: var(--header-bg, linear-gradient(135deg, #222 0%, #111 100%));
+            background: linear-gradient(135deg, #222 0%, #111 100%);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 30px;
@@ -57,12 +57,21 @@
         .header-banner h1 {
             font-family: var(--font-head);
             font-size: 3.5rem;
-            color: var(--header-text, var(--primary));
+            color: var(--primary);
             margin: 0;
             line-height: 1;
         }
 
-        /* Table Styles */
+        .firebase-badge {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
         .standings-table {
             width: 100%;
             border-collapse: collapse;
@@ -134,7 +143,7 @@
 
         .points-box {
             background: var(--primary);
-            color: var(--text-on-primary, #000);
+            color: #000;
             font-family: var(--font-head);
             font-size: 1.3rem;
             font-weight: 700;
@@ -183,7 +192,12 @@
             color: #dc3545;
         }
 
-        /* Responsive */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
         @media (max-width: 768px) {
 
             .standings-table th,
@@ -228,214 +242,80 @@
                     <th>FORM</th>
                 </tr>
             </thead>
-            <tbody id="standingsBody"></tbody>
+            <tbody id="standingsBody">
+                <tr>
+                    <td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
     <script>
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  📋 VERİ GİRİŞİ - Maç Sonuçları                             ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
-        const macsonuclari = [
-            // Hafta 1
-            "Konyaspor 0 3 Beşiktaş",
-            "Samsunspor 0 0 Trabzonspor",
-            "Alanyaspor 1 2 Antalyaspor",
-            "Kayserispor 0 2 Fenerbahçe",
-            "Göztepe 0 1 Galatasaray",
-            "Başakşehir 0 1 Gaziantep",
-            "Gençlerbirliği 0 1 Eyüpspor",
-            // Hafta 2
-            "Eyüpspor 0 1 Alanyaspor",
-            "Trabzonspor 0 0 Konyaspor",
-            "Gençlerbirliği 0 1 Başakşehir",
-            "Gaziantep 1 1 Kayserispor",
-            "Galatasaray 1 1 Beşiktaş",
-            "Antalyaspor 1 0 Göztepe",
-            "Fenerbahçe 0 1 Samsunspor",
-            // Hafta 3
-            "Göztepe 0 1 Eyüpspor",
-            "Gençlerbirliği 0 0 Alanyaspor",
-            "Beşiktaş 1 1 Antalyaspor",
-            "Galatasaray 1 2 Trabzonspor",
-            "Gaziantep 1 0 Samsunspor",
-            "Konyaspor 0 2 Fenerbahçe",
-            "Başakşehir 0 0 Kayserispor",
-            // Hafta 4
-            "Eyüpspor 0 1 Beşiktaş",
-            "Gaziantep 1 0 Konyaspor",
-            "Antalyaspor 0 0 Trabzonspor",
-            "Gençlerbirliği 2 1 Göztepe",
-            "Kayserispor 0 0 Samsunspor",
-            "Göztepe 1 0 Alanyaspor",
-            "Konyaspor 0 0 Kayserispor",
-            // Hafta 5
-            "Trabzonspor 1 2 Eyüpspor",
-            "Fenerbahçe 0 4 Galatasaray",
-            "Alanyaspor 1 2 Başakşehir",
-            "Beşiktaş 3 1 Gençlerbirliği",
-            "Antalyaspor 0 0 Fenerbahçe",
-            "Galatasaray 0 0 Gaziantep",
-            // Hafta 6
-            "Başakşehir 0 0 Samsunspor",
-            "Beşiktaş 0 0 Alanyaspor",
-            "Gençlerbirliği 0 2 Trabzonspor",
-            "Gaziantep 1 1 Antalyaspor",
-            "Eyüpspor 2 1 Fenerbahçe",
-            "Kayserispor 1 2 Galatasaray",
-            "Samsunspor 2 1 Konyaspor",
-            // Hafta 7
-            "Trabzonspor 3 0 Alanyaspor",
-            "Antalyaspor 1 1 Kayserispor",
-            "Eyüpspor 0 1 Gaziantep",
-            "Beşiktaş 0 0 Göztepe",
-            "Fenerbahçe 1 0 Gençlerbirliği",
-            "Başakşehir 2 0 Konyaspor",
-            "Galatasaray 2 0 Samsunspor",
-            // Hafta 8
-            "Göztepe 2 1 Trabzonspor",
-            "Gençlerbirliği 0 2 Gaziantep",
-            "Galatasaray 1 1 Konyaspor",
-            "Antalyaspor 0 0 Samsunspor",
-            "Alanyaspor 0 2 Fenerbahçe",
-            "Beşiktaş 1 0 Başakşehir",
-            "Göztepe 0 1 Eyüpspor",
-            // Hafta 9
-            "Gençlerbirliği 4 0 Kayserispor",
-            "Gaziantep 0 0 Alanyaspor",
-            "Trabzonspor 1 0 Beşiktaş",
-            "Eyüpspor 0 2 Samsunspor",
-            "Başakşehir 2 0 Galatasaray",
-            "Konyaspor 0 0 Antalyaspor",
-            "Fenerbahçe 0 0 Göztepe",
-        ];
-
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  🏆 TAKIM LOGOLARI                                          ║
-        // ╚══════════════════════════════════════════════════════════════╝
-        const TEAM_LOGOS = {
-            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ey%C3%BCpspor_Logosu.png",
-            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
-        };
+        let tribeData = null;
 
         function getLogoUrl(teamName) {
-            return TEAM_LOGOS[teamName] || "https://via.placeholder.com/32?text=?";
+            return tribeData?.teams?.[teamName]?.logo || TribeData?.teams?.[teamName]?.logo || "https://via.placeholder.com/32?text=?";
         }
 
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  🔧 HESAPLAMA FONKSİYONLARI                                 ║
-        // ╚══════════════════════════════════════════════════════════════╝
+        function calculateStandings(matches, teams) {
+            const standings = {};
 
-        // Parse result: "Galatasaray 2 1 Fenerbahçe" → object
-        function parseResult(resultStr) {
-            const regex = /^(.+?)\s+(\d+)\s+(\d+)\s+(.+)$/;
-            const match = resultStr.match(regex);
-            if (!match) return null;
-
-            return {
-                home: match[1].trim(),
-                homeScore: parseInt(match[2]),
-                awayScore: parseInt(match[3]),
-                away: match[4].trim()
-            };
-        }
-
-        // Calculate standings from results
-        function calculateStandings() {
-            const teams = {};
-
-            // Initialize teams from logos
-            Object.keys(TEAM_LOGOS).forEach(name => {
-                teams[name] = {
-                    name,
-                    played: 0,
-                    won: 0,
-                    draw: 0,
-                    lost: 0,
-                    gf: 0,
-                    ga: 0,
-                    points: 0,
-                    form: []
+            // Tüm takımları başlat
+            Object.keys(teams).forEach(name => {
+                standings[name] = {
+                    name, played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: []
                 };
             });
 
-            // Process each result
-            macsonuclari.forEach(r => {
-                const result = parseResult(r);
-                if (!result) return;
-
-                const home = teams[result.home];
-                const away = teams[result.away];
-
+            // Maçları işle
+            matches.forEach(m => {
+                const home = standings[m.home];
+                const away = standings[m.away];
                 if (!home || !away) return;
 
-                // Update stats
                 home.played++;
                 away.played++;
-                home.gf += result.homeScore;
-                home.ga += result.awayScore;
-                away.gf += result.awayScore;
-                away.ga += result.homeScore;
+                home.gf += m.homeScore;
+                home.ga += m.awayScore;
+                away.gf += m.awayScore;
+                away.ga += m.homeScore;
 
-                if (result.homeScore > result.awayScore) {
-                    // Home win
-                    home.won++;
-                    home.points += 3;
-                    home.form.push('G');
-                    away.lost++;
-                    away.form.push('M');
-                } else if (result.homeScore < result.awayScore) {
-                    // Away win
-                    away.won++;
-                    away.points += 3;
-                    away.form.push('G');
-                    home.lost++;
-                    home.form.push('M');
+                if (m.homeScore > m.awayScore) {
+                    home.won++; home.points += 3; home.form.push('G');
+                    away.lost++; away.form.push('M');
+                } else if (m.homeScore < m.awayScore) {
+                    away.won++; away.points += 3; away.form.push('G');
+                    home.lost++; home.form.push('M');
                 } else {
-                    // Draw
-                    home.draw++;
-                    away.draw++;
-                    home.points++;
-                    away.points++;
-                    home.form.push('B');
-                    away.form.push('B');
+                    home.draw++; away.draw++;
+                    home.points++; away.points++;
+                    home.form.push('B'); away.form.push('B');
                 }
             });
 
-            // Sort by points, then goal difference, then goals scored
-            const sorted = Object.values(teams)
-                .filter(t => t.played > 0 || TEAM_LOGOS[t.name]) // Include all teams with logos
+            return Object.values(standings)
+                .filter(t => t.played > 0)
                 .sort((a, b) => {
                     if (b.points !== a.points) return b.points - a.points;
-                    const gdA = a.gf - a.ga;
-                    const gdB = b.gf - b.ga;
+                    const gdA = a.gf - a.ga, gdB = b.gf - b.ga;
                     if (gdB !== gdA) return gdB - gdA;
                     return b.gf - a.gf;
                 });
-
-            return sorted;
         }
 
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  📊 RENDER                                                  ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
-        function renderStandings() {
-            const standings = calculateStandings();
+        function renderStandings(data) {
+            const matches = data?.matches || [];
+            const teams = data?.teams || {};
+            const standings = calculateStandings(matches, teams);
             const tbody = document.getElementById('standingsBody');
+
+            if (standings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="color: var(--text-muted); text-align: center; padding: 40px;">Henüz maç verisi yok</td></tr>';
+                return;
+            }
 
             let html = '';
             standings.forEach((team, index) => {
@@ -443,11 +323,7 @@
                 const gd = team.gf - team.ga;
                 const gdClass = gd > 0 ? 'av-positive' : (gd < 0 ? 'av-negative' : '');
                 const gdDisplay = gd > 0 ? `+${gd}` : gd;
-
-                // Last 5 form
-                const formHtml = team.form.slice(-5).map(f =>
-                    `<span class="form-box form-${f}">${f}</span>`
-                ).join('');
+                const formHtml = team.form.slice(-5).map(f => `<span class="form-box form-${f}">${f}</span>`).join('');
 
                 let rankClass = '';
                 if (rank === 1) rankClass = 'rank-1';
@@ -471,9 +347,7 @@
                         <td>${team.ga}</td>
                         <td class="${gdClass}">${gdDisplay}</td>
                         <td><span class="points-box">${team.points}</span></td>
-                        <td>
-                            <div class="form-container">${formHtml || '-'}</div>
-                        </td>
+                        <td><div class="form-container">${formHtml || '-'}</div></td>
                     </tr>
                 `;
             });
@@ -481,21 +355,26 @@
             tbody.innerHTML = html;
         }
 
-        // Initialize
-        renderStandings();
+        // Firebase'den dinle
+        function init() {
+            // Önce local data'dan göster
+            if (typeof TribeData !== 'undefined') {
+                tribeData = TribeData;
+                renderStandings(TribeData);
+            }
 
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("Standings Page: Data updated, refreshing...");
-            renderStandings();
-        });
+            // Firebase real-time listener
+            listenAllData((data) => {
+                console.log('🔥 Firebase güncellemesi alındı!');
+                tribeData = data;
+                renderStandings(data);
+            });
+        }
+
+        init();
     </script>
 
-    <!-- Harici Tema ve Navigasyon Sistemi -->
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
-
 </body>
 
 </html>

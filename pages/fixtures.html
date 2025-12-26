@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fikstür - Tribe League</title>
-    <meta name="description" content="Tribe League fikstür ve maç sonuçları">
     <link
         href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
         rel="stylesheet">
@@ -14,16 +13,11 @@
         :root {
             --bg-body: #0a0a0e;
             --bg-card: #141419;
-            --bg-glass: rgba(20, 20, 25, 0.9);
             --primary: #c4ff0e;
-            --primary-glow: rgba(196, 255, 14, 0.4);
-            --accent: #00d4ff;
             --gold: #ffd700;
             --text-main: #ffffff;
             --text-muted: #8b8b96;
             --border: rgba(255, 255, 255, 0.08);
-            --team-a: #1e90ff;
-            --team-b: #ff4757;
             --font-head: 'Teko', sans-serif;
             --font-body: 'Outfit', sans-serif;
         }
@@ -52,7 +46,7 @@
 
         .header-banner {
             text-align: center;
-            background: var(--header-bg, linear-gradient(135deg, #222 0%, #111 100%));
+            background: linear-gradient(135deg, #222 0%, #111 100%);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 30px;
@@ -62,12 +56,20 @@
         .header-banner h1 {
             font-family: var(--font-head);
             font-size: 3.5rem;
-            color: var(--header-text, var(--primary));
+            color: var(--primary);
             margin: 0;
-            line-height: 1;
         }
 
-        /* Week Navigation */
+        .firebase-badge {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
         .week-nav {
             display: flex;
             justify-content: center;
@@ -97,78 +99,51 @@
         .week-arrow:hover {
             background: var(--primary);
             color: #000;
-            transform: scale(1.1);
         }
 
         .week-display {
             font-family: var(--font-head);
             font-size: 2rem;
-            color: #fff;
+            color: var(--primary);
             min-width: 150px;
             text-align: center;
         }
 
-        /* Fixture Week */
-        .fixture-week {
-            display: none;
+        .fixtures-grid {
+            display: grid;
+            gap: 12px;
         }
 
-        .fixture-week.active {
-            display: block;
-        }
-
-        .week-title {
-            font-family: var(--font-head);
-            font-size: 1.8rem;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Match Card */
-        .match-card {
+        .fixture-card {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: 12px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .match-card:hover {
-            border-color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        .match-side {
             padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .fixture-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(196, 255, 14, 0.2);
+        }
+
+        .team-side {
             display: flex;
             align-items: center;
             gap: 12px;
-            min-width: 200px;
         }
 
-        .match-home {
-            justify-content: flex-end;
-            text-align: right;
+        .team-side.away {
+            flex-direction: row-reverse;
         }
 
-        .match-away {
-            justify-content: flex-start;
-            text-align: left;
-        }
-
-        .team-logo-sm {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
+        .team-logo {
+            width: 50px;
+            height: 50px;
             object-fit: contain;
-            flex-shrink: 0;
         }
 
         .team-name {
@@ -176,55 +151,35 @@
             font-size: 1.1rem;
         }
 
-        .match-center {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px 25px;
-            text-align: center;
-            min-width: 100px;
+        .score-center {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 15px;
+            padding: 0 20px;
         }
 
-        .score-display {
+        .score-box {
+            background: var(--primary);
+            color: #000;
             font-family: var(--font-head);
-            font-size: 1.8rem;
-            color: var(--primary);
+            font-size: 2rem;
             font-weight: 700;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            min-width: 55px;
+            text-align: center;
         }
 
-        .score-display.pending {
+        .vs-text {
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .match-card {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .match-side {
-                justify-content: center;
-            }
-
-            .match-home {
-                order: 1;
-            }
-
-            .match-center {
-                order: 2;
-            }
-
-            .match-away {
-                order: 3;
-            }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -235,353 +190,91 @@
             <h1><i class="fas fa-calendar-alt"></i> FİKSTÜR</h1>
         </div>
 
-        <!-- Week Navigation -->
         <div class="week-nav">
             <div class="week-arrow" onclick="changeWeek(-1)"><i class="fas fa-chevron-left"></i></div>
-            <div class="week-display">Hafta <span id="currentWeekNum">1</span></div>
+            <div class="week-display" id="weekDisplay">Hafta 1</div>
             <div class="week-arrow" onclick="changeWeek(1)"><i class="fas fa-chevron-right"></i></div>
         </div>
 
-        <!-- Fixtures Container -->
-        <div id="fixturesContainer"></div>
+        <div class="fixtures-grid" id="fixturesGrid">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
+        </div>
     </div>
 
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
     <script>
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  📋 VERİ GİRİŞİ - Maçlar ve Sonuçlar                        ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
-        // Fikstür maçları (her 7 maç = 1 hafta)
-        const maclar = [
-            // Hafta 1
-            "Fenerbahçe vs Göztepe",
-            "Konyaspor vs Antalyaspor",
-            "Başakşehir vs Galatasaray",
-            "Eyüpspor vs Samsunspor",
-            "Trabzonspor vs Beşiktaş",
-            "Gaziantep vs Alanyaspor",
-            "Gençlerbirliği vs Kayserispor",
-            // Hafta 2
-            "Beşiktaş vs Başakşehir",
-            "Galatasaray vs Konyaspor",
-            "Alanyaspor vs Fenerbahçe",
-            "Antalyaspor vs Samsunspor",
-            "Galatasaray vs Konyaspor",
-            "Gençlerbirliği vs Gaziantep",
-            "Göztepe vs Trabzonspor",
-            "Başakşehir vs Konyaspor",
-            // Hafta 3
-            "Galatasaray vs Samsunspor",
-            "Fenerbahçe vs Gençlerbirliği",
-            "Beşiktaş vs Göztepe",
-            "Eyüpspor vs Gaziantep",
-            "Antalyaspor vs Kayserispor",
-            "Trabzonspor vs Alanyaspor",
-            "Gençlerbirliği vs Trabzonspor",
-            // Hafta 4
-            "Samsunspor vs Konyaspor",
-            "Kayserispor vs Galatasaray",
-            "Eyüpspor vs Fenerbahçe",
-            "Gaziantep vs Antalyaspor",
-            "Gençlerbirliği vs Trabzonspor",
-            "Beşiktaş vs Alanyaspor",
-            "Başakşehir vs Samsunspor",
-            // Hafta 5
-            "Galatasaray vs Gaziantep",
-            "Antalyaspor vs Fenerbahçe",
-            "Beşiktaş vs Gençlerbirliği",
-            "Trabzonspor vs Eyüpspor",
-            "Alanyaspor vs Başakşehir",
-            "Fenerbahçe vs Galatasaray",
-            "Konyaspor vs Kayserispor",
-            // Hafta 6
-            "Göztepe vs Alanyaspor",
-            "Kayserispor vs Samsunspor",
-            "Antalyaspor vs Trabzonspor",
-            "Gençlerbirliği vs Göztepe",
-            "Gaziantep vs Konyaspor",
-            "Eyüpspor vs Beşiktaş",
-            "Başakşehir vs Kayserispor",
-            // Hafta 7
-            "Konyaspor vs Fenerbahçe",
-            "Gaziantep vs Samsunspor",
-            "Galatasaray vs Trabzonspor",
-            "Beşiktaş vs Antalyaspor",
-            "Alanyaspor vs Gaziantep",
-            "Göztepe vs Eyüpspor",
-            "Fenerbahçe vs Samsunspor",
-            // Hafta 8
-            "Antalyaspor vs Göztepe",
-            "Galatasaray vs Beşiktaş",
-            "Gaziantep vs Kayserispor",
-            "Trabzonspor vs Konyaspor",
-            "Eyüpspor vs Alanyaspor",
-            "Gençlerbirliği vs Başakşehir",
-            "Başakşehir vs Gaziantep",
-            // Hafta 9
-            "Göztepe vs Galatasaray",
-            "Kayserispor vs Fenerbahçe",
-            "Alanyaspor vs Antalyaspor",
-            "Samsunspor vs Trabzonspor",
-            "Konyaspor vs Beşiktaş",
-            "Gençlerbirliği vs Eyüpspor",
-            // Hafta 10
-            "Eyüpspor vs Başakşehir",
-            "Fenerbahçe vs Gaziantep",
-            "Antalyaspor vs Gençlerbirliği",
-            "Trabzonspor vs Kayserispor",
-            "Galatasaray vs Alanyaspor",
-            "Beşiktaş vs Samsunspor",
-            "Konyaspor vs Göztepe",
-            // Hafta 11
-            "Başakşehir vs Fenerbahçe",
-            "Eyüpspor vs Antalyaspor",
-            "Gaziantep vs Trabzonspor",
-            "Gençlerbirliği vs Galatasaray",
-            "Kayserispor vs Beşiktaş",
-            "Alanyaspor vs Konyaspor",
-            "Samsunspor vs Göztepe",
-            // Hafta 12
-            "Antalyaspor vs Başakşehir",
-            "Trabzonspor vs Fenerbahçe",
-            "Galatasaray vs Eyüpspor",
-            "Beşiktaş vs Gaziantep",
-            "Konyaspor vs Gençlerbirliği",
-            "Göztepe vs Kayserispor",
-            "Samsunspor vs Alanyaspor",
-            // Hafta 13
-            "Başakşehir vs Trabzonspor",
-            "Antalyaspor vs Galatasaray",
-            "Fenerbahçe vs Beşiktaş",
-            "Eyüpspor vs Konyaspor",
-            "Gaziantep vs Göztepe",
-            "Gençlerbirliği vs Samsunspor",
-            "Kayserispor vs Alanyaspor",
-        ];
-        const macsonuclari = [
-            // Hafta 1
-            "Konyaspor 0 3 Beşiktaş",
-            "Samsunspor 0 0 Trabzonspor",
-            "Alanyaspor 1 2 Antalyaspor",
-            "Kayserispor 0 2 Fenerbahçe",
-            "Göztepe 0 1 Galatasaray",
-            "Başakşehir 0 1 Gaziantep",
-            "Gençlerbirliği 0 1 Eyüpspor",
-            // Hafta 2
-            "Eyüpspor 0 1 Alanyaspor",
-            "Trabzonspor 0 0 Konyaspor",
-            "Gençlerbirliği 0 1 Başakşehir",
-            "Gaziantep 1 1 Kayserispor",
-            "Galatasaray 1 1 Beşiktaş",
-            "Antalyaspor 1 0 Göztepe",
-            "Fenerbahçe 0 1 Samsunspor",
-            // Hafta 3
-            "Göztepe 0 1 Eyüpspor",
-            "Gençlerbirliği 0 0 Alanyaspor",
-            "Beşiktaş 1 1 Antalyaspor",
-            "Galatasaray 1 2 Trabzonspor",
-            "Gaziantep 1 0 Samsunspor",
-            "Konyaspor 0 2 Fenerbahçe",
-            "Başakşehir 0 0 Kayserispor",
-            // Hafta 4
-            "Eyüpspor 0 1 Beşiktaş",
-            "Gaziantep 1 0 Konyaspor",
-            "Antalyaspor 0 0 Trabzonspor",
-            "Gençlerbirliği 2 1 Göztepe",
-            "Kayserispor 0 0 Samsunspor",
-            "Göztepe 1 0 Alanyaspor",
-            "Konyaspor 0 0 Kayserispor",
-            // Hafta 5
-            "Trabzonspor 1 2 Eyüpspor",
-            "Fenerbahçe 0 4 Galatasaray",
-            "Alanyaspor 1 2 Başakşehir",
-            "Beşiktaş 3 1 Gençlerbirliği",
-            "Antalyaspor 0 0 Fenerbahçe",
-            "Galatasaray 0 0 Gaziantep",
-            // Hafta 6
-            "Başakşehir 0 0 Samsunspor",
-            "Beşiktaş 0 0 Alanyaspor",
-            "Gençlerbirliği 0 2 Trabzonspor",
-            "Gaziantep 1 1 Antalyaspor",
-            "Eyüpspor 2 1 Fenerbahçe",
-            "Kayserispor 1 2 Galatasaray",
-            "Samsunspor 2 1 Konyaspor",
-            // Hafta 7
-            "Trabzonspor 3 0 Alanyaspor",
-            "Antalyaspor 1 1 Kayserispor",
-            "Eyüpspor 0 1 Gaziantep",
-            "Beşiktaş 0 0 Göztepe",
-            "Fenerbahçe 1 0 Gençlerbirliği",
-            "Başakşehir 2 0 Konyaspor",
-            "Galatasaray 2 0 Samsunspor",
-            // Hafta 8
-            "Göztepe 2 1 Trabzonspor",
-            "Gençlerbirliği 0 2 Gaziantep",
-            "Galatasaray 1 1 Konyaspor",
-            "Antalyaspor 0 0 Samsunspor",
-            "Alanyaspor 0 2 Fenerbahçe",
-            "Beşiktaş 1 0 Başakşehir",
-            "Göztepe 0 1 Eyüpspor",
-            // Hafta 9
-            "Gençlerbirliği 4 0 Kayserispor",
-            "Gaziantep 0 0 Alanyaspor",
-            "Trabzonspor 1 0 Beşiktaş",
-            "Eyüpspor 0 2 Samsunspor",
-            "Başakşehir 2 0 Galatasaray",
-            "Konyaspor 0 0 Antalyaspor",
-            "Fenerbahçe 0 0 Göztepe",
-        ];
-
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  🏆 TAKIM LOGOLARI                                          ║
-        // ╚══════════════════════════════════════════════════════════════╝
-        const TEAM_LOGOS = {
-            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ey%C3%BCpspor_Logosu.png",
-            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
-        };
+        let currentWeek = 1;
+        let fixturesData = [];
+        let teamsData = {};
 
         function getLogoUrl(teamName) {
-            return TEAM_LOGOS[teamName] || "https://via.placeholder.com/40?text=?";
-        }
-
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  🔧 PARSE FONKSİYONLARI                                     ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
-        // "Galatasaray vs Fenerbahçe" → {home: "Galatasaray", away: "Fenerbahçe"}
-        function parseMatch(matchStr) {
-            const parts = matchStr.split(' vs ');
-            return {
-                home: parts[0].trim(),
-                away: parts[1].trim()
-            };
-        }
-
-        // "Galatasaray 2 1 Fenerbahçe" → {home: "Galatasaray", away: "Fenerbahçe", homeScore: 2, awayScore: 1}
-        function parseResult(resultStr) {
-            // Format: "Team1 score1 score2 Team2"
-            // Need to find the two numbers in the middle
-            const regex = /^(.+?)\s+(\d+)\s+(\d+)\s+(.+)$/;
-            const match = resultStr.match(regex);
-            if (!match) return null;
-
-            return {
-                home: match[1].trim(),
-                homeScore: parseInt(match[2]),
-                awayScore: parseInt(match[3]),
-                away: match[4].trim()
-            };
-        }
-
-        // Find result for a match
-        function findResult(home, away) {
-            for (const r of macsonuclari) {
-                const parsed = parseResult(r);
-                if (parsed && parsed.home === home && parsed.away === away) {
-                    return parsed;
-                }
-            }
-            return null;
-        }
-
-        // ╔══════════════════════════════════════════════════════════════╗
-        // ║  📅 FİKSTÜR RENDER                                          ║
-        // ╚══════════════════════════════════════════════════════════════╝
-
-        let currentWeek = 1;
-        const MATCHES_PER_WEEK = 7;
-
-        function getTotalWeeks() {
-            return Math.ceil(maclar.length / MATCHES_PER_WEEK);
+            return teamsData[teamName]?.logo || TribeData?.teams?.[teamName]?.logo || "https://via.placeholder.com/50?text=?";
         }
 
         function renderFixtures() {
-            const container = document.getElementById('fixturesContainer');
-            container.innerHTML = '';
+            const weekFixtures = fixturesData.filter(f => f.week === currentWeek);
+            const container = document.getElementById('fixturesGrid');
+            document.getElementById('weekDisplay').textContent = `Hafta ${currentWeek}`;
 
-            const totalWeeks = getTotalWeeks();
-
-            for (let week = 1; week <= totalWeeks; week++) {
-                const weekDiv = document.createElement('div');
-                weekDiv.className = `fixture-week ${week === currentWeek ? 'active' : ''}`;
-                weekDiv.id = `week-${week}`;
-
-                weekDiv.innerHTML = `<div class="week-title"><i class="fas fa-calendar-day"></i> ${week}. HAFTA</div>`;
-
-                const startIdx = (week - 1) * MATCHES_PER_WEEK;
-                const endIdx = Math.min(startIdx + MATCHES_PER_WEEK, maclar.length);
-
-                for (let i = startIdx; i < endIdx; i++) {
-                    const match = parseMatch(maclar[i]);
-                    const result = findResult(match.home, match.away);
-
-                    const scoreDisplay = result
-                        ? `${result.homeScore} - ${result.awayScore}`
-                        : '- - -';
-                    const scoreClass = result ? '' : 'pending';
-
-                    weekDiv.innerHTML += `
-                        <div class="match-card">
-                            <div class="match-side match-home">
-                                <span class="team-name">${match.home}</span>
-                                <img src="${getLogoUrl(match.home)}" class="team-logo-sm" alt="${match.home}">
-                            </div>
-                            <div class="match-center">
-                                <div class="score-display ${scoreClass}">${scoreDisplay}</div>
-                            </div>
-                            <div class="match-side match-away">
-                                <img src="${getLogoUrl(match.away)}" class="team-logo-sm" alt="${match.away}">
-                                <span class="team-name">${match.away}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                container.appendChild(weekDiv);
+            if (weekFixtures.length === 0) {
+                container.innerHTML = '<div class="loading">Bu hafta için maç bulunamadı</div>';
+                return;
             }
 
-            document.getElementById('currentWeekNum').textContent = currentWeek;
+            let html = '';
+            weekFixtures.forEach(match => {
+                const homeScore = match.homeScore ?? '-';
+                const awayScore = match.awayScore ?? '-';
+
+                html += `
+                    <div class="fixture-card">
+                        <div class="team-side">
+                            <img class="team-logo" src="${getLogoUrl(match.home)}">
+                            <span class="team-name">${match.home}</span>
+                        </div>
+                        <div class="score-center">
+                            <span class="score-box">${homeScore}</span>
+                            <span class="vs-text">-</span>
+                            <span class="score-box">${awayScore}</span>
+                        </div>
+                        <div class="team-side away">
+                            <img class="team-logo" src="${getLogoUrl(match.away)}">
+                            <span class="team-name">${match.away}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
 
-        function changeWeek(dir) {
-            const totalWeeks = getTotalWeeks();
-            currentWeek += dir;
-            if (currentWeek < 1) currentWeek = totalWeeks;
-            if (currentWeek > totalWeeks) currentWeek = 1;
-
-            document.querySelectorAll('.fixture-week').forEach(w => w.classList.remove('active'));
-            document.getElementById(`week-${currentWeek}`).classList.add('active');
-            document.getElementById('currentWeekNum').textContent = currentWeek;
-        }
-
-        // Initialize
-        renderFixtures();
-
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("Fixtures Page: Data updated, refreshing...");
+        function changeWeek(delta) {
+            const maxWeek = Math.max(...fixturesData.map(f => f.week), 1);
+            currentWeek = Math.max(1, Math.min(maxWeek, currentWeek + delta));
             renderFixtures();
-        });
+        }
+
+        function init() {
+            if (typeof TribeData !== 'undefined') {
+                fixturesData = TribeData.fixtures || [];
+                teamsData = TribeData.teams || {};
+                renderFixtures();
+            }
+
+            listenAllData((data) => {
+                console.log('🔥 Firebase güncellemesi alındı!');
+                fixturesData = data.fixtures || [];
+                teamsData = data.teams || {};
+                renderFixtures();
+            });
+        }
+
+        init();
     </script>
 
-
-    <!-- Harici Tema ve Navigasyon Sistemi -->
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
-
 </body>
 
 </html>

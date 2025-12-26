@@ -636,6 +636,160 @@
         }
 
         /* ═══════════════════════════════════════════════════════════════ */
+        /* MODERN MATCH CARDS - Ultra Premium Design */
+        /* ═══════════════════════════════════════════════════════════════ */
+        .match-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card-modern {
+            background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 14, 0.95));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .match-card-modern:hover {
+            transform: translateY(-5px);
+            border-color: rgba(196, 255, 14, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(196, 255, 14, 0.1);
+        }
+
+        .match-card-modern .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, rgba(196, 255, 14, 0.15), transparent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .match-card-modern .match-week {
+            font-family: 'Teko', sans-serif;
+            color: var(--primary);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .match-card-modern .delete-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .match-card-modern .delete-btn:hover {
+            color: var(--danger);
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        .match-card-modern .match-body {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 25px 20px;
+            gap: 15px;
+        }
+
+        .match-card-modern .match-team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-card-modern .team-logo-match {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .match-card-modern:hover .team-logo-match {
+            transform: scale(1.1);
+        }
+
+        .match-card-modern .team-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #fff;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            max-width: 130px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .match-card-modern .team-select:hover {
+            border-color: var(--primary);
+        }
+
+        .match-card-modern .team-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .match-card-modern .match-score-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .match-card-modern .match-score-box input {
+            width: 55px;
+            text-align: center;
+            padding: 12px 8px;
+            background: linear-gradient(145deg, rgba(196, 255, 14, 0.15), rgba(0, 0, 0, 0.3));
+            border: 2px solid rgba(196, 255, 14, 0.3);
+            border-radius: 12px;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Teko', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .match-card-modern .match-score-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--primary-glow);
+            transform: scale(1.1);
+        }
+
+        .match-card-modern .vs {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            .match-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .match-card-modern .team-logo-match {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════ */
         /* STANDINGS TABLE - Premium Design */
         /* ═══════════════════════════════════════════════════════════════ */
         .standings-table {
@@ -1256,8 +1410,8 @@
             <div class="header-actions">
                 <span class="status-saved" id="statusSaved"><i class="fas fa-check"></i> Değişiklikler kaydedildi</span>
                 <button class="btn" onclick="saveAllToFirebase()"
-                    style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: #fff; font-weight: bold;">
-                    <i class="fas fa-fire"></i> Tümünü Firebase'e Kaydet
+                    style="background: linear-gradient(135deg, #c4ff0e 0%, #a8d900 100%); padding: 10px 20px; color: #000; font-weight: 600;">
+                    <i class="fas fa-cloud-upload-alt"></i> Yayınla
                 </button>
                 <button class="btn btn-success" onclick="exportDataJS()"><i class="fas fa-download"></i> data.js
                     İndir</button>
@@ -1266,9 +1420,9 @@
                 <button class="btn btn-danger" onclick="logout()" style="margin-left: 10px;"><i
                         class="fas fa-sign-out-alt"></i> Çıkış</button>
             </div>
-            <div id="firebaseGlobalStatus"
-                style="display: none; padding: 10px 20px; border-radius: 10px; margin-top: 10px; text-align: center;">
-            </div>
+        </div>
+        <div id="globalFirebaseStatus"
+            style="display: none; padding: 12px 20px; border-radius: 10px; text-align: center; margin-bottom: 15px;">
         </div>
 
         <!-- Tabs -->
@@ -1460,18 +1614,16 @@
 
             <p style="color: var(--text-muted); margin-bottom: 20px;">
                 <i class="fas fa-info-circle"></i> Canlı maç ekleyin, durumunu kontrol edin ve eventleri yönetin.
-                <strong style="color: var(--primary);">Firebase'e Kaydet</strong> ile anlık yayınlayın!
+                <strong style="color: var(--primary);">Yayınla</strong> butonu ile anlık canlı yayınlayın!
             </p>
 
             <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn btn-primary" onclick="addLiveMatch()"><i class="fas fa-plus"></i> Yeni Maç
                     Ekle</button>
-                <button class="btn btn-success" onclick="saveToFirebase()"
-                    style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); font-size: 1.1rem; padding: 12px 25px;">
-                    <i class="fas fa-fire"></i> Firebase'e Kaydet
+                <button class="btn" onclick="saveToFirebase()"
+                    style="background: linear-gradient(135deg, #c4ff0e 0%, #a8d900 100%); font-size: 1.1rem; padding: 12px 25px; color: #000; font-weight: 600;">
+                    <i class="fas fa-broadcast-tower"></i> Canlı Yayınla
                 </button>
-                <button class="btn btn-accent" onclick="showLiveMatchExport()"><i class="fas fa-code"></i> Kodu Al
-                    (Eski)</button>
             </div>
 
             <div id="firebaseStatus"
@@ -1515,7 +1667,6 @@
     <script src="../data.js"></script>
     <script src="../live-match.js"></script>
     <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
@@ -1579,19 +1730,6 @@
             renderSuperKupa();
             renderLiveMatches();
         }
-
-        // Firebase'den veri geldiğinde admin verilerini güncelle
-        window.addEventListener('firebaseDataLoaded', () => {
-            console.log("Admin Panel: Firebase verisi yüklendi, localData güncelleniyor...");
-            init(); // Verileri TribeData'dan localData'ya yeniden çek
-        });
-
-        window.addEventListener('firebaseDataUpdated', () => {
-            // Sadece veri yüklendikten sonra (init bittikten sonra) güncelleme gelirse uyarı verilebilir
-            // Ama genellikle admin panelinde otomatik overwrite istemeyebiliriz.
-            // Şimdilik sadece konsola yazalım.
-            console.log("Admin Panel: Firebase'de veri değişti.");
-        });
 
         // Login
         async function login() {
@@ -1682,7 +1820,7 @@
             renderMatches();
         }
 
-        // Render Matches
+        // Render Matches - Modern versiyon
         function renderMatches() {
             const matches = currentWeek === 0
                 ? localData.matches
@@ -1690,43 +1828,70 @@
 
             if (matches.length === 0) {
                 document.getElementById('matchesList').innerHTML = `
-                    <div style="text-align:center; padding: 40px; color: var(--text-muted);">
-                        <i class="fas fa-futbol" style="font-size: 3rem; opacity: 0.3;"></i>
-                        <p style="margin-top: 15px;">Bu haftada maç yok</p>
+                    <div style="text-align:center; padding: 60px; color: var(--text-muted); background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px dashed var(--border);">
+                        <i class="fas fa-futbol" style="font-size: 4rem; opacity: 0.3; margin-bottom: 20px;"></i>
+                        <p style="font-size: 1.2rem;">Bu haftada maç yok</p>
+                        <button class="btn btn-primary" onclick="addNewMatch()" style="margin-top: 15px;"><i class="fas fa-plus"></i> Maç Ekle</button>
                     </div>
                 `;
                 return;
             }
 
-            let html = '';
+            const teamOptions = Object.keys(localData.teams).map(t =>
+                `<option value="${t}">${t}</option>`
+            ).join('');
+
+            let html = '<div class="match-cards-grid">';
             matches.forEach((match, idx) => {
                 const realIdx = localData.matches.indexOf(match);
-                const homeLogo = localData.teams[match.home]?.logo || '';
-                const awayLogo = localData.teams[match.away]?.logo || '';
+                const homeLogo = localData.teams[match.home]?.logo || 'https://via.placeholder.com/50?text=?';
+                const awayLogo = localData.teams[match.away]?.logo || 'https://via.placeholder.com/50?text=?';
 
                 html += `
-                    <div class="match-card">
-                        <div class="match-team">
-                            <img src="${homeLogo}" alt="${match.home}">
-                            <span>${match.home}</span>
+                    <div class="match-card-modern">
+                        <div class="match-header">
+                            <span class="match-week">Hafta ${match.week}</span>
+                            <button class="delete-btn" onclick="deleteMatch(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
                         </div>
-                        <div class="match-score">
-                            <input type="number" value="${match.homeScore}" min="0" onchange="updateMatchScore(${realIdx}, 'home', this.value)">
-                            <span class="match-vs">-</span>
-                            <input type="number" value="${match.awayScore}" min="0" onchange="updateMatchScore(${realIdx}, 'away', this.value)">
-                        </div>
-                        <div class="match-team away">
-                            <img src="${awayLogo}" alt="${match.away}">
-                            <span>${match.away}</span>
-                        </div>
-                        <div class="match-actions">
-                            <button class="delete" onclick="deleteMatch(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
+                        <div class="match-body">
+                            <div class="match-team home">
+                                <img src="${homeLogo}" alt="${match.home}" class="team-logo-match" id="homeLogo-${realIdx}">
+                                <select class="team-select" onchange="updateMatchTeam(${realIdx}, 'home', this.value)">
+                                    ${Object.keys(localData.teams).map(t =>
+                    `<option value="${t}" ${t === match.home ? 'selected' : ''}>${t}</option>`
+                ).join('')}
+                                </select>
+                            </div>
+                            <div class="match-score-box">
+                                <input type="number" value="${match.homeScore}" min="0" onchange="updateMatchScore(${realIdx}, 'home', this.value)">
+                                <span class="vs">-</span>
+                                <input type="number" value="${match.awayScore}" min="0" onchange="updateMatchScore(${realIdx}, 'away', this.value)">
+                            </div>
+                            <div class="match-team away">
+                                <img src="${awayLogo}" alt="${match.away}" class="team-logo-match" id="awayLogo-${realIdx}">
+                                <select class="team-select" onchange="updateMatchTeam(${realIdx}, 'away', this.value)">
+                                    ${Object.keys(localData.teams).map(t =>
+                    `<option value="${t}" ${t === match.away ? 'selected' : ''}>${t}</option>`
+                ).join('')}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            html += '</div>';
 
             document.getElementById('matchesList').innerHTML = html;
+        }
+
+        function updateMatchTeam(idx, side, teamName) {
+            if (side === 'home') {
+                localData.matches[idx].home = teamName;
+            } else {
+                localData.matches[idx].away = teamName;
+            }
+            renderMatches(); // Re-render to update logos
+            showSaved();
         }
 
         function updateMatchScore(idx, side, value) {
@@ -2643,53 +2808,12 @@ console.log('📊 TribeData yüklendi!', {
         // ⚽ CANLI MAÇ YÖNETİMİ
         // ═══════════════════════════════════════════════════════════════
 
-        // 🔥 TÜM VERİYİ FİREBASE'E KAYDET
-        async function saveAllToFirebase() {
-            const statusDiv = document.getElementById('firebaseGlobalStatus');
-            statusDiv.style.display = 'block';
-            statusDiv.style.background = '#ffd700';
-            statusDiv.style.color = '#000';
-            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tüm veriler Firebase\'e kaydediliyor...';
-
-            try {
-                // TribeData benzeri obje oluştur
-                const allData = {
-                    teams: localData.teams,
-                    matches: localData.matches,
-                    scorers: localData.scorers,
-                    assists: localData.assists,
-                    fixtures: localData.fixtures,
-                    ziraatKupasi: localData.ziraatKupasi,
-                    superKupa: localData.superKupa,
-                    lastUpdate: new Date().toISOString()
-                };
-
-                const result = await saveAllDataToFirebase(allData);
-
-                if (result) {
-                    statusDiv.style.background = '#2ecc71';
-                    statusDiv.style.color = '#fff';
-                    statusDiv.innerHTML = '<i class="fas fa-check"></i> ✅ TÜM VERİLER Firebase\'e kaydedildi! Sayfalar otomatik güncellenecek.';
-
-                    setTimeout(() => {
-                        statusDiv.style.display = 'none';
-                    }, 4000);
-                } else {
-                    throw new Error('Kaydetme başarısız');
-                }
-            } catch (error) {
-                statusDiv.style.background = '#dc3545';
-                statusDiv.style.color = '#fff';
-                statusDiv.innerHTML = '<i class="fas fa-times"></i> ❌ Hata: ' + error.message;
-            }
-        }
-
         let liveMatchData = {
             activeMatchId: 0,
             matches: []
         };
 
-        // 🔥 Firebase'e kaydet
+        // 🔥 Firebase'e kaydet (canlı maç)
         async function saveToFirebase() {
             const statusDiv = document.getElementById('firebaseStatus');
             statusDiv.style.display = 'block';
@@ -2707,6 +2831,50 @@ console.log('📊 TribeData yüklendi!', {
                     setTimeout(() => {
                         statusDiv.style.display = 'none';
                     }, 3000);
+                } else {
+                    throw new Error('Kaydetme başarısız');
+                }
+            } catch (error) {
+                statusDiv.style.background = '#dc3545';
+                statusDiv.style.color = '#fff';
+                statusDiv.innerHTML = '<i class="fas fa-times"></i> ❌ Hata: ' + error.message;
+            }
+        }
+
+        // 🔥 TÜM VERİLERİ Firebase'e kaydet
+        async function saveAllToFirebase() {
+            const statusDiv = document.getElementById('globalFirebaseStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#ffd700';
+            statusDiv.style.color = '#000';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tüm veriler Firebase\'e kaydediliyor...';
+
+            try {
+                // TribeData formatında veri hazırla
+                const allData = {
+                    teams: localData.teams,
+                    matches: localData.matches,
+                    scorers: localData.scorers,
+                    assists: localData.assists,
+                    fixtures: localData.fixtures,
+                    ziraatKupasi: localData.ziraatKupasi,
+                    superKupa: localData.superKupa,
+                    lastUpdate: new Date().toISOString()
+                };
+
+                const result = await saveAllDataToFirebase(allData);
+
+                // Canlı maç verisini de kaydet
+                await saveLiveMatchToFirebase(liveMatchData);
+
+                if (result) {
+                    statusDiv.style.background = '#2ecc71';
+                    statusDiv.style.color = '#fff';
+                    statusDiv.innerHTML = '<i class="fas fa-check"></i> ✅ TÜM VERİLER Firebase\'e kaydedildi! Sayfalar anlık güncellenecek.';
+
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 4000);
                 } else {
                     throw new Error('Kaydetme başarısız');
                 }

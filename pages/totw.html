@@ -1308,16 +1308,8 @@
 
         // Initialize
         renderPlayers();
-
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("TOTW Page: Data updated, refreshing...");
-            renderPlayers();
-        });
     </script>
 
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>

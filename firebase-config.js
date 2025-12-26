@@ -1,10 +1,9 @@
 // ╔══════════════════════════════════════════════════════════════╗
-// ║  🔥 FIREBASE CONFIG - TRIBE LEAGUE                          ║
-// ║  Tüm veri yönetimi burada                                    ║
+// ║  � TRIBE LEAGUE - VERİ SENKRONİZASYONU                     ║
+// ║  Canlı veri senkronizasyon sistemi                          ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-// Firebase yapılandırması
-const firebaseConfig = {
+const _dbConfig = {
     apiKey: "AIzaSyAOgPe8C5MUYbo_SJ0yVQjqGCb8_irn7xc",
     authDomain: "tribe-league.firebaseapp.com",
     databaseURL: "https://tribe-league-default-rtdb.europe-west1.firebasedatabase.app",
@@ -15,24 +14,22 @@ const firebaseConfig = {
     measurementId: "G-5XNVDPBDWW"
 };
 
-// Firebase modüllerini yükle
-let firebaseApp = null;
-let firebaseDb = null;
-let firebaseReady = false;
+let _dbApp = null;
+let _dbInstance = null;
+let _dbReady = false;
 
-// Firebase'i başlat
+// Veritabanını başlat
 async function initFirebase() {
-    if (firebaseReady) return true;
+    if (_dbReady) return true;
 
     try {
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
         const { getDatabase, ref, set, get, onValue, push, remove, update } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js');
 
-        firebaseApp = initializeApp(firebaseConfig);
-        firebaseDb = getDatabase(firebaseApp);
+        _dbApp = initializeApp(_dbConfig);
+        _dbInstance = getDatabase(_dbApp);
 
-        // Global olarak erişilebilir yap
-        window.firebaseDb = firebaseDb;
+        window.firebaseDb = _dbInstance;
         window.firebaseRef = ref;
         window.firebaseSet = set;
         window.firebaseGet = get;
@@ -41,65 +38,11 @@ async function initFirebase() {
         window.firebaseRemove = remove;
         window.firebaseUpdate = update;
 
-        firebaseReady = true;
-        console.log('🔥 Firebase bağlantısı başarılı!');
+        _dbReady = true;
         return true;
     } catch (error) {
-        console.error('❌ Firebase bağlantı hatası:', error);
+        console.error('Bağlantı hatası');
         return false;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📦 GENEL VERİ FONKSİYONLARI
-// ═══════════════════════════════════════════════════════════════
-
-// Veri kaydet (herhangi bir path'e)
-async function saveToFirebaseDB(path, data) {
-    if (!firebaseReady) await initFirebase();
-
-    try {
-        const dbRef = window.firebaseRef(window.firebaseDb, path);
-        await window.firebaseSet(dbRef, data);
-        console.log(`✅ ${path} kaydedildi!`);
-        return true;
-    } catch (error) {
-        console.error(`❌ ${path} kaydetme hatası:`, error);
-        return false;
-    }
-}
-
-// Veri oku (bir kerelik)
-async function getFromFirebaseDB(path) {
-    if (!firebaseReady) await initFirebase();
-
-    try {
-        const dbRef = window.firebaseRef(window.firebaseDb, path);
-        const snapshot = await window.firebaseGet(dbRef);
-        if (snapshot.exists()) {
-            return snapshot.val();
-        }
-        return null;
-    } catch (error) {
-        console.error(`❌ ${path} okuma hatası:`, error);
-        return null;
-    }
-}
-
-// Veri dinle (real-time)
-function listenToFirebaseDB(path, callback) {
-    if (!firebaseReady) {
-        initFirebase().then(() => {
-            const dbRef = window.firebaseRef(window.firebaseDb, path);
-            window.firebaseOnValue(dbRef, (snapshot) => {
-                callback(snapshot.exists() ? snapshot.val() : null);
-            });
-        });
-    } else {
-        const dbRef = window.firebaseRef(window.firebaseDb, path);
-        window.firebaseOnValue(dbRef, (snapshot) => {
-            callback(snapshot.exists() ? snapshot.val() : null);
-        });
     }
 }
 
@@ -108,123 +51,123 @@ function listenToFirebaseDB(path, callback) {
 // ═══════════════════════════════════════════════════════════════
 
 async function saveLiveMatchToFirebase(data) {
-    return await saveToFirebaseDB('liveMatch', data);
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'liveMatch'), data);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 async function getLiveMatchFromFirebase() {
-    return await getFromFirebaseDB('liveMatch');
+    if (!_dbReady) await initFirebase();
+    try {
+        const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'liveMatch'));
+        return snapshot.exists() ? snapshot.val() : null;
+    } catch (error) {
+        return null;
+    }
 }
 
 function listenLiveMatch(callback) {
-    listenToFirebaseDB('liveMatch', callback);
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'liveMatch'), (snapshot) => {
+            // Veri varsa veya null ise callback çağır (silme durumu için)
+            callback(snapshot.exists() ? snapshot.val() : { activeMatchId: 0, matches: [] });
+        });
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 📊 TÜM VERİ FONKSİYONLARI
+// 📊 TÜM VERİLER FONKSİYONLARI
 // ═══════════════════════════════════════════════════════════════
 
-// Tüm TribeData'yı kaydet
 async function saveAllDataToFirebase(data) {
-    return await saveToFirebaseDB('tribeData', data);
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'tribeData'), data);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
-// Tüm TribeData'yı oku
 async function getAllDataFromFirebase() {
-    return await getFromFirebaseDB('tribeData');
+    if (!_dbReady) await initFirebase();
+    try {
+        const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'tribeData'));
+        return snapshot.exists() ? snapshot.val() : null;
+    } catch (error) {
+        return null;
+    }
 }
 
-// Tüm TribeData'yı dinle
 function listenAllData(callback) {
-    listenToFirebaseDB('tribeData', callback);
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'tribeData'), (snapshot) => {
+            if (snapshot.exists()) callback(snapshot.val());
+        });
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 🏆 BÖLÜM BÖLÜM KAYDETME
+// 🏆 KUPA VERİLERİ
 // ═══════════════════════════════════════════════════════════════
 
-// Takımlar
-async function saveTeamsToFirebase(teams) {
-    return await saveToFirebaseDB('tribeData/teams', teams);
+async function saveZiraatKupasiToFirebase(data) {
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'ziraatKupasi'), data);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
-// Maçlar
-async function saveMatchesToFirebase(matches) {
-    return await saveToFirebaseDB('tribeData/matches', matches);
+async function saveSuperKupaToFirebase(data) {
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'superKupa'), data);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
-// Golcüler
-async function saveScorersToFirebase(scorers) {
-    return await saveToFirebaseDB('tribeData/scorers', scorers);
+function listenZiraatKupasi(callback) {
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'ziraatKupasi'), (snapshot) => {
+            if (snapshot.exists()) callback(snapshot.val());
+        });
+    });
 }
 
-// Asistler
-async function saveAssistsToFirebase(assists) {
-    return await saveToFirebaseDB('tribeData/assists', assists);
-}
-
-// Fikstür
-async function saveFixturesToFirebase(fixtures) {
-    return await saveToFirebaseDB('tribeData/fixtures', fixtures);
-}
-
-// Ziraat Kupası
-async function saveZiraatToFirebase(ziraat) {
-    return await saveToFirebaseDB('tribeData/ziraatKupasi', ziraat);
-}
-
-// Süper Kupa
-async function saveSuperKupaToFirebase(superKupa) {
-    return await saveToFirebaseDB('tribeData/superKupa', superKupa);
+function listenSuperKupa(callback) {
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'superKupa'), (snapshot) => {
+            if (snapshot.exists()) callback(snapshot.val());
+        });
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 🔄 BÖLÜM BÖLÜM DİNLEME
-// ═══════════════════════════════════════════════════════════════
-
-function listenTeams(callback) { listenToFirebaseDB('tribeData/teams', callback); }
-function listenMatches(callback) { listenToFirebaseDB('tribeData/matches', callback); }
-function listenScorers(callback) { listenToFirebaseDB('tribeData/scorers', callback); }
-function listenAssists(callback) { listenToFirebaseDB('tribeData/assists', callback); }
-function listenFixtures(callback) { listenToFirebaseDB('tribeData/fixtures', callback); }
-function listenZiraat(callback) { listenToFirebaseDB('tribeData/ziraatKupasi', callback); }
-function listenSuperKupa(callback) { listenToFirebaseDB('tribeData/superKupa', callback); }
-
-// ═══════════════════════════════════════════════════════════════
-// 🧪 TEST FONKSİYONU
+// 🧪 TEST
 // ═══════════════════════════════════════════════════════════════
 
 async function testFirebaseConnection() {
-    console.log('🧪 Firebase bağlantısı test ediliyor...');
-
     const success = await initFirebase();
-    if (!success) {
-        console.error('❌ Firebase başlatılamadı!');
-        return false;
-    }
-
-    const testData = {
-        test: true,
-        timestamp: Date.now(),
-        message: 'Tribe League Firebase bağlantısı çalışıyor!'
-    };
+    if (!success) return false;
 
     try {
-        await saveToFirebaseDB('connectionTest', testData);
-        const result = await getFromFirebaseDB('connectionTest');
-        if (result) {
-            console.log('✅ Firebase test BAŞARILI!');
-            return true;
-        }
+        const testData = { test: true, timestamp: Date.now() };
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'connectionTest'), testData);
+        const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'connectionTest'));
+        return snapshot.exists();
     } catch (error) {
-        console.error('❌ Test hatası:', error);
+        return false;
     }
-
-    return false;
 }
 
-// Sayfa yüklendiğinde Firebase'i başlat
-document.addEventListener('DOMContentLoaded', () => {
-    initFirebase();
-});
-
-console.log('🔥 Firebase config yüklendi!');
+// Sayfa yüklendiğinde başlat
+document.addEventListener('DOMContentLoaded', initFirebase);

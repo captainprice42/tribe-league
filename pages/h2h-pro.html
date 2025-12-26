@@ -722,8 +722,6 @@
 
     <!-- Merkezi Veri Dosyası -->
     <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -1197,16 +1195,7 @@
 
         // Initialize
         init();
-
-        // Listen for Firebase updates
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("H2H Pro Page: Data updated from Firebase, refreshing...");
-            init();
-        });
     </script>
-
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
 
     <!-- Theme Switcher -->
     <script src="../theme-switcher.js"></script>

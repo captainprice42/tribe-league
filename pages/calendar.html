@@ -878,16 +878,8 @@
 
         // Initialize
         renderCalendar();
-
-        window.addEventListener('firebaseDataUpdated', () => {
-            console.log("Calendar Page: Data updated, refreshing...");
-            renderCalendar();
-        });
     </script>
 
-    <script src="../data.js"></script>
-    <script src="../firebase-config.js"></script>
-    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>
