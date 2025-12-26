@@ -1871,9 +1871,6 @@
                     <div class="match-card-modern">
                         <div class="match-header">
                             <span class="match-week">Hafta ${match.week}</span>
-                            <label style="display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-muted);">
-                                <input type="checkbox" ${match.played ? 'checked' : ''} onchange="toggleMatchPlayed(${realIdx}, this.checked)" style="accent-color: var(--primary);"> Oynanmış
-                            </label>
                             <button class="delete-btn" onclick="deleteMatch(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
                         </div>
                         <div class="match-body">
@@ -1928,6 +1925,9 @@
             } else {
                 localData.matches[idx].awayScore = parseInt(value) || 0;
             }
+            // Skor girildiğinde otomatik olarak oynanmış say
+            localData.matches[idx].played = true;
+            renderMatches(); // Checkbox'u güncelle
             showSaved();
         }
 
@@ -3173,6 +3173,56 @@ ${matchesStr}
 
 window.LiveMatchData = LiveMatchData;
 console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.length });`;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔥 FİREBASE'E KAYDET
+        // ═══════════════════════════════════════════════════════════════
+        async function saveAllToFirebase() {
+            const statusEl = document.getElementById('globalFirebaseStatus');
+            statusEl.style.display = 'block';
+            statusEl.style.background = 'rgba(255, 165, 0, 0.2)';
+            statusEl.style.color = '#ffa502';
+            statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yayınlanıyor...';
+
+            try {
+                // Maçlar kısmındaki tüm maçları otomatik "played" yap
+                const playedMatches = localData.matches.map(m => ({ ...m, played: true }));
+
+                // TribeData formatında veri hazırla
+                const tribeData = {
+                    teams: localData.teams,
+                    matches: playedMatches,
+                    scorers: localData.scorers,
+                    assists: localData.assists,
+                    fixtures: localData.fixtures,
+                    ziraatKupasi: localData.ziraatKupasi,
+                    superKupa: localData.superKupa
+                };
+
+                // Firebase'e kaydet
+                const success = await saveAllDataToFirebase(tribeData);
+
+                if (success) {
+                    statusEl.style.background = 'rgba(46, 213, 115, 0.2)';
+                    statusEl.style.color = '#2ed573';
+                    statusEl.innerHTML = '<i class="fas fa-check"></i> Başarıyla yayınlandı!';
+
+                    // Canlı maç verilerini de kaydet
+                    await saveLiveMatchToFirebase(liveMatchData);
+
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 3000);
+                } else {
+                    throw new Error('Kayıt başarısız');
+                }
+            } catch (error) {
+                console.error('Firebase hata:', error);
+                statusEl.style.background = 'rgba(255, 71, 87, 0.2)';
+                statusEl.style.color = '#ff4757';
+                statusEl.innerHTML = '<i class="fas fa-times"></i> Hata oluştu!';
+            }
         }
 
         function showLiveMatchExport() {

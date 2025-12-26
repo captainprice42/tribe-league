@@ -284,14 +284,26 @@
         function init() {
             listenAllData((data) => {
                 dataLoaded = true;
-                fixturesData = data.matches || data.fixtures || [];
+
+                // Maçlar (oynanmış) VE Fikstür (oynanmamış) birleştir
+                const playedMatches = (data.matches || []).map(m => ({ ...m, played: true }));
+                const upcomingMatches = (data.fixtures || []).map(m => ({ ...m, played: false }));
+
+                // Birleştir ve hafta + sıraya göre sırala
+                fixturesData = [...playedMatches, ...upcomingMatches].sort((a, b) => {
+                    if (a.week !== b.week) return a.week - b.week;
+                    return 0;
+                });
+
                 teamsData = data.teams || {};
                 renderFixtures();
             });
 
             setTimeout(() => {
                 if (!dataLoaded && typeof TribeData !== 'undefined') {
-                    fixturesData = TribeData.matches || TribeData.fixtures || [];
+                    const playedMatches = (TribeData.matches || []).map(m => ({ ...m, played: true }));
+                    const upcomingMatches = (TribeData.fixtures || []).map(m => ({ ...m, played: false }));
+                    fixturesData = [...playedMatches, ...upcomingMatches];
                     teamsData = TribeData.teams || {};
                     renderFixtures();
                 }
