@@ -531,44 +531,7 @@
             margin-top: 5px;
         }
 
-        /* Goal Distribution */
-        .goal-minutes {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
 
-        .minute-bar {
-            text-align: center;
-        }
-
-        .minute-bar-container {
-            height: 100px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            overflow: hidden;
-        }
-
-        .minute-bar-a {
-            background: linear-gradient(180deg, var(--team-a), rgba(30, 144, 255, 0.5));
-            transition: height 0.5s ease;
-        }
-
-        .minute-bar-b {
-            background: linear-gradient(180deg, var(--team-b), rgba(255, 71, 87, 0.5));
-            transition: height 0.5s ease;
-        }
-
-        .minute-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
 
         /* Empty State */
         .empty-state {
@@ -630,9 +593,7 @@
                 justify-content: center;
             }
 
-            .goal-minutes {
-                grid-template-columns: repeat(3, 1fr);
-            }
+
         }
     </style>
 </head>
@@ -743,11 +704,7 @@
                 <div id="statsRows"></div>
             </div>
 
-            <!-- Goal Analysis by Minutes -->
-            <div class="chart-box" style="margin-bottom: 30px;">
-                <h3 class="chart-title"><i class="fas fa-clock"></i> Dakika Bazlı Gol Analizi</h3>
-                <div class="goal-minutes" id="goalMinutes"></div>
-            </div>
+
 
             <!-- Timeline -->
             <div class="timeline-section">
@@ -905,7 +862,7 @@
             updateFormChart(teamA, teamB);
             updateGoalsChart(teamA, teamB);
             updateWinRateChart(teamAId, teamBId);
-            updateGoalMinutes(teamA, teamB);
+
             updateTimeline(teamAId, teamBId);
         }
 
@@ -1179,29 +1136,7 @@
             });
         }
 
-        function updateGoalMinutes(teamA, teamB) {
-            // Simulated goal distribution by minute ranges
-            const minutes = [
-                { label: "0-15'", a: Math.floor(Math.random() * 5), b: Math.floor(Math.random() * 5) },
-                { label: "16-30'", a: Math.floor(Math.random() * 6), b: Math.floor(Math.random() * 6) },
-                { label: "31-45'", a: Math.floor(Math.random() * 4), b: Math.floor(Math.random() * 4) },
-                { label: "46-60'", a: Math.floor(Math.random() * 5), b: Math.floor(Math.random() * 5) },
-                { label: "61-75'", a: Math.floor(Math.random() * 7), b: Math.floor(Math.random() * 7) },
-                { label: "76-90'", a: Math.floor(Math.random() * 8), b: Math.floor(Math.random() * 8) }
-            ];
 
-            const maxGoal = Math.max(...minutes.flatMap(m => [m.a, m.b])) || 1;
-
-            document.getElementById('goalMinutes').innerHTML = minutes.map(m => `
-                <div class="minute-bar">
-                    <div class="minute-bar-container">
-                        <div class="minute-bar-b" style="height: ${(m.b / maxGoal) * 50}%"></div>
-                        <div class="minute-bar-a" style="height: ${(m.a / maxGoal) * 50}%"></div>
-                    </div>
-                    <div class="minute-label">${m.label}</div>
-                </div>
-            `).join('');
-        }
 
         function updateTimeline(teamAId, teamBId) {
             const key = getH2HKey(teamAId, teamBId);

@@ -74,7 +74,21 @@ const TribeData = {
             logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
             shortName: "GOZ",
             colors: { primary: "#FFCC00", secondary: "#D4001F" },
-            players: []
+            players: [
+                { "number": 1, "name": "B. Bayazıt", "position": "GK" },
+                { "number": 3, "name": "S. Denswil", "position": "DF" },
+                { "number": 2, "name": "M. Hosseini", "position": "DF" },
+                { "number": 4, "name": "R. Civelek", "position": "DF" },
+                { "number": 5, "name": "L. Carole", "position": "DF" },
+                { "number": 6, "name": "G. Jung", "position": "DF" },
+                { "number": 7, "name": "D. Toköz", "position": "MF" },
+                { "number": 8, "name": "João Mendes", "position": "MF" },
+                { "number": 9, "name": "Youssef Aït Bennasser", "position": "MF" },
+                { "number": 10, "name": "L. Benes", "position": "FW" },
+                { "number": 11, "name": "Carlos Mané", "position": "FW" },
+                { "number": 12, "name": "Miguel Cardoso", "position": "FW" },
+                { "number": 13, "name": "German Onugkha", "position": "FW" }
+            ]
         },
         "Gaziantep": {
             logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
@@ -252,6 +266,39 @@ const TribeData = {
         { week: 13, home: "Gençlerbirliği", away: "Samsunspor" },
         { week: 13, home: "Kayserispor", away: "Alanyaspor" }
     ],
+
+    // ═══════════════════════════════════════════════════════════════
+    // 🏆 ZİRAAT TÜRKİYE KUPASI - Son 16 Tur
+    // ═══════════════════════════════════════════════════════════════
+    ziraatKupasi: {
+        round: "Son 16",
+        season: "2024-2025",
+        matches: [
+            { id: 1, home: "Başakşehir", away: "Konyaspor", homeScore: null, awayScore: null, note: "" },
+            { id: 2, home: "Beşiktaş", away: "Antalyaspor", homeScore: null, awayScore: null, note: "" },
+            { id: 3, home: "Gaziantep", away: "Kayserispor", homeScore: null, awayScore: null, note: "" },
+            { id: 4, home: "Trabzonspor", away: "Gençlerbirliği", homeScore: null, awayScore: null, note: "" },
+            { id: 5, home: "Galatasaray", away: "Samsunspor", homeScore: null, awayScore: null, note: "" },
+            { id: 6, home: "Alanyaspor", away: "Fenerbahçe", homeScore: null, awayScore: null, note: "" }
+        ]
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // 🥇 SÜPER KUPA
+    // ═══════════════════════════════════════════════════════════════
+    superKupa: {
+        matches: [
+            { id: 1, label: "Yarı Final 1", home: "Galatasaray", away: "Beşiktaş", homeScore: null, awayScore: null },
+            { id: 2, label: "Yarı Final 2", home: "Fenerbahçe", away: "Trabzonspor", homeScore: null, awayScore: null },
+            { id: 3, label: "Final", home: "", away: "", homeScore: null, awayScore: null }
+        ],
+        standings: [
+            { team: "Galatasaray", played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: [] },
+            { team: "Fenerbahçe", played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: [] },
+            { team: "Beşiktaş", played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: [] },
+            { team: "Trabzonspor", played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: [] }
+        ]
+    },
 
     // ═══════════════════════════════════════════════════════════════
     // 🛠️ YARDIMCI FONKSİYONLAR

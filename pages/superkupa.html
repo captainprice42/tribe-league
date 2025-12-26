@@ -18,7 +18,8 @@
             --primary-glow: rgba(196, 255, 14, 0.4);
             --gold: #ffd700;
             --gold-glow: rgba(255, 215, 0, 0.4);
-            --secondary: #5742f5;
+            --green: #2ecc71;
+            --red: #dc3545;
             --text-main: #ffffff;
             --text-muted: #8b8b96;
             --border: rgba(255, 255, 255, 0.08);
@@ -33,6 +34,9 @@
 
         body {
             background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(196, 255, 14, 0.05) 0%, transparent 50%);
             color: var(--text-main);
             font-family: var(--font-body);
             padding: 0;
@@ -47,7 +51,6 @@
             padding: 30px;
             max-width: 1100px;
             margin: 30px auto;
-            position: relative;
         }
 
         /* Trophy Banner */
@@ -124,142 +127,6 @@
             letter-spacing: 4px;
         }
 
-        /* Edit Button */
-        .edit-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
-            color: #000;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--primary-glow);
-            z-index: 100;
-        }
-
-        .edit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--primary-glow);
-        }
-
-        /* Login Modal */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-overlay.active {
-            display: flex;
-        }
-
-        .login-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            width: 380px;
-            box-shadow: 0 0 60px var(--primary-glow);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-title {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            margin: 0 0 25px;
-            color: #fff;
-        }
-
-        .login-title i {
-            color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .login-input {
-            width: 100%;
-            background: #000;
-            border: 2px solid var(--border);
-            color: #fff;
-            padding: 14px 16px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .login-input:focus {
-            border-color: var(--primary);
-        }
-
-        .login-btn {
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 14px;
-            font-weight: bold;
-            font-family: var(--font-head);
-            font-size: 1.3rem;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: 0.3s;
-        }
-
-        .login-btn:hover {
-            box-shadow: 0 0 25px var(--primary-glow);
-        }
-
-        .login-error {
-            color: #ff4466;
-            margin-top: 15px;
-            display: none;
-            font-size: 0.9rem;
-        }
-
-        .login-close {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: #666;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .login-close:hover {
-            color: #fff;
-        }
-
         /* Section Titles */
         .section-title {
             font-family: var(--font-head);
@@ -269,10 +136,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .section-title i {
-            font-size: 1.5rem;
         }
 
         /* Bracket / Fixtures */
@@ -295,47 +158,36 @@
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 20px;
-            position: relative;
             transition: all 0.3s ease;
         }
 
         .match-card:hover {
-            border-color: rgba(196, 255, 14, 0.3);
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            border-color: var(--gold);
+            box-shadow: 0 5px 25px rgba(255, 215, 0, 0.15);
         }
 
         .match-label {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--primary);
-            color: #000;
+            display: block;
             font-family: var(--font-head);
-            font-size: 0.9rem;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-weight: 600;
+            font-size: 1rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
         }
 
         .match-teams {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 10px;
         }
 
         .team-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 10px;
-            transition: 0.3s;
-        }
-
-        .team-row:hover {
-            background: rgba(0, 0, 0, 0.5);
         }
 
         .team-info {
@@ -352,14 +204,14 @@
 
         .team-name {
             font-weight: 600;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
 
         .team-score {
             font-family: var(--font-head);
             font-size: 1.8rem;
             color: var(--primary);
-            min-width: 30px;
+            min-width: 40px;
             text-align: center;
         }
 
@@ -368,27 +220,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
         }
 
         .final-match {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.02) 100%);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%, rgba(255, 215, 0, 0.1) 100%);
             border: 2px solid var(--gold);
-            border-radius: 16px;
-            padding: 25px 30px;
-            min-width: 280px;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+            box-shadow: 0 0 30px var(--gold-glow);
         }
 
         .final-match .match-label {
-            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 100%);
-            color: #000;
-        }
-
-        .connector-line {
-            width: 50px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            font-size: 1.3rem;
+            color: var(--gold);
+            text-align: center;
         }
 
         /* Bracket Lines */
@@ -397,88 +240,73 @@
             flex-direction: column;
             align-items: center;
             gap: 0;
-            height: 100%;
-            justify-content: center;
+            height: 200px;
+            position: relative;
         }
 
         .bracket-line-top,
         .bracket-line-bottom {
-            width: 40px;
-            height: 60px;
-            border: 2px solid var(--border);
-            border-left: none;
-        }
-
-        .bracket-line-top {
-            border-bottom: none;
-            border-radius: 0 10px 0 0;
-        }
-
-        .bracket-line-bottom {
-            border-top: none;
-            border-radius: 0 0 10px 0;
+            width: 2px;
+            height: 50px;
+            background: var(--gold);
         }
 
         .bracket-horizontal {
-            width: 30px;
+            width: 60px;
             height: 2px;
-            background: var(--border);
+            background: var(--gold);
         }
 
         /* Standings Table */
-        .standings-section {
-            margin-top: 40px;
-        }
-
-        .modern-table {
+        .standings-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .modern-table th {
-            text-align: left;
-            padding: 15px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--primary);
+        .standings-table th {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
             font-family: var(--font-head);
-            font-size: 1.3rem;
-            text-transform: uppercase;
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--gold);
         }
 
-        .modern-table th:first-child {
-            border-radius: 10px 0 0 0;
+        .standings-table th:nth-child(2) {
+            text-align: left;
         }
 
-        .modern-table th:last-child {
-            border-radius: 0 10px 0 0;
-        }
-
-        .modern-table td {
-            padding: 15px 12px;
+        .standings-table td {
+            padding: 15px 10px;
             border-bottom: 1px solid var(--border);
-            vertical-align: middle;
+            text-align: center;
         }
 
-        .modern-table tr:last-child td {
-            border-bottom: none;
+        .standings-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
         }
 
         .rank-cell {
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 1.3rem;
             font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--gold);
         }
 
-        .team-flex {
+        .team-cell {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .points-box {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--gold) 0%, #ffed4a 100%);
             color: #000;
             padding: 6px 14px;
             border-radius: 8px;
@@ -492,16 +320,16 @@
             width: 22px;
             height: 22px;
             line-height: 22px;
-            margin: 0 2px;
             text-align: center;
             border-radius: 5px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            color: #fff;
+            margin: 0 2px;
         }
 
         .form-G {
-            background: #28a745;
+            background: var(--green);
+            color: #fff;
         }
 
         .form-B {
@@ -510,256 +338,8 @@
         }
 
         .form-M {
-            background: #dc3545;
-        }
-
-        .form-container {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .form-results {
-            display: flex;
-            gap: 3px;
-            align-items: center;
-        }
-
-        .form-item {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .form-item .form-remove {
-            display: none;
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 14px;
-            height: 14px;
-            background: #dc3545;
+            background: var(--red);
             color: #fff;
-            border-radius: 50%;
-            font-size: 10px;
-            line-height: 14px;
-            text-align: center;
-            cursor: pointer;
-            z-index: 5;
-        }
-
-        .edit-mode .form-item:hover .form-remove {
-            display: block;
-        }
-
-        .form-controls {
-            display: none;
-            gap: 4px;
-            align-items: center;
-            margin-left: 8px;
-            padding: 4px 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .edit-mode .form-controls {
-            display: flex;
-        }
-
-        .form-btn {
-            width: 26px;
-            height: 26px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 11px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .form-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .form-btn-G {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: #fff;
-        }
-
-        .form-btn-B {
-            background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
-            color: #000;
-        }
-
-        .form-btn-M {
-            background: linear-gradient(135deg, #dc3545 0%, #e74c5e 100%);
-            color: #fff;
-        }
-
-        .form-btn-clear {
-            background: rgba(255, 255, 255, 0.1);
-            color: #888;
-            font-size: 14px;
-            width: 22px;
-            height: 22px;
-        }
-
-        /* Edit Mode Styles */
-        .edit-mode [contenteditable="true"] {
-            outline: 2px dashed var(--primary);
-            outline-offset: 2px;
-            background: rgba(196, 255, 14, 0.05);
-            border-radius: 4px;
-            min-width: 30px;
-            padding: 2px 6px;
-        }
-
-        .edit-mode [contenteditable="true"]:focus {
-            outline: 2px solid var(--primary);
-            background: rgba(196, 255, 14, 0.15);
-        }
-
-        .delete-row {
-            display: none;
-            color: #dc3545;
-            cursor: pointer;
-            font-size: 1.1rem;
-            margin-left: 10px;
-            transition: 0.3s;
-        }
-
-        .edit-mode .delete-row {
-            display: inline-block !important;
-        }
-
-        .delete-row:hover {
-            color: #ff6b6b;
-            transform: scale(1.2);
-        }
-
-        /* Edit Toolbar */
-        .edit-toolbar {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 15px 20px;
-            gap: 12px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.3s ease;
-        }
-
-        .edit-toolbar.active {
-            display: flex;
-        }
-
-        .toolbar-btn {
-            background: #222;
-            color: #fff;
-            border: 1px solid var(--border);
-            padding: 12px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: var(--font-head);
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-
-        .toolbar-btn:hover {
-            background: #333;
-        }
-
-        .toolbar-btn.primary {
-            background: var(--primary);
-            color: #000;
-            border: none;
-        }
-
-        .toolbar-btn.primary:hover {
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .toolbar-btn.danger {
-            background: #dc3545;
-            border: none;
-        }
-
-        /* Export Modal */
-        .export-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .export-modal.active {
-            display: flex;
-        }
-
-        .export-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            width: 700px;
-            max-width: 90%;
-            padding: 30px;
-            border-radius: 16px;
-            animation: slideUp 0.4s ease;
-        }
-
-        .export-title {
-            font-family: var(--font-head);
-            font-size: 2rem;
-            color: var(--primary);
-            margin: 0 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .export-textarea {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
-            color: #e0e0e0;
-            border: 2px solid var(--border);
-            font-family: 'Outfit', 'Consolas', monospace;
-            font-size: 0.85rem;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 12px;
-            resize: none;
-            line-height: 1.5;
-            transition: 0.3s;
-        }
-
-        .export-textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(196, 255, 14, 0.15);
-            outline: none;
-        }
-
-        .export-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
         }
 
         @media (max-width: 768px) {
@@ -781,43 +361,7 @@
 
 <body>
 
-    <!-- LOGIN MODAL -->
-    <div class="login-overlay" id="loginOverlay">
-        <span class="login-close" onclick="closeLogin()">&times;</span>
-        <div class="login-box">
-            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
-            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" class="login-input" placeholder="Şifre">
-            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
-            <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
-        </div>
-    </div>
-
-    <!-- EXPORT MODAL -->
-    <div class="export-modal" id="exportModal">
-        <div class="export-box">
-            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
-            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın (CTRL+A sonra CTRL+C)</p>
-            <textarea id="exportCode" class="export-textarea" readonly></textarea>
-            <div class="export-actions">
-                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
-                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EDIT TOOLBAR -->
-    <div class="edit-toolbar" id="editToolbar">
-        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
-        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="special-container" id="mainContainer">
-        <button class="edit-btn" id="editBtn" onclick="openLogin()">
-            <i class="fas fa-edit"></i> DÜZENLE
-        </button>
-
+    <div class="special-container">
         <div class="header-banner">
             <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
             <h1>SÜPER KUPA</h1>
@@ -828,307 +372,163 @@
         <h2 class="section-title"><i class="fas fa-sitemap"></i> FİKSTÜR</h2>
 
         <div class="bracket-container">
-            <!-- Semi Finals Left -->
-            <div class="semi-finals">
-                <div class="match-card" id="semi1">
-                    <span class="match-label">YARI FİNAL 1</span>
-                    <div class="match-teams">
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm"
-                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png"
-                                    id="semi1-home-logo">
-                                <span class="team-name" id="semi1-home-name">Galatasaray</span>
-                            </div>
-                            <span class="team-score" id="semi1-home-score">-</span>
-                        </div>
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm"
-                                    src="https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png"
-                                    id="semi1-away-logo">
-                                <span class="team-name" id="semi1-away-name">Trabzonspor</span>
-                            </div>
-                            <span class="team-score" id="semi1-away-score">-</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="match-card" id="semi2">
-                    <span class="match-label">YARI FİNAL 2</span>
-                    <div class="match-teams">
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm"
-                                    src="https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png"
-                                    id="semi2-home-logo">
-                                <span class="team-name" id="semi2-home-name">Fenerbahçe</span>
-                            </div>
-                            <span class="team-score" id="semi2-home-score">-</span>
-                        </div>
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm"
-                                    src="https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png"
-                                    id="semi2-away-logo">
-                                <span class="team-name" id="semi2-away-name">Samsunspor</span>
-                            </div>
-                            <span class="team-score" id="semi2-away-score">-</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bracket Lines -->
+            <div class="semi-finals" id="semiFinalsLeft"></div>
             <div class="bracket-lines">
                 <div class="bracket-line-top"></div>
                 <div class="bracket-horizontal"></div>
                 <div class="bracket-line-bottom"></div>
             </div>
-
-            <!-- Final -->
-            <div class="final-section">
-                <div class="match-card final-match" id="final">
-                    <span class="match-label"><i class="fas fa-crown"></i> FİNAL</span>
-                    <div class="match-teams">
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm" src="https://via.placeholder.com/32?text=?"
-                                    id="final-home-logo">
-                                <span class="team-name" id="final-home-name">YF1 Kazananı</span>
-                            </div>
-                            <span class="team-score" id="final-home-score">-</span>
-                        </div>
-                        <div class="team-row">
-                            <div class="team-info">
-                                <img class="team-logo-sm" src="https://via.placeholder.com/32?text=?"
-                                    id="final-away-logo">
-                                <span class="team-name" id="final-away-name">YF2 Kazananı</span>
-                            </div>
-                            <span class="team-score" id="final-away-score">-</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="final-section" id="finalSection"></div>
         </div>
+
+        <!-- STANDINGS -->
+        <h2 class="section-title"><i class="fas fa-table"></i> PUAN DURUMU</h2>
+
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Takım</th>
+                    <th>O</th>
+                    <th>G</th>
+                    <th>B</th>
+                    <th>M</th>
+                    <th>A</th>
+                    <th>Y</th>
+                    <th>Av</th>
+                    <th>P</th>
+                    <th>Form</th>
+                </tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+        </table>
     </div>
 
+    <!-- Data -->
+    <script src="../data.js"></script>
+
     <script>
-        // --- TEAM LOGOS ---
-        const TEAM_LOGOS = {
-            "Galatasaray": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png",
-            "Fenerbahçe": "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-            "Beşiktaş": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png",
-            "Trabzonspor": "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png",
-            "Başakşehir": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png",
-            "Alanyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png",
-            "Eyüpspor": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png",
-            "Kayserispor": "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png",
-            "Gaziantep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png",
-            "Göztepe": "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png",
-            "Kasımpaşa": "https://upload.wikimedia.org/wikipedia/tr/thumb/6/68/Kasimpasa_2012.png/250px-Kasimpasa_2012.png",
-            "Samsunspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png",
-            "Antalyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png",
-            "Konyaspor": "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png",
-            "Gençlerbirliği": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png",
-            "Gençlerbirliği FK": "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png"
-        };
+        // TribeData'dan veri yükle
+        function init() {
+            renderMatches();
+            renderStandings();
+        }
 
         function getLogoUrl(name) {
             if (!name) return "https://via.placeholder.com/32?text=?";
-            const exact = TEAM_LOGOS[name.trim()];
-            if (exact) return exact;
-            const lower = name.trim().toLowerCase();
-            const foundKey = Object.keys(TEAM_LOGOS).find(k => k.toLowerCase() === lower);
-            if (foundKey) return TEAM_LOGOS[foundKey];
-            return "https://via.placeholder.com/32?text=?";
+            return TribeData?.teams[name]?.logo || "https://via.placeholder.com/32?text=" + name.charAt(0);
         }
 
-        // --- SHA-256 LOGIN ---
-        const _uHash = "b6f360c00899c231d3580106b4512d74253cbd2265d855edc8a2581d671032f2";
-        const _pHash = "69dd2706f9ebf21c1ae2654b3d5cd3b0e36afeb1cfb0ac71c01689226963456e";
+        function renderMatches() {
+            const matches = TribeData?.superKupa?.matches || [];
+            const container = document.getElementById('semiFinalsLeft');
+            const finalContainer = document.getElementById('finalSection');
 
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+            if (matches.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Henüz maç eklenmedi</p>';
+                return;
+            }
 
-        let isEditMode = false;
+            let semiHtml = '';
+            let finalHtml = '';
 
-        function openLogin() {
-            document.getElementById('loginOverlay').classList.add('active');
-            document.getElementById('username').focus();
-        }
+            matches.forEach((match, idx) => {
+                const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                const homeName = match.home || 'TBD';
+                const awayName = match.away || 'TBD';
+                const label = match.label || 'Maç ' + (idx + 1);
 
-        function closeLogin() {
-            document.getElementById('loginOverlay').classList.remove('active');
-            document.getElementById('loginError').style.display = 'none';
-        }
+                const isFinal = label.toLowerCase().includes('final') && !label.toLowerCase().includes('yarı');
+                const cardClass = isFinal ? 'match-card final-match' : 'match-card';
 
-        async function tryLogin() {
-            const uInput = document.getElementById('username').value.trim().toLowerCase();
-            const pInput = document.getElementById('password').value.trim();
+                const html = `
+                    <div class="${cardClass}">
+                        <span class="match-label">${isFinal ? '<i class="fas fa-crown"></i> ' : ''}${label.toUpperCase()}</span>
+                        <div class="match-teams">
+                            <div class="team-row">
+                                <div class="team-info">
+                                    <img class="team-logo-sm" src="${getLogoUrl(match.home)}">
+                                    <span class="team-name">${homeName}</span>
+                                </div>
+                                <span class="team-score">${homeScore}</span>
+                            </div>
+                            <div class="team-row">
+                                <div class="team-info">
+                                    <img class="team-logo-sm" src="${getLogoUrl(match.away)}">
+                                    <span class="team-name">${awayName}</span>
+                                </div>
+                                <span class="team-score">${awayScore}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-            try {
-                const uH = await sha256(uInput);
-                const pH = await sha256(pInput);
-
-                if (uH === _uHash && pH === _pHash) {
-                    closeLogin();
-                    enterEditMode();
+                if (isFinal) {
+                    finalHtml += html;
                 } else {
-                    throw new Error("Mismatch");
+                    semiHtml += html;
                 }
-            } catch (e) {
-                document.getElementById('loginError').style.display = 'block';
+            });
+
+            container.innerHTML = semiHtml;
+            finalContainer.innerHTML = finalHtml;
+        }
+
+        function renderStandings() {
+            const standings = TribeData?.superKupa?.standings || [];
+            const tbody = document.getElementById('standingsBody');
+
+            if (standings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="color: var(--text-muted); text-align: center;">Henüz veri yok</td></tr>';
+                return;
             }
-        }
 
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') tryLogin();
-        });
-
-        function enterEditMode() {
-            isEditMode = true;
-            document.getElementById('mainContainer').classList.add('edit-mode');
-            document.getElementById('editBtn').style.display = 'none';
-            document.getElementById('editToolbar').classList.add('active');
-
-            // Make fields editable
-            document.querySelectorAll('.team-name, .team-score').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
+            // Puana göre sırala
+            const sorted = [...standings].sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                const gdA = a.gf - a.ga;
+                const gdB = b.gf - b.ga;
+                if (gdB !== gdA) return gdB - gdA;
+                return b.gf - a.gf;
             });
 
-            // Stats cells (G, B, M, AV columns)
-            document.querySelectorAll('#standingsBody td:nth-child(4), #standingsBody td:nth-child(5), #standingsBody td:nth-child(6), #standingsBody td:nth-child(7)').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
+            let html = '';
+            sorted.forEach((team, idx) => {
+                const gd = team.gf - team.ga;
+                const form = (team.form || []).slice(-5).map(f =>
+                    `<span class="form-box form-${f}">${f}</span>`
+                ).join('');
+
+                html += `
+                    <tr>
+                        <td class="rank-cell">${idx + 1}</td>
+                        <td>
+                            <div class="team-cell">
+                                <img src="${getLogoUrl(team.team)}" class="team-logo-sm">
+                                ${team.team}
+                            </div>
+                        </td>
+                        <td>${team.played}</td>
+                        <td>${team.won}</td>
+                        <td>${team.draw}</td>
+                        <td>${team.lost}</td>
+                        <td>${team.gf}</td>
+                        <td>${team.ga}</td>
+                        <td>${gd > 0 ? '+' : ''}${gd}</td>
+                        <td><span class="points-box">${team.points}</span></td>
+                        <td>${form || '-'}</td>
+                    </tr>
+                `;
             });
 
-            // Points editable
-            document.querySelectorAll('.points-box').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
-            });
+            tbody.innerHTML = html;
         }
 
-        function exitEditMode() {
-            isEditMode = false;
-            document.getElementById('mainContainer').classList.remove('edit-mode');
-            document.getElementById('editBtn').style.display = 'flex';
-            document.getElementById('editToolbar').classList.remove('active');
-
-            document.querySelectorAll('[contenteditable]').forEach(el => {
-                el.removeAttribute('contenteditable');
-            });
-
-            // Update logos based on team names
-            updateAllLogos();
-            // Recalculate games played
-            recalculateStats();
-        }
-
-        function updateAllLogos() {
-            // Update bracket logos
-            ['semi1-home', 'semi1-away', 'semi2-home', 'semi2-away', 'final-home', 'final-away'].forEach(id => {
-                const nameEl = document.getElementById(id + '-name');
-                const logoEl = document.getElementById(id + '-logo');
-                if (nameEl && logoEl) {
-                    logoEl.src = getLogoUrl(nameEl.textContent);
-                }
-            });
-
-            // Update standings logos
-            document.querySelectorAll('#standingsBody tr').forEach(row => {
-                const nameEl = row.querySelector('.team-name');
-                const logoEl = row.querySelector('.team-logo-sm');
-                if (nameEl && logoEl) {
-                    logoEl.src = getLogoUrl(nameEl.textContent);
-                }
-            });
-        }
-
-        function recalculateStats() {
-            document.querySelectorAll('#standingsBody tr').forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 8) {
-                    const g = parseInt(cells[3].textContent) || 0;
-                    const b = parseInt(cells[4].textContent) || 0;
-                    const m = parseInt(cells[5].textContent) || 0;
-                    cells[2].textContent = g + b + m;
-                }
-            });
-        }
-
-        // Form controls
-        function addFormResult(btn, type) {
-            const container = btn.closest('.form-container');
-            const resultsDiv = container.querySelector('.form-results');
-
-            const item = document.createElement('span');
-            item.className = 'form-item';
-            item.innerHTML = `<span class="form-box form-${type}">${type}</span><span class="form-remove" onclick="removeFormItem(this)">×</span>`;
-            resultsDiv.appendChild(item);
-        }
-
-        function removeFormItem(el) {
-            el.closest('.form-item').remove();
-        }
-
-        function clearLastForm(btn) {
-            const container = btn.closest('.form-container');
-            const items = container.querySelectorAll('.form-item');
-            if (items.length > 0) {
-                items[items.length - 1].remove();
-            }
-        }
-
-        function deleteRow(el) {
-            if (confirm('Bu takımı silmek istediğinize emin misiniz?')) {
-                el.closest('tr').remove();
-                updateRanks();
-            }
-        }
-
-        function updateRanks() {
-            document.querySelectorAll('#standingsBody tr').forEach((row, index) => {
-                row.querySelector('.rank-cell').textContent = index + 1;
-            });
-        }
-
-        // Export HTML
-        function exportHTML() {
-            exitEditMode();
-
-            const clone = document.documentElement.cloneNode(true);
-
-            // Remove edit elements
-            clone.querySelectorAll('.login-overlay, .export-modal, .edit-toolbar, .edit-btn, .delete-row, .form-controls, .form-remove').forEach(el => el.remove());
-            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-            clone.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('edit-mode'));
-
-            const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-
-            document.getElementById('exportCode').value = html;
-            document.getElementById('exportModal').classList.add('active');
-        }
-
-        function closeExport() {
-            document.getElementById('exportModal').classList.remove('active');
-        }
-
-        function copyCode() {
-            const textarea = document.getElementById('exportCode');
-            textarea.select();
-            document.execCommand('copy');
-            alert('HTML kodu kopyalandı!');
-        }
-
-        // Initialize logos
-        document.addEventListener('DOMContentLoaded', updateAllLogos);
+        // Sayfa yüklendikten sonra başlat
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 
-    <!-- Theme Switcher -->
     <script src="../theme-switcher.js"></script>
 
 </body>

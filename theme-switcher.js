@@ -185,7 +185,7 @@
                     font-family: 'Teko', sans-serif;
                     font-size: 1.6rem;
                     font-weight: 700;
-                    color: var(--primary, #c4ff0e);
+                    color: var(--header-text, var(--primary, #c4ff0e));
                     text-decoration: none;
                     display: flex;
                     align-items: center;
@@ -207,7 +207,7 @@
                     justify-content: flex-end;
                 }
                 .tribe-nav-link {
-                    color: var(--text-main, #fff);
+                    color: var(--header-text, var(--text-main, #fff));
                     text-decoration: none;
                     padding: 10px 12px;
                     border-radius: 8px;
@@ -220,21 +220,22 @@
                     white-space: nowrap;
                 }
                 .tribe-nav-link:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    color: var(--primary, #c4ff0e);
+                    background: rgba(255, 255, 255, 0.15);
+                    color: var(--header-text, var(--primary, #c4ff0e));
+                    text-shadow: 0 0 10px var(--primary-glow, rgba(196, 255, 14, 0.4));
                 }
                 .tribe-nav-link.active {
-                    background: var(--primary, #c4ff0e);
-                    color: var(--text-on-primary, #000);
+                    background: var(--header-text, var(--primary, #c4ff0e));
+                    color: var(--bg-body, #000);
                 }
                 .tribe-nav-link i {
                     font-size: 0.8rem;
                 }
                 .tribe-nav-toggle {
                     display: none;
-                    background: var(--bg-card, #141419);
-                    border: 2px solid var(--border, rgba(255,255,255,0.1));
-                    color: var(--primary, #c4ff0e);
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 2px solid var(--header-text, var(--primary, #c4ff0e));
+                    color: var(--header-text, var(--primary, #c4ff0e));
                     font-size: 1.3rem;
                     cursor: pointer;
                     padding: 10px 14px;
@@ -242,7 +243,9 @@
                     transition: all 0.3s ease;
                 }
                 .tribe-nav-toggle:hover {
-                    border-color: var(--primary, #c4ff0e);
+                    background: rgba(255, 255, 255, 0.2);
+                    border-color: var(--header-text, var(--primary, #c4ff0e));
+                    box-shadow: 0 0 15px var(--primary-glow, rgba(196, 255, 14, 0.4));
                 }
                 
                 /* Tablet */
