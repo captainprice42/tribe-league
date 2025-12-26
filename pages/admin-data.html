@@ -3154,7 +3154,7 @@ ${matchesStr}
     calculateMinute(match) {
         if (!match) return 0;
         const now = Date.now();
-        const MINUTE_MS = 6300; // 1 oyun dakikası = 6 saniye
+        const MINUTE_MS = 6100; // 1 oyun dakikası = 6 saniye
         switch (match.status) {
             case "waiting": return 0;
             case "firstHalf":
