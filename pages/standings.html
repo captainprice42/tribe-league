@@ -355,18 +355,19 @@
             tbody.innerHTML = html;
         }
 
-        // Sadece Firebase'den veri yükle - data.js sadece fallback
+        // Sadece Firebase'den veri yükle
+        let dataLoaded = false;
+
         function init() {
-            // Firebase real-time listener - sadece bu kullanılacak
             listenAllData((data) => {
+                dataLoaded = true;
                 tribeData = data;
                 renderStandings(data);
             });
 
-            // 3 saniye içinde Firebase gelmezse data.js'i fallback olarak kullan
+            // 3 saniye fallback
             setTimeout(() => {
-                if (!tribeData && typeof TribeData !== 'undefined') {
-                    console.log('Firebase gecikmeli, fallback kullanılıyor');
+                if (!dataLoaded && typeof TribeData !== 'undefined') {
                     tribeData = TribeData;
                     renderStandings(TribeData);
                 }
