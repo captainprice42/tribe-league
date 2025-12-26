@@ -585,6 +585,69 @@
     <script>
         let currentMatchId = null;
         let minuteInterval = null;
+        let previousScores = {}; // Önceki skorları sakla
+
+        // 🔔 BİLDİRİM SİSTEMİ
+        let notificationsEnabled = false;
+
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    notificationsEnabled = permission === 'granted';
+                    if (notificationsEnabled) {
+                        showToast('🔔 Bildirimler açıldı! Gol olduğunda bildirim alacaksınız.');
+                    }
+                });
+            }
+        }
+
+        function sendGoalNotification(team, scorer, homeTeam, homeScore, awayTeam, awayScore) {
+            if (!notificationsEnabled) return;
+
+            const notification = new Notification('⚽ GOL!', {
+                body: `${scorer} (${team})\n${homeTeam} ${homeScore} - ${awayScore} ${awayTeam}`,
+                icon: 'https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/tr.svg',
+                tag: 'goal-notification',
+                requireInteraction: false
+            });
+
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+
+            // 5 saniye sonra kapat
+            setTimeout(() => notification.close(), 5000);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #c4ff0e, #a8d900);
+                color: #000;
+                padding: 15px 30px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideUp 0.3s ease;
+                box-shadow: 0 10px 40px rgba(196, 255, 14, 0.4);
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Sayfa yüklendiğinde izin iste
+        if ('Notification' in window && Notification.permission === 'granted') {
+            notificationsEnabled = true;
+        } else if ('Notification' in window && Notification.permission !== 'denied') {
+            // 2 saniye sonra izin iste
+            setTimeout(requestNotificationPermission, 2000);
+        }
 
         // Takım logolarını TribeData'dan al
         function getTeamLogo(teamName) {
@@ -749,9 +812,35 @@
         // Initialize
         // Veritabanından gelen veriyi işle
         function handleFirebaseData(data) {
-            // LiveMatchData'yı güncelle (boş array durumu dahil)
+            const newMatches = data?.matches || [];
+
+            // 🔔 Skor değişikliği kontrolü ve bildirim
+            newMatches.forEach(match => {
+                const prevKey = `match_${match.id}`;
+                const prev = previousScores[prevKey];
+
+                if (prev) {
+                    // Ev sahibi gol attı
+                    if (match.homeScore > prev.homeScore) {
+                        const lastEvent = match.events?.filter(e => e.type === 'goal' && e.team === match.home).pop();
+                        sendGoalNotification(match.home, lastEvent?.player || 'Bilinmiyor', match.home, match.homeScore, match.away, match.awayScore);
+                        showToast(`⚽ GOL! ${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`);
+                    }
+                    // Deplasman gol attı
+                    if (match.awayScore > prev.awayScore) {
+                        const lastEvent = match.events?.filter(e => e.type === 'goal' && e.team === match.away).pop();
+                        sendGoalNotification(match.away, lastEvent?.player || 'Bilinmiyor', match.home, match.homeScore, match.away, match.awayScore);
+                        showToast(`⚽ GOL! ${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`);
+                    }
+                }
+
+                // Mevcut skoru kaydet
+                previousScores[prevKey] = { homeScore: match.homeScore, awayScore: match.awayScore };
+            });
+
+            // LiveMatchData'yı güncelle
             LiveMatchData.activeMatchId = data?.activeMatchId || 0;
-            LiveMatchData.matches = data?.matches || [];
+            LiveMatchData.matches = newMatches;
 
             renderMatchesSidebar();
 

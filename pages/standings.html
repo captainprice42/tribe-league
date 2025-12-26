@@ -106,6 +106,85 @@
             background: rgba(196, 255, 14, 0.05);
         }
 
+        /* Animasyonlu Sıralama */
+        .standings-table tbody tr {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.4s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .standings-table tbody tr:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .standings-table tbody tr:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .standings-table tbody tr:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .standings-table tbody tr:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .standings-table tbody tr:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .standings-table tbody tr:nth-child(6) {
+            animation-delay: 0.3s;
+        }
+
+        .standings-table tbody tr:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+
+        .standings-table tbody tr:nth-child(8) {
+            animation-delay: 0.4s;
+        }
+
+        .standings-table tbody tr:nth-child(9) {
+            animation-delay: 0.45s;
+        }
+
+        .standings-table tbody tr:nth-child(10) {
+            animation-delay: 0.5s;
+        }
+
+        .standings-table tbody tr:nth-child(11) {
+            animation-delay: 0.55s;
+        }
+
+        .standings-table tbody tr:nth-child(12) {
+            animation-delay: 0.6s;
+        }
+
+        .standings-table tbody tr:nth-child(13) {
+            animation-delay: 0.65s;
+        }
+
+        .standings-table tbody tr:nth-child(14) {
+            animation-delay: 0.7s;
+        }
+
+        .rank-up {
+            background: linear-gradient(90deg, rgba(46, 213, 115, 0.2), transparent) !important;
+        }
+
+        .rank-down {
+            background: linear-gradient(90deg, rgba(255, 71, 87, 0.2), transparent) !important;
+        }
+
         .rank-cell {
             font-family: var(--font-head);
             font-size: 1.3rem;

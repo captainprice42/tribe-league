@@ -224,12 +224,13 @@
             }
 
             let html = '';
-            weekFixtures.forEach(match => {
+            weekFixtures.forEach((match, idx) => {
                 const homeScore = match.homeScore ?? '-';
                 const awayScore = match.awayScore ?? '-';
+                const matchIndex = fixturesData.indexOf(match);
 
                 html += `
-                    <div class="fixture-card">
+                    <div class="fixture-card" onclick="window.location.href='match-detail.html?id=${matchIndex}'" style="cursor: pointer;">
                         <div class="team-side">
                             <img class="team-logo" src="${getLogoUrl(match.home)}">
                             <span class="team-name">${match.home}</span>
