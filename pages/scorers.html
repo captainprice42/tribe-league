@@ -249,17 +249,20 @@
             tbody.innerHTML = html;
         }
 
+        let dataLoaded = false;
         function init() {
-            // Önce local data'dan göster
-            if (typeof TribeData !== 'undefined') {
-                renderScorers(TribeData.scorers, TribeData.teams);
-            }
-
-            // Firebase real-time listener
+            // Sadece Firebase'den yükle
             listenAllData((data) => {
-                console.log('🔥 Firebase güncellemesi alındı!');
+                dataLoaded = true;
                 renderScorers(data.scorers, data.teams);
             });
+
+            // 3 saniye fallback
+            setTimeout(() => {
+                if (!dataLoaded && typeof TribeData !== 'undefined') {
+                    renderScorers(TribeData.scorers, TribeData.teams);
+                }
+            }, 3000);
         }
 
         init();

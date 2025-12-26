@@ -355,20 +355,22 @@
             tbody.innerHTML = html;
         }
 
-        // Firebase'den dinle
+        // Sadece Firebase'den veri yükle - data.js sadece fallback
         function init() {
-            // Önce local data'dan göster
-            if (typeof TribeData !== 'undefined') {
-                tribeData = TribeData;
-                renderStandings(TribeData);
-            }
-
-            // Firebase real-time listener
+            // Firebase real-time listener - sadece bu kullanılacak
             listenAllData((data) => {
-                console.log('🔥 Firebase güncellemesi alındı!');
                 tribeData = data;
                 renderStandings(data);
             });
+
+            // 3 saniye içinde Firebase gelmezse data.js'i fallback olarak kullan
+            setTimeout(() => {
+                if (!tribeData && typeof TribeData !== 'undefined') {
+                    console.log('Firebase gecikmeli, fallback kullanılıyor');
+                    tribeData = TribeData;
+                    renderStandings(TribeData);
+                }
+            }, 3000);
         }
 
         init();

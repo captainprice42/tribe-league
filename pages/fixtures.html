@@ -256,20 +256,22 @@
             renderFixtures();
         }
 
+        let dataLoaded = false;
         function init() {
-            // Maçlar verisini kullan (fikstür + maç sonuçları aynı)
-            if (typeof TribeData !== 'undefined') {
-                fixturesData = TribeData.matches || TribeData.fixtures || [];
-                teamsData = TribeData.teams || {};
-                renderFixtures();
-            }
-
             listenAllData((data) => {
-                // Maçlar verisini al - fixtures yerine matches kullan
+                dataLoaded = true;
                 fixturesData = data.matches || data.fixtures || [];
                 teamsData = data.teams || {};
                 renderFixtures();
             });
+
+            setTimeout(() => {
+                if (!dataLoaded && typeof TribeData !== 'undefined') {
+                    fixturesData = TribeData.matches || TribeData.fixtures || [];
+                    teamsData = TribeData.teams || {};
+                    renderFixtures();
+                }
+            }, 3000);
         }
 
         init();
