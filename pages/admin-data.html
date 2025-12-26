@@ -1499,6 +1499,7 @@
 
     <!-- Data.js -->
     <script src="../data.js"></script>
+    <script src="../live-match.js"></script>
 
     <script>
         // Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
@@ -1544,6 +1545,12 @@
             localData.ziraatKupasi = JSON.parse(JSON.stringify(TribeData.ziraatKupasi || { round: "Son 16", matches: [] }));
             localData.superKupa = JSON.parse(JSON.stringify(TribeData.superKupa || { matches: [], standings: [] }));
 
+            // LiveMatchData'dan canlı maç verilerini yükle
+            if (typeof LiveMatchData !== 'undefined' && LiveMatchData.matches) {
+                liveMatchData.activeMatchId = LiveMatchData.activeMatchId || 0;
+                liveMatchData.matches = JSON.parse(JSON.stringify(LiveMatchData.matches));
+            }
+
             populateTeamSelects();
             renderWeekSelector();
             renderMatches();
@@ -1554,6 +1561,7 @@
             renderTeams();
             renderZiraatKupasi();
             renderSuperKupa();
+            renderLiveMatches();
         }
 
         // Login
