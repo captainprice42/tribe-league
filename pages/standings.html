@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 
 <head>
@@ -106,7 +106,7 @@
             background: rgba(196, 255, 14, 0.05);
         }
 
-        /* Animasyonlu SÄ±ralama */
+        /* Animasyonlu Sýralama */
         .standings-table tbody tr {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             animation: slideIn 0.4s ease forwards;
@@ -323,7 +323,7 @@
             </thead>
             <tbody id="standingsBody">
                 <tr>
-                    <td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> YÃ¼kleniyor...</td>
+                    <td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td>
                 </tr>
             </tbody>
         </table>
@@ -342,14 +342,14 @@
         function calculateStandings(matches, teams) {
             const standings = {};
 
-            // TÃ¼m takÄ±mlarÄ± baÅŸlat
+            // Tüm takýmlarý baþlat
             Object.keys(teams).forEach(name => {
                 standings[name] = {
                     name, played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0, form: []
                 };
             });
 
-            // MaÃ§larÄ± iÅŸle
+            // Maçlarý iþle
             matches.forEach(m => {
                 const home = standings[m.home];
                 const away = standings[m.away];
@@ -392,7 +392,7 @@
             const tbody = document.getElementById('standingsBody');
 
             if (standings.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" style="color: var(--text-muted); text-align: center; padding: 40px;">HenÃ¼z maÃ§ verisi yok</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" style="color: var(--text-muted); text-align: center; padding: 40px;">Henüz maç verisi yok</td></tr>';
                 return;
             }
 
@@ -434,7 +434,7 @@
             tbody.innerHTML = html;
         }
 
-        // Sadece Firebase'den veri yÃ¼kle
+        // Sadece Firebase'den veri yükle
         let dataLoaded = false;
 
         function init() {

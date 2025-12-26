@@ -1700,22 +1700,42 @@
         };
 
         let currentWeek = 1;
+        let dataLoaded = false;
 
-        // Initialize
-        function init() {
-            // TribeData'dan veri kopyala
-            localData.teams = JSON.parse(JSON.stringify(TribeData.teams));
-            localData.matches = JSON.parse(JSON.stringify(TribeData.matches));
-            localData.scorers = JSON.parse(JSON.stringify(TribeData.scorers));
-            localData.assists = JSON.parse(JSON.stringify(TribeData.assists));
-            localData.fixtures = JSON.parse(JSON.stringify(TribeData.fixtures));
-            localData.ziraatKupasi = JSON.parse(JSON.stringify(TribeData.ziraatKupasi || { round: "Son 16", matches: [] }));
-            localData.superKupa = JSON.parse(JSON.stringify(TribeData.superKupa || { matches: [], standings: [] }));
+        // Initialize - Firebase'den veri yükle
+        async function init() {
+            // Loading göster
+            document.getElementById('matchesList').innerHTML = '<p style="text-align:center; color:var(--text-muted); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Firebase\'den veriler yükleniyor...</p>';
 
-            // LiveMatchData'dan canlı maç verilerini yükle
-            if (typeof LiveMatchData !== 'undefined' && LiveMatchData.matches) {
-                liveMatchData.activeMatchId = LiveMatchData.activeMatchId || 0;
-                liveMatchData.matches = JSON.parse(JSON.stringify(LiveMatchData.matches));
+            // Firebase'den veri al
+            try {
+                const data = await getAllDataFromFirebase();
+                if (data) {
+                    localData.teams = data.teams || {};
+                    localData.matches = data.matches || [];
+                    localData.scorers = data.scorers || [];
+                    localData.assists = data.assists || [];
+                    localData.fixtures = data.fixtures || [];
+                    localData.ziraatKupasi = data.ziraatKupasi || { round: "Son 16", matches: [] };
+                    localData.superKupa = data.superKupa || { matches: [], standings: [] };
+                    dataLoaded = true;
+                    console.log('✅ Firebase\'den veriler yüklendi!');
+                } else {
+                    console.log('⚠️ Firebase\'de veri yok, boş başlatılıyor');
+                }
+            } catch (error) {
+                console.error('Firebase yükleme hatası:', error);
+            }
+
+            // Canlı maç verilerini de al
+            try {
+                const liveData = await getLiveMatchFromFirebase();
+                if (liveData) {
+                    liveMatchData.activeMatchId = liveData.activeMatchId || 0;
+                    liveMatchData.matches = liveData.matches || [];
+                }
+            } catch (error) {
+                console.error('Canlı maç yükleme hatası:', error);
             }
 
             populateTeamSelects();

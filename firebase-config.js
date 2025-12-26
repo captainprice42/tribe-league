@@ -171,3 +171,68 @@ async function testFirebaseConnection() {
 
 // Sayfa yüklendiğinde başlat
 document.addEventListener('DOMContentLoaded', initFirebase);
+
+// ═══════════════════════════════════════════════════════════════
+// 📦 TribeData UYUMLULUK KATMANI (data.js yerine)
+// ═══════════════════════════════════════════════════════════════
+
+// Global TribeData objesi - Firebase'den doldurulacak
+window.TribeData = {
+    teams: {},
+    matches: [],
+    scorers: [],
+    assists: [],
+    fixtures: [],
+    ziraatKupasi: { round: "Son 16", matches: [] },
+    superKupa: { matches: [], standings: [] },
+
+    // Helper fonksiyonlar
+    getTeamLogo: function (teamName) {
+        return this.teams[teamName]?.logo || 'https://via.placeholder.com/50?text=' + (teamName?.charAt(0) || '?');
+    },
+
+    calculateStandings: function () {
+        const standings = {};
+        Object.keys(this.teams).forEach(name => {
+            standings[name] = { name, played: 0, won: 0, draw: 0, lost: 0, gf: 0, ga: 0, points: 0 };
+        });
+
+        this.matches.forEach(m => {
+            const home = standings[m.home];
+            const away = standings[m.away];
+            if (!home || !away) return;
+
+            home.played++; away.played++;
+            home.gf += m.homeScore; home.ga += m.awayScore;
+            away.gf += m.awayScore; away.ga += m.homeScore;
+
+            if (m.homeScore > m.awayScore) {
+                home.won++; home.points += 3; away.lost++;
+            } else if (m.homeScore < m.awayScore) {
+                away.won++; away.points += 3; home.lost++;
+            } else {
+                home.draw++; away.draw++; home.points++; away.points++;
+            }
+        });
+
+        return Object.values(standings)
+            .filter(t => t.played > 0)
+            .sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga));
+    }
+};
+
+// Firebase'den TribeData'yı doldur
+async function loadTribeDataFromFirebase() {
+    try {
+        const data = await getAllDataFromFirebase();
+        if (data) {
+            Object.assign(window.TribeData, data);
+            console.log('📊 TribeData yüklendi!');
+        }
+    } catch (e) {
+        console.log('TribeData yüklenemedi');
+    }
+}
+
+// Sayfa yüklenince TribeData'yı doldur
+document.addEventListener('DOMContentLoaded', loadTribeDataFromFirebase);
