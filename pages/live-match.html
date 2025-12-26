@@ -893,6 +893,19 @@
             // 🔥 Firebase real-time listener başlat
             listenLiveMatch(handleFirebaseData);
             console.log('🔥 Firebase dinleme başlatıldı - anlık güncellemeler aktif!');
+
+            // TribeData (takım logoları) yüklenince tekrar render et
+            listenAllData((data) => {
+                if (data && data.teams) {
+                    Object.assign(TribeData.teams, data.teams);
+                    console.log('📊 Takım logoları yüklendi!');
+                    // Logoları güncelle
+                    renderMatchesSidebar();
+                    if (currentMatchId !== null) {
+                        renderSelectedMatch();
+                    }
+                }
+            });
         }
 
         init();

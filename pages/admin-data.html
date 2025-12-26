@@ -3150,18 +3150,20 @@ ${matchesStr}
         return this.matches.find(m => m.id === this.activeMatchId) || null;
     },
 
+    // 1 devre = 4 dakika (45 oyun dakikası = 240 saniye)
     calculateMinute(match) {
         if (!match) return 0;
         const now = Date.now();
+        const MINUTE_MS = 6300; // 1 oyun dakikası = 6 saniye
         switch (match.status) {
             case "waiting": return 0;
             case "firstHalf":
                 if (!match.startTimestamp) return 0;
-                return Math.min(45, Math.floor((now - match.startTimestamp) / 60000));
+                return Math.min(45, Math.floor((now - match.startTimestamp) / MINUTE_MS));
             case "halftime": return 45;
             case "secondHalf":
                 if (!match.halfStartTimestamp) return 45;
-                return 45 + Math.min(45, Math.floor((now - match.halfStartTimestamp) / 60000));
+                return 45 + Math.min(45, Math.floor((now - match.halfStartTimestamp) / MINUTE_MS));
             case "ended": return 90;
             default: return 0;
         }

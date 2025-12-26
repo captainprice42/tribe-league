@@ -40,10 +40,13 @@ const LiveMatchData = {
     },
 
     // Maçın mevcut dakikasını hesapla
+    // 1 devre = 4 dakika (45 oyun dakikası = 240 saniye)
+    // 1 oyun dakikası = 5333 ms (240000/45)
     calculateMinute(match) {
         if (!match) return 0;
 
         const now = Date.now();
+        const MINUTE_MS = 6000; // 1 oyun dakikası = 6 saniye
 
         switch (match.status) {
             case "waiting":
@@ -51,7 +54,7 @@ const LiveMatchData = {
 
             case "firstHalf":
                 if (!match.startTimestamp) return 0;
-                const firstHalfMin = Math.floor((now - match.startTimestamp) / 60000);
+                const firstHalfMin = Math.floor((now - match.startTimestamp) / MINUTE_MS);
                 return Math.min(firstHalfMin, 45); // Maksimum 45
 
             case "halftime":
@@ -59,7 +62,7 @@ const LiveMatchData = {
 
             case "secondHalf":
                 if (!match.halfStartTimestamp) return 45;
-                const secondHalfMin = Math.floor((now - match.halfStartTimestamp) / 60000);
+                const secondHalfMin = Math.floor((now - match.halfStartTimestamp) / MINUTE_MS);
                 return 45 + Math.min(secondHalfMin, 45); // Maksimum 90
 
             case "ended":
