@@ -1255,12 +1255,19 @@
             <h1><i class="fas fa-database"></i> Tribe League Veri Yönetimi</h1>
             <div class="header-actions">
                 <span class="status-saved" id="statusSaved"><i class="fas fa-check"></i> Değişiklikler kaydedildi</span>
+                <button class="btn" onclick="saveAllToFirebase()"
+                    style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: #fff; font-weight: bold;">
+                    <i class="fas fa-fire"></i> Tümünü Firebase'e Kaydet
+                </button>
                 <button class="btn btn-success" onclick="exportDataJS()"><i class="fas fa-download"></i> data.js
                     İndir</button>
                 <button class="btn btn-accent" onclick="showExportModal()"><i class="fas fa-code"></i> Kodu
                     Göster</button>
                 <button class="btn btn-danger" onclick="logout()" style="margin-left: 10px;"><i
                         class="fas fa-sign-out-alt"></i> Çıkış</button>
+            </div>
+            <div id="firebaseGlobalStatus"
+                style="display: none; padding: 10px 20px; border-radius: 10px; margin-top: 10px; text-align: center;">
             </div>
         </div>
 
@@ -1453,15 +1460,22 @@
 
             <p style="color: var(--text-muted); margin-bottom: 20px;">
                 <i class="fas fa-info-circle"></i> Canlı maç ekleyin, durumunu kontrol edin ve eventleri yönetin.
-                Sonra "Kodu Al" ile live-match.js dosyasını güncelleyin.
+                <strong style="color: var(--primary);">Firebase'e Kaydet</strong> ile anlık yayınlayın!
             </p>
 
-            <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="btn btn-primary" onclick="addLiveMatch()"><i class="fas fa-plus"></i> Yeni Maç
                     Ekle</button>
-                <button class="btn btn-accent" onclick="showLiveMatchExport()"><i class="fas fa-code"></i> Kodu
-                    Al</button>
+                <button class="btn btn-success" onclick="saveToFirebase()"
+                    style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); font-size: 1.1rem; padding: 12px 25px;">
+                    <i class="fas fa-fire"></i> Firebase'e Kaydet
+                </button>
+                <button class="btn btn-accent" onclick="showLiveMatchExport()"><i class="fas fa-code"></i> Kodu Al
+                    (Eski)</button>
             </div>
+
+            <div id="firebaseStatus"
+                style="display: none; padding: 10px 20px; border-radius: 10px; margin-bottom: 15px;"></div>
 
             <div id="liveMatchList"></div>
         </div>
@@ -1500,6 +1514,8 @@
     <!-- Data.js -->
     <script src="../data.js"></script>
     <script src="../live-match.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
@@ -1563,6 +1579,19 @@
             renderSuperKupa();
             renderLiveMatches();
         }
+
+        // Firebase'den veri geldiğinde admin verilerini güncelle
+        window.addEventListener('firebaseDataLoaded', () => {
+            console.log("Admin Panel: Firebase verisi yüklendi, localData güncelleniyor...");
+            init(); // Verileri TribeData'dan localData'ya yeniden çek
+        });
+
+        window.addEventListener('firebaseDataUpdated', () => {
+            // Sadece veri yüklendikten sonra (init bittikten sonra) güncelleme gelirse uyarı verilebilir
+            // Ama genellikle admin panelinde otomatik overwrite istemeyebiliriz.
+            // Şimdilik sadece konsola yazalım.
+            console.log("Admin Panel: Firebase'de veri değişti.");
+        });
 
         // Login
         async function login() {
@@ -2614,10 +2643,79 @@ console.log('📊 TribeData yüklendi!', {
         // ⚽ CANLI MAÇ YÖNETİMİ
         // ═══════════════════════════════════════════════════════════════
 
+        // 🔥 TÜM VERİYİ FİREBASE'E KAYDET
+        async function saveAllToFirebase() {
+            const statusDiv = document.getElementById('firebaseGlobalStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#ffd700';
+            statusDiv.style.color = '#000';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tüm veriler Firebase\'e kaydediliyor...';
+
+            try {
+                // TribeData benzeri obje oluştur
+                const allData = {
+                    teams: localData.teams,
+                    matches: localData.matches,
+                    scorers: localData.scorers,
+                    assists: localData.assists,
+                    fixtures: localData.fixtures,
+                    ziraatKupasi: localData.ziraatKupasi,
+                    superKupa: localData.superKupa,
+                    lastUpdate: new Date().toISOString()
+                };
+
+                const result = await saveAllDataToFirebase(allData);
+
+                if (result) {
+                    statusDiv.style.background = '#2ecc71';
+                    statusDiv.style.color = '#fff';
+                    statusDiv.innerHTML = '<i class="fas fa-check"></i> ✅ TÜM VERİLER Firebase\'e kaydedildi! Sayfalar otomatik güncellenecek.';
+
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 4000);
+                } else {
+                    throw new Error('Kaydetme başarısız');
+                }
+            } catch (error) {
+                statusDiv.style.background = '#dc3545';
+                statusDiv.style.color = '#fff';
+                statusDiv.innerHTML = '<i class="fas fa-times"></i> ❌ Hata: ' + error.message;
+            }
+        }
+
         let liveMatchData = {
             activeMatchId: 0,
             matches: []
         };
+
+        // 🔥 Firebase'e kaydet
+        async function saveToFirebase() {
+            const statusDiv = document.getElementById('firebaseStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#ffd700';
+            statusDiv.style.color = '#000';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Firebase\'e kaydediliyor...';
+
+            try {
+                const result = await saveLiveMatchToFirebase(liveMatchData);
+                if (result) {
+                    statusDiv.style.background = '#2ecc71';
+                    statusDiv.style.color = '#fff';
+                    statusDiv.innerHTML = '<i class="fas fa-check"></i> ✅ Firebase\'e kaydedildi! İzleyiciler anlık görecek.';
+
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 3000);
+                } else {
+                    throw new Error('Kaydetme başarısız');
+                }
+            } catch (error) {
+                statusDiv.style.background = '#dc3545';
+                statusDiv.style.color = '#fff';
+                statusDiv.innerHTML = '<i class="fas fa-times"></i> ❌ Hata: ' + error.message;
+            }
+        }
 
         // Yeni maç ekle
         function addLiveMatch() {

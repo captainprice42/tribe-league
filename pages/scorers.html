@@ -571,8 +571,16 @@
 
 
         TribeScorers.init();
+
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log("Scorers Page: Data updated, refreshing...");
+            TribeScorers.init();
+        });
     </script>
 
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 </body>
 

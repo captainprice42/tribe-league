@@ -567,6 +567,8 @@
 
     <!-- Data -->
     <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <script>
         function init() {
@@ -574,6 +576,12 @@
             renderStandings();
             updateStats();
         }
+
+        // Firebase güncellemelerini dinle
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log('🔥 Ziraat Kupası sayfası güncelleniyor...');
+            init();
+        });
 
         function getLogoUrl(name) {
             if (!name) return "https://via.placeholder.com/50?text=?";

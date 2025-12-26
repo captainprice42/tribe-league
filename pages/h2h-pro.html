@@ -722,6 +722,8 @@
 
     <!-- Merkezi Veri Dosyası -->
     <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -796,7 +798,7 @@
                 if (!h2h[key]) h2h[key] = [];
 
                 // Tarihi hafta numarasından tahmin et
-                const baseDate = new Date('2024-09-01');
+                const baseDate = new Date('2025-09-01');
                 baseDate.setDate(baseDate.getDate() + (match.week * 7));
 
                 const isFirst = [teamAKey, teamBKey].sort()[0] === teamAKey;
@@ -1195,7 +1197,16 @@
 
         // Initialize
         init();
+
+        // Listen for Firebase updates
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log("H2H Pro Page: Data updated from Firebase, refreshing...");
+            init();
+        });
     </script>
+
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <!-- Theme Switcher -->
     <script src="../theme-switcher.js"></script>

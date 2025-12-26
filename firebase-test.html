@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Test - Tribe League</title>
+    <style>
+        body {
+            background: #0a0a0e;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #141419;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #c4ff0e;
+            margin-bottom: 30px;
+        }
+
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .pending {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .success {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .error {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        button {
+            background: #c4ff0e;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #log {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-item {
+            margin: 5px 0;
+        }
+
+        .log-success {
+            color: #2ecc71;
+        }
+
+        .log-error {
+            color: #dc3545;
+        }
+
+        .log-info {
+            color: #ffd700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Bağlantı Testi</h1>
+
+        <div id="status" class="status pending">
+            ⏳ Test bekleniyor...
+        </div>
+
+        <button onclick="runTest()">🧪 Bağlantıyı Test Et</button>
+        <button onclick="writeTestData()">📝 Test Verisi Yaz</button>
+        <button onclick="readTestData()">📖 Test Verisi Oku</button>
+
+        <div id="log"></div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script>
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('log');
+            const item = document.createElement('div');
+            item.className = `log-item log-${type}`;
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(item);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        async function runTest() {
+            addLog('🔥 Firebase bağlantısı test ediliyor...', 'info');
+            updateStatus('⏳ Test yapılıyor...', 'pending');
+
+            try {
+                const result = await testFirebaseConnection();
+                if (result) {
+                    updateStatus('✅ Firebase bağlantısı başarılı!', 'success');
+                    addLog('✅ Bağlantı testi BAŞARILI!', 'success');
+                } else {
+                    updateStatus('❌ Bağlantı başarısız!', 'error');
+                    addLog('❌ Bağlantı testi BAŞARISIZ!', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Hata: ' + error.message, 'error');
+                addLog('❌ Hata: ' + error.message, 'error');
+            }
+        }
+
+        async function writeTestData() {
+            addLog('📝 Test verisi yazılıyor...', 'info');
+
+            const testMatch = {
+                activeMatchId: 0,
+                matches: [{
+                    id: 0,
+                    homeTeam: "Galatasaray",
+                    awayTeam: "Fenerbahçe",
+                    homeScore: 2,
+                    awayScore: 1,
+                    status: "firstHalf",
+                    startTimestamp: Date.now(),
+                    events: []
+                }]
+            };
+
+            const result = await saveLiveMatchToFirebase(testMatch);
+            if (result) {
+                addLog('✅ Test maç verisi kaydedildi!', 'success');
+            } else {
+                addLog('❌ Yazma hatası!', 'error');
+            }
+        }
+
+        async function readTestData() {
+            addLog('📖 Veri okunuyor...', 'info');
+
+            const data = await getLiveMatchFromFirebase();
+            if (data) {
+                addLog('✅ Veri okundu: ' + JSON.stringify(data).substring(0, 100) + '...', 'success');
+                console.log('Okunan veri:', data);
+            } else {
+                addLog('❌ Veri bulunamadı veya okuma hatası!', 'error');
+            }
+        }
+
+        // Sayfa yüklendiğinde log başlat
+        addLog('📄 Sayfa yüklendi, test için butona tıklayın.', 'info');
+    </script>
+</body>
+
+</html>

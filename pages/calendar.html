@@ -615,7 +615,7 @@
             </div>
             <div class="month-display">
                 <div class="month-name" id="monthName">Aralık</div>
-                <div class="year-name" id="yearName">2024</div>
+                <div class="year-name" id="yearName">2025</div>
             </div>
             <div class="month-arrow" onclick="changeMonth(1)">
                 <i class="fas fa-chevron-right"></i>
@@ -681,13 +681,13 @@
 
         // Sample matches data
         const matches = [
-            { date: '2024-12-22', home: 'Galatasaray', away: 'Fenerbahçe', score: '2-1', time: '21:00', week: 15 },
-            { date: '2024-12-22', home: 'Beşiktaş', away: 'Trabzonspor', score: null, time: '19:00', week: 15 },
-            { date: '2024-12-25', home: 'Başakşehir', away: 'Alanyaspor', score: null, time: '20:00', week: 16 },
-            { date: '2024-12-28', home: 'Fenerbahçe', away: 'Beşiktaş', score: null, time: '21:00', week: 16 },
-            { date: '2024-12-28', home: 'Trabzonspor', away: 'Galatasaray', score: null, time: '19:00', week: 16 },
-            { date: '2024-12-29', home: 'Antalyaspor', away: 'Konyaspor', score: null, time: '16:00', week: 16 },
-            { date: '2024-12-31', home: 'Galatasaray', away: 'Beşiktaş', score: null, time: '21:00', week: 17 },
+            { date: '2025-12-22', home: 'Galatasaray', away: 'Fenerbahçe', score: '2-1', time: '21:00', week: 15 },
+            { date: '2025-12-22', home: 'Beşiktaş', away: 'Trabzonspor', score: null, time: '19:00', week: 15 },
+            { date: '2025-12-25', home: 'Başakşehir', away: 'Alanyaspor', score: null, time: '20:00', week: 16 },
+            { date: '2025-12-28', home: 'Fenerbahçe', away: 'Beşiktaş', score: null, time: '21:00', week: 16 },
+            { date: '2025-12-28', home: 'Trabzonspor', away: 'Galatasaray', score: null, time: '19:00', week: 16 },
+            { date: '2025-12-29', home: 'Antalyaspor', away: 'Konyaspor', score: null, time: '16:00', week: 16 },
+            { date: '2025-12-31', home: 'Galatasaray', away: 'Beşiktaş', score: null, time: '21:00', week: 17 },
             { date: '2025-01-05', home: 'Fenerbahçe', away: 'Galatasaray', score: null, time: '21:00', week: 18 },
             { date: '2025-01-05', home: 'Beşiktaş', away: 'Başakşehir', score: null, time: '19:00', week: 18 },
             { date: '2025-01-12', home: 'Trabzonspor', away: 'Fenerbahçe', score: null, time: '21:00', week: 19 },
@@ -878,8 +878,16 @@
 
         // Initialize
         renderCalendar();
+
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log("Calendar Page: Data updated, refreshing...");
+            renderCalendar();
+        });
     </script>
 
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>

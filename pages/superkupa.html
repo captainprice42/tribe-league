@@ -406,6 +406,8 @@
 
     <!-- Data -->
     <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <script>
         // TribeData'dan veri yükle
@@ -413,6 +415,12 @@
             renderMatches();
             renderStandings();
         }
+
+        // Firebase güncellemelerini dinle
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log('🔥 Süper Kupa sayfası güncelleniyor...');
+            init();
+        });
 
         function getLogoUrl(name) {
             if (!name) return "https://via.placeholder.com/32?text=?";

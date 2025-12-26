@@ -10,21 +10,6 @@ const LiveMatchData = {
 
     // Tüm canlı maçlar
     matches: [
-
-        {
-            id: 0,
-            homeTeam: "Konyaspor",
-            awayTeam: "Antalyaspor",
-            homeScore: 1,
-            awayScore: 0,
-            status: "firstHalf",
-            startTimestamp: 1766748236929,
-            halfStartTimestamp: null,
-            endTimestamp: null,
-            events: [
-                { minute: 4, type: "goal", player: "Umut Nayır (P)", team: "home" }
-            ]
-        }
         // Örnek maç yapısı:
         // {
         //     id: 0,

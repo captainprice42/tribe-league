@@ -799,6 +799,8 @@
 
         <!-- TribeData yükle -->
         <script src="../data.js"></script>
+        <script src="../firebase-config.js"></script>
+        <script src="../firebase-data-loader.js"></script>
 
         <script>
             // TribeData'dan team verilerini al
@@ -1075,6 +1077,14 @@
             // Initialize
             teamsData = buildTeamsData();
             loadTeam('genclerbirligi');
+
+            // Listen for Firebase updates
+            window.addEventListener('firebaseDataUpdated', () => {
+                console.log("Team Page: Data updated from Firebase, refreshing...");
+                teamsData = buildTeamsData();
+                const currentId = document.getElementById('teamSelect').value || 'genclerbirligi';
+                loadTeam(currentId);
+            });
         </script>
 
         <script src="../theme-switcher.js"></script>

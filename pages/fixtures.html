@@ -568,10 +568,18 @@
 
         // Initialize
         renderFixtures();
+
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log("Fixtures Page: Data updated, refreshing...");
+            renderFixtures();
+        });
     </script>
 
 
     <!-- Harici Tema ve Navigasyon Sistemi -->
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>

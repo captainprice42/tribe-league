@@ -580,6 +580,8 @@
     <!-- Data -->
     <script src="../data.js"></script>
     <script src="../live-match.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
 
     <script>
         let currentMatchId = null;
@@ -746,7 +748,35 @@
         }
 
         // Initialize
+        // Firebase'den gelen veriyi işle
+        function handleFirebaseData(data) {
+            if (data && data.matches) {
+                // LiveMatchData'yı güncelle
+                LiveMatchData.activeMatchId = data.activeMatchId || 0;
+                LiveMatchData.matches = data.matches;
+
+                console.log('🔥 Firebase güncellemesi alındı:', data.matches.length, 'maç');
+
+                renderMatchesSidebar();
+
+                // Mevcut seçili maçı güncelle veya ilk canlı maçı seç
+                if (LiveMatchData.matches.length > 0) {
+                    const currentMatch = LiveMatchData.matches.find(m => m.id === currentMatchId);
+                    if (!currentMatch) {
+                        const liveMatch = LiveMatchData.matches.find(m =>
+                            m.status === 'firstHalf' || m.status === 'secondHalf' || m.status === 'halftime'
+                        );
+                        currentMatchId = liveMatch ? liveMatch.id : LiveMatchData.matches[0].id;
+                    }
+                    renderSelectedMatch();
+                }
+            }
+        }
+
         function init() {
+            console.log('🎮 Canlı maç sayfası başlatılıyor...');
+
+            // Önce local veriden başlat
             renderMatchesSidebar();
 
             // İlk aktif maçı seç veya ilk maçı
@@ -763,6 +793,10 @@
                 updateMinute();
                 renderMatchesSidebar();
             }, 1000);
+
+            // 🔥 Firebase real-time listener başlat
+            listenLiveMatch(handleFirebaseData);
+            console.log('🔥 Firebase dinleme başlatıldı - anlık güncellemeler aktif!');
         }
 
         init();

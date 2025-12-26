@@ -484,10 +484,16 @@
         // Initialize
         renderStandings();
 
-
+        window.addEventListener('firebaseDataUpdated', () => {
+            console.log("Standings Page: Data updated, refreshing...");
+            renderStandings();
+        });
     </script>
 
     <!-- Harici Tema ve Navigasyon Sistemi -->
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+    <script src="../firebase-data-loader.js"></script>
     <script src="../theme-switcher.js"></script>
 
 </body>
