@@ -799,6 +799,7 @@
 
         <!-- TribeData yükle -->
         <script src="../data.js"></script>
+        <script src="../firebase-config.js"></script>
 
         <script>
             // TribeData'dan team verilerini al
@@ -1075,6 +1076,22 @@
             // Initialize
             teamsData = buildTeamsData();
             loadTeam('genclerbirligi');
+
+            // Firebase real-time listener - anlık güncelleme
+            listenAllData((data) => {
+                console.log('Takım verileri güncellendi!');
+                // TribeData'yı güncelle
+                if (data.teams) {
+                    Object.assign(TribeData.teams, data.teams);
+                }
+                if (data.matches) {
+                    TribeData.matches = data.matches;
+                }
+                // Yeniden build et
+                teamsData = buildTeamsData();
+                // Mevcut takımı yeniden yükle
+                loadTeam(currentTeam);
+            });
         </script>
 
         <script src="../theme-switcher.js"></script>

@@ -257,15 +257,16 @@
         }
 
         function init() {
+            // Maçlar verisini kullan (fikstür + maç sonuçları aynı)
             if (typeof TribeData !== 'undefined') {
-                fixturesData = TribeData.fixtures || [];
+                fixturesData = TribeData.matches || TribeData.fixtures || [];
                 teamsData = TribeData.teams || {};
                 renderFixtures();
             }
 
             listenAllData((data) => {
-                console.log('🔥 Firebase güncellemesi alındı!');
-                fixturesData = data.fixtures || [];
+                // Maçlar verisini al - fixtures yerine matches kullan
+                fixturesData = data.matches || data.fixtures || [];
                 teamsData = data.teams || {};
                 renderFixtures();
             });
