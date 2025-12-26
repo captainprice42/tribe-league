@@ -1871,6 +1871,9 @@
                     <div class="match-card-modern">
                         <div class="match-header">
                             <span class="match-week">Hafta ${match.week}</span>
+                            <label style="display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-muted);">
+                                <input type="checkbox" ${match.played ? 'checked' : ''} onchange="toggleMatchPlayed(${realIdx}, this.checked)" style="accent-color: var(--primary);"> Oynanmış
+                            </label>
                             <button class="delete-btn" onclick="deleteMatch(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
                         </div>
                         <div class="match-body">
@@ -1911,6 +1914,11 @@
                 localData.matches[idx].away = teamName;
             }
             renderMatches(); // Re-render to update logos
+            showSaved();
+        }
+
+        function toggleMatchPlayed(idx, isPlayed) {
+            localData.matches[idx].played = isPlayed;
             showSaved();
         }
 
