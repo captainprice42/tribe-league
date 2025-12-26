@@ -2717,8 +2717,10 @@ console.log('📊 TribeData yüklendi!', {
                             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
                                 <button class="btn" onclick="addLiveEvent(${idx}, 'goal', 'home')" style="background: #2ecc71;"><i class="fas fa-futbol"></i> Ev Gol</button>
                                 <button class="btn" onclick="addLiveEvent(${idx}, 'goal', 'away')" style="background: #2ecc71;"><i class="fas fa-futbol"></i> Dep Gol</button>
-                                <button class="btn" onclick="addLiveEvent(${idx}, 'yellow', 'home')" style="background: #ffd700; color: #000;"><i class="fas fa-square"></i> Sarı</button>
-                                <button class="btn" onclick="addLiveEvent(${idx}, 'red', 'home')" style="background: #dc3545;"><i class="fas fa-square"></i> Kırmızı</button>
+                                <button class="btn" onclick="addLiveEvent(${idx}, 'yellow', 'home')" style="background: #ffd700; color: #000;"><i class="fas fa-square"></i> Ev Sarı</button>
+                                <button class="btn" onclick="addLiveEvent(${idx}, 'yellow', 'away')" style="background: #ffd700; color: #000;"><i class="fas fa-square"></i> Dep Sarı</button>
+                                <button class="btn" onclick="addLiveEvent(${idx}, 'red', 'home')" style="background: #dc3545;"><i class="fas fa-square"></i> Ev Kırmızı</button>
+                                <button class="btn" onclick="addLiveEvent(${idx}, 'red', 'away')" style="background: #dc3545;"><i class="fas fa-square"></i> Dep Kırmızı</button>
                             </div>
                             ${match.events.length > 0 ? `
                                 <div style="max-height: 150px; overflow-y: auto;">
