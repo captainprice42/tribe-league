@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 
 <head>
@@ -296,10 +296,227 @@
                 font-size: 9px;
             }
         }
+
+        /* ŞAMPİYON ANİMASYONU */
+        .champion-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #000000ee, #1a1a1aee);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: championFadeIn 0.5s ease-out;
+        }
+
+        .champion-overlay.hiding {
+            animation: championFadeOut 0.8s ease-in forwards;
+        }
+
+        @keyframes championFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes championFadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .champion-trophy {
+            font-size: 6rem;
+            color: #ffd700;
+            animation: trophyBounce 1s ease infinite, trophyGlow 1.5s ease-in-out infinite;
+            text-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes trophyBounce {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+        }
+
+        @keyframes trophyGlow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px #ffd700);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 60px #ffed4a);
+            }
+        }
+
+        .champion-text {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-top: 20px;
+            animation: textPulse 0.8s ease-in-out infinite alternate;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .champion-team {
+            font-family: var(--font-head);
+            font-size: 6rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            margin-top: 10px;
+            animation: teamZoom 1.2s ease-out forwards;
+            text-shadow: 0 5px 30px rgba(0, 0, 0, 0.5), 0 0 50px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes textPulse {
+            from {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            to {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        @keyframes teamZoom {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .champion-stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            color: #ffd700;
+            animation: starFall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes starFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .champion-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-top: 30px;
+            animation: logoSpin 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+        }
+
+        @keyframes logoSpin {
+
+            0%,
+            100% {
+                transform: rotateY(0deg);
+            }
+
+            50% {
+                transform: rotateY(180deg);
+            }
+        }
+
+        .skip-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            transition: all 0.3s;
+        }
+
+        .skip-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .champion-text {
+                font-size: 2rem;
+                letter-spacing: 5px;
+            }
+
+            .champion-team {
+                font-size: 3rem;
+                letter-spacing: 8px;
+            }
+
+            .champion-trophy {
+                font-size: 4rem;
+            }
+
+            .champion-logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- ŞAMPİYON OVERLAY -->
+    <div class="champion-overlay" id="championOverlay">
+        <div class="champion-stars" id="championStars"></div>
+        <i class="fas fa-trophy champion-trophy"></i>
+        <div class="champion-text">ŞAMPİYON</div>
+        <div class="champion-team">BEŞİKTAŞ</div>
+        <img class="champion-logo"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Logo_of_Be%C5%9Fikta%C5%9F_JK.svg/1200px-Logo_of_Be%C5%9Fikta%C5%9F_JK.svg.png"
+            alt="Beşiktaş">
+        <button class="skip-btn" onclick="closeChampionOverlay()"><i class="fas fa-forward"></i> Geç</button>
+    </div>
+
     <div class="special-container">
         <div class="header-banner">
             <h1><i class="fas fa-trophy"></i> PUAN DURUMU</h1>
@@ -452,6 +669,32 @@
                 }
             }, 3000);
         }
+
+        // Şampiyon animasyonu için yıldızlar
+        function createStars() {
+            const container = document.getElementById('championStars');
+            const symbols = ['★', '✦', '✧', '⭐', '🏆'];
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('span');
+                star.className = 'star';
+                star.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        function closeChampionOverlay() {
+            const overlay = document.getElementById('championOverlay');
+            overlay.classList.add('hiding');
+            setTimeout(() => overlay.remove(), 800);
+        }
+
+        // 5 saniye sonra otomatik kapat
+        setTimeout(closeChampionOverlay, 5000);
+        createStars();
 
         init();
     </script>
