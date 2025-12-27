@@ -2,6 +2,7 @@
 <html lang="tr">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tribe League - Veri Yönetim Paneli</title>
@@ -3005,6 +3006,78 @@ console.log('📊 TribeData yüklendi!', {
                             </button>
                         </div>
 
+                        <!-- ⏸️ SÜRE KONTROLÜ -->
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                            <div style="font-family: 'Teko', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 10px;">
+                                <i class="fas fa-stopwatch"></i> Süre Kontrolü
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn" onclick="toggleTimerPause(${idx})" style="background: ${match.timerPaused ? '#2ecc71' : '#e74c3c'};">
+                                    <i class="fas ${match.timerPaused ? 'fa-play' : 'fa-pause'}"></i> 
+                                    ${match.timerPaused ? 'Süreyi Başlat' : 'Süreyi Durdur'}
+                                </button>
+                                <span style="display: flex; align-items: center; color: var(--text-muted);">
+                                    ${match.timerPaused ? '⏸️ DURDU' : '▶️ Devam Ediyor'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 📺 VAR İNCELEMESİ -->
+                        <div style="background: linear-gradient(135deg, rgba(0,100,200,0.2), rgba(0,50,100,0.3)); border: 1px solid rgba(0,150,255,0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                            <div style="font-family: 'Teko', sans-serif; font-size: 1.2rem; color: #00d4ff; margin-bottom: 10px;">
+                                <i class="fas fa-tv"></i> VAR İncelemesi
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                                <button class="btn" onclick="startVarReview(${idx}, 'penalty')" style="background: linear-gradient(135deg, #0066cc, #004499); border: 2px solid #00aaff;">
+                                    <i class="fas fa-search"></i> Penaltı İncelemesi
+                                </button>
+                                <button class="btn" onclick="startVarReview(${idx}, 'offside')" style="background: linear-gradient(135deg, #0066cc, #004499); border: 2px solid #00aaff;">
+                                    <i class="fas fa-search"></i> Ofsayt İncelemesi
+                                </button>
+                                <button class="btn" onclick="startVarReview(${idx}, 'redcard')" style="background: linear-gradient(135deg, #0066cc, #004499); border: 2px solid #00aaff;">
+                                    <i class="fas fa-search"></i> Kırmızı Kart İncelemesi
+                                </button>
+                            </div>
+                            ${match.varReview ? `
+                                <div style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 15px; margin-top: 10px; animation: pulse 1s infinite;">
+                                    <div style="color: #00d4ff; font-weight: bold; margin-bottom: 10px;">
+                                        📺 VAR İNCELİYOR: ${match.varReview === 'penalty' ? 'PENALTI' : match.varReview === 'offside' ? 'OFSAYT' : 'KIRMIZI KART'}
+                                    </div>
+                                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        ${match.varReview === 'penalty' ? `
+                                            <div style="margin-bottom: 10px; color: #fff;">Hangi takım penaltı kullanacak?</div>
+                                            <button class="btn" onclick="varDecision(${idx}, 'penalty', true, 'home')" style="background: #27ae60;">
+                                                <i class="fas fa-check"></i> ${match.homeTeam} - PENALTI
+                                            </button>
+                                            <button class="btn" onclick="varDecision(${idx}, 'penalty', true, 'away')" style="background: #27ae60;">
+                                                <i class="fas fa-check"></i> ${match.awayTeam} - PENALTI
+                                            </button>
+                                            <button class="btn" onclick="varDecision(${idx}, 'penalty', false)" style="background: #e74c3c;">
+                                                <i class="fas fa-times"></i> PENALTI YOK
+                                            </button>
+                                        ` : match.varReview === 'offside' ? `
+                                            <button class="btn" onclick="varDecision(${idx}, 'offside', true)" style="background: #e74c3c;">
+                                                <i class="fas fa-flag"></i> OFSAYT VAR
+                                            </button>
+                                            <button class="btn" onclick="varDecision(${idx}, 'offside', false)" style="background: #27ae60;">
+                                                <i class="fas fa-check"></i> OFSAYT YOK - GOL
+                                            </button>
+                                        ` : `
+                                            <button class="btn" onclick="varDecision(${idx}, 'redcard', true)" style="background: #e74c3c;">
+                                                <i class="fas fa-square"></i> KIRMIZI KART
+                                            </button>
+                                            <button class="btn" onclick="varDecision(${idx}, 'redcard', false)" style="background: #27ae60;">
+                                                <i class="fas fa-check"></i> KART YOK
+                                            </button>
+                                        `}
+                                        <button class="btn" onclick="cancelVarReview(${idx})" style="background: #7f8c8d;">
+                                            <i class="fas fa-times"></i> İptal
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+
                         <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px;">
                             <div style="font-family: 'Teko', sans-serif; font-size: 1.2rem; color: var(--primary); margin-bottom: 10px;">
                                 <i class="fas fa-stream"></i> Olaylar (${match.events.length})
@@ -3099,6 +3172,98 @@ console.log('📊 TribeData yüklendi!', {
         function deleteLiveEvent(matchIdx, eventIdx) {
             liveMatchData.matches[matchIdx].events.splice(eventIdx, 1);
             renderLiveMatches();
+        }
+
+        // ⏸️ Süre Durdur/Başlat
+        function toggleTimerPause(idx) {
+            const match = liveMatchData.matches[idx];
+            if (!match.timerPaused) {
+                // Durdur - geçen süreyi kaydet
+                match.timerPaused = true;
+                match.pausedAt = Date.now();
+                match.pausedMinute = LiveMatchData.calculateMinute(match);
+            } else {
+                // Devam et - timestamp'leri ayarla
+                match.timerPaused = false;
+                const pauseDuration = Date.now() - match.pausedAt;
+                if (match.startTimestamp) match.startTimestamp += pauseDuration;
+                if (match.halfStartTimestamp) match.halfStartTimestamp += pauseDuration;
+                delete match.pausedAt;
+                delete match.pausedMinute;
+            }
+            renderLiveMatches();
+            saveLiveMatchToFirebase(liveMatchData);
+        }
+
+        // 📺 VAR İncelemesi Başlat
+        function startVarReview(idx, type) {
+            const match = liveMatchData.matches[idx];
+            match.varReview = type;
+            match.varReviewing = true; // İzleyicilere göster
+            match.varReviewType = type === 'penalty' ? 'PENALTI' : type === 'offside' ? 'OFSAYT' : 'KIRMIZI KART';
+            // Süreyi otomatik durdur
+            if (!match.timerPaused) {
+                toggleTimerPause(idx);
+            }
+            renderLiveMatches();
+            saveLiveMatchToFirebase(liveMatchData);
+        }
+
+        // VAR Kararı
+        function varDecision(idx, type, decision, team = null) {
+            const match = liveMatchData.matches[idx];
+            const minute = match.pausedMinute || LiveMatchData.calculateMinute(match);
+
+            // Olayı ekle
+            let eventText = '';
+            if (type === 'penalty') {
+                const teamName = team === 'home' ? match.homeTeam : match.awayTeam;
+                eventText = decision ? `VAR: Penaltı kararı (${teamName})` : 'VAR: Penaltı iptal';
+                // Penaltı verildi - animasyonu tetikle
+                if (decision && team) {
+                    match.penaltyActive = true;
+                    match.penaltyTeam = teamName;
+                    match.penaltySide = team; // home veya away
+                }
+            } else if (type === 'offside') {
+                eventText = decision ? 'VAR: Ofsayt - Gol iptal' : 'VAR: Ofsayt yok - Gol geçerli';
+            } else if (type === 'redcard') {
+                eventText = decision ? 'VAR: Kırmızı kart' : 'VAR: Kart iptal';
+            }
+
+            match.events.push({
+                minute: minute,
+                type: 'var',
+                player: eventText,
+                team: 'var'
+            });
+
+            // VAR incelemesini kapat
+            delete match.varReview;
+            delete match.varReviewing;
+            delete match.varReviewType;
+
+            // Süreyi devam ettir
+            if (match.timerPaused) {
+                toggleTimerPause(idx);
+            }
+
+            renderLiveMatches();
+            saveLiveMatchToFirebase(liveMatchData);
+        }
+
+        // VAR İptal
+        function cancelVarReview(idx) {
+            const match = liveMatchData.matches[idx];
+            delete match.varReview;
+            delete match.varReviewing;
+            delete match.varReviewType;
+            // Süreyi devam ettir
+            if (match.timerPaused) {
+                toggleTimerPause(idx);
+            }
+            renderLiveMatches();
+            saveLiveMatchToFirebase(liveMatchData);
         }
 
         // Maç sil
@@ -3248,4 +3413,4 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
     <script src="../theme-switcher.js"></script>
 </body>
 
-</html>
+</html>+

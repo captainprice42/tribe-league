@@ -2,6 +2,7 @@
 <html lang="tr">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canlı Maç - Tribe League</title>
@@ -509,10 +510,351 @@
             color: var(--text-muted);
             opacity: 0.7;
         }
+
+        /* ⚽ PENALTI OVERLAY */
+        .penalty-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .penalty-overlay.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .penalty-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .penalty-field {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(to bottom, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .penalty-goal {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 100px;
+            border: 8px solid #fff;
+            border-bottom: none;
+            background: rgba(0, 0, 0, 0.3);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .goal-zone {
+            border-right: 2px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .goal-zone:last-child {
+            border-right: none;
+        }
+
+        .penalty-net {
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 284px;
+            height: 85px;
+            background: repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.1) 10px,
+                    rgba(255, 255, 255, 0.1) 12px),
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.1) 10px,
+                    rgba(255, 255, 255, 0.1) 12px);
+        }
+
+        .penalty-ball {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #fff 0%, #ccc 50%, #999 100%);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .penalty-ball.shooting {
+            animation: shootBall 0.5s ease-out forwards;
+        }
+
+        .penalty-ball.shoot-left {
+            --end-x: -80px;
+            --end-y: -200px;
+        }
+
+        .penalty-ball.shoot-center {
+            --end-x: 0px;
+            --end-y: -220px;
+        }
+
+        .penalty-ball.shoot-right {
+            --end-x: 80px;
+            --end-y: -200px;
+        }
+
+        @keyframes shootBall {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(calc(-50% + var(--end-x) / 2)) translateY(var(--end-y) / 2) scale(0.8);
+            }
+
+            100% {
+                transform: translateX(calc(-50% + var(--end-x))) translateY(var(--end-y)) scale(0.5);
+            }
+        }
+
+        .penalty-goalkeeper {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(to bottom, #f39c12 0%, #e67e22 100%);
+            border-radius: 10px 10px 5px 5px;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .penalty-goalkeeper::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 25px;
+            background: #ffeaa7;
+            border-radius: 50%;
+        }
+
+        .penalty-goalkeeper.dive-left {
+            animation: diveLeft 0.5s ease-out forwards;
+        }
+
+        .penalty-goalkeeper.dive-center {
+            animation: diveCenter 0.5s ease-out forwards;
+        }
+
+        .penalty-goalkeeper.dive-right {
+            animation: diveRight 0.5s ease-out forwards;
+        }
+
+        @keyframes diveLeft {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(-120px) rotate(-45deg);
+            }
+        }
+
+        @keyframes diveCenter {
+            0% {
+                transform: translateX(-50%) scaleY(1);
+            }
+
+            100% {
+                transform: translateX(-50%) scaleY(0.5) scaleX(1.5);
+            }
+        }
+
+        @keyframes diveRight {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(70px) rotate(45deg);
+            }
+        }
+
+        .penalty-countdown {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Teko', sans-serif;
+            font-size: 6rem;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            z-index: 20;
+        }
+
+        .penalty-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Teko', sans-serif;
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            z-index: 30;
+            padding: 20px 40px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .penalty-result.goal {
+            display: block;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+            border: 3px solid #2ecc71;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.saved {
+            display: block;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+            border: 3px solid #e74c3c;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.post {
+            display: block;
+            color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+            border: 3px solid #f39c12;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.out {
+            display: block;
+            color: #9b59b6;
+            background: rgba(155, 89, 182, 0.2);
+            border: 3px solid #9b59b6;
+            animation: resultPop 0.5s ease;
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .penalty-info {
+            margin-top: 20px;
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .penalty-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .penalty-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- ⚽ PENALTI OVERLAY -->
+    <div class="penalty-overlay" id="penaltyOverlay">
+        <button class="penalty-close" onclick="closePenalty()">×</button>
+        <div class="penalty-title" id="penaltyTitle">⚽ PENALTI!</div>
+        <div class="penalty-field">
+            <div class="penalty-goal">
+                <div class="goal-zone">SOL</div>
+                <div class="goal-zone">ORTA</div>
+                <div class="goal-zone">SAĞ</div>
+            </div>
+            <div class="penalty-net"></div>
+            <div class="penalty-goalkeeper" id="penaltyGoalkeeper"></div>
+            <div class="penalty-ball" id="penaltyBall"></div>
+            <div class="penalty-countdown" id="penaltyCountdown"></div>
+            <div class="penalty-result" id="penaltyResult"></div>
+        </div>
+        <div class="penalty-info" id="penaltyInfo">Penaltı atışı için hazırlanın...</div>
+    </div>
 
     <div class="layout">
         <!-- Main Content -->
@@ -791,6 +1133,7 @@
                 if (event.type === 'goal') { iconClass = 'fas fa-futbol'; eventClass = 'goal'; }
                 else if (event.type === 'yellow') { iconClass = 'fas fa-square'; eventClass = 'yellow'; }
                 else if (event.type === 'red') { iconClass = 'fas fa-square'; eventClass = 'red'; }
+                else if (event.type === 'var') { iconClass = 'fas fa-tv'; eventClass = 'var'; }
 
                 html += `
                     <div class="event-item ${eventClass}">
@@ -841,6 +1184,9 @@
             // LiveMatchData'yı güncelle
             LiveMatchData.activeMatchId = data?.activeMatchId || 0;
             LiveMatchData.matches = newMatches;
+
+            // Penaltı durumunu kontrol et
+            checkPenaltyState(newMatches);
 
             renderMatchesSidebar();
 
@@ -904,6 +1250,225 @@
                     if (currentMatchId !== null) {
                         renderSelectedMatch();
                     }
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ⚽ PENALTI SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let penaltyState = {
+            active: false,
+            matchId: null,
+            team: null,
+            isRebound: false
+        };
+
+        // Penaltı başlat (Firebase'den tetiklenir)
+        function startPenalty(matchId, team, side) {
+            penaltyState = {
+                active: true,
+                matchId: matchId,
+                team: team,
+                side: side, // 'home' veya 'away'
+                isRebound: false
+            };
+
+            // Overlay göster
+            document.getElementById('penaltyOverlay').classList.add('active');
+            document.getElementById('penaltyTitle').textContent = '⚽ PENALTI!';
+            document.getElementById('penaltyInfo').textContent = `${team} penaltı kullanacak...`;
+
+            // Reset elements
+            resetPenaltyField();
+
+            // Geri sayım başlat
+            startPenaltyCountdown();
+        }
+
+        function resetPenaltyField() {
+            const ball = document.getElementById('penaltyBall');
+            const keeper = document.getElementById('penaltyGoalkeeper');
+            const result = document.getElementById('penaltyResult');
+
+            ball.className = 'penalty-ball';
+            keeper.className = 'penalty-goalkeeper';
+            result.className = 'penalty-result';
+            result.textContent = '';
+        }
+
+        function startPenaltyCountdown() {
+            const countdownEl = document.getElementById('penaltyCountdown');
+            let count = 5;
+
+            countdownEl.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    countdownEl.textContent = '';
+                    clearInterval(interval);
+                    executePenalty();
+                }
+            }, 1000);
+        }
+
+        function executePenalty() {
+            const directions = ['left', 'center', 'right'];
+            const shootDir = directions[Math.floor(Math.random() * 3)];
+            const diveDir = directions[Math.floor(Math.random() * 3)];
+
+            // Animasyonları başlat
+            const ball = document.getElementById('penaltyBall');
+            const keeper = document.getElementById('penaltyGoalkeeper');
+
+            ball.classList.add('shooting', `shoot-${shootDir}`);
+            keeper.classList.add(`dive-${diveDir}`);
+
+            // Sonucu hesapla
+            setTimeout(() => {
+                calculatePenaltyResult(shootDir, diveDir);
+            }, 600);
+        }
+
+        function calculatePenaltyResult(shootDir, diveDir) {
+            const resultEl = document.getElementById('penaltyResult');
+            const infoEl = document.getElementById('penaltyInfo');
+
+            // Kaleci doğru köşeye uçtuysa
+            if (shootDir === diveDir) {
+                // %70 kurtarır, %20 direk, %10 aut
+                const rand = Math.random();
+                if (rand < 0.70) {
+                    // Kaleci kurtardı
+                    resultEl.textContent = '🧤 KALECİ KURTARDI!';
+                    resultEl.className = 'penalty-result saved';
+                    infoEl.textContent = 'Kaleci doğru köşeye uçtu!';
+                    endPenalty(false, 'saved');
+                } else if (rand < 0.90) {
+                    // Direkten döndü - 2. şans
+                    resultEl.textContent = '🥅 DİREKTEN SEKTİ!';
+                    resultEl.className = 'penalty-result post';
+                    infoEl.textContent = 'Top direkten döndü!';
+
+                    if (!penaltyState.isRebound) {
+                        // İkinci şans ver
+                        setTimeout(() => {
+                            penaltyState.isRebound = true;
+                            resultEl.className = 'penalty-result';
+                            infoEl.textContent = '2. ŞANS! Top geri geldi...';
+                            resetPenaltyField();
+                            setTimeout(() => startReboundCountdown(), 1000);
+                        }, 2000);
+                    } else {
+                        endPenalty(false, 'post');
+                    }
+                } else {
+                    // Aut gitti
+                    resultEl.textContent = '❌ AUT!';
+                    resultEl.className = 'penalty-result out';
+                    infoEl.textContent = 'Top auta gitti!';
+                    endPenalty(false, 'out');
+                }
+            } else {
+                // Kaleci yanlış köşeye uçtu - GOL!
+                resultEl.textContent = '⚽ GOOOL!';
+                resultEl.className = 'penalty-result goal';
+                infoEl.textContent = 'Top ağlara gitti!';
+                endPenalty(true, 'goal');
+            }
+        }
+
+        function startReboundCountdown() {
+            document.getElementById('penaltyTitle').textContent = '🔄 2. ŞANS!';
+            const countdownEl = document.getElementById('penaltyCountdown');
+            let count = 3;
+
+            countdownEl.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    countdownEl.textContent = '';
+                    clearInterval(interval);
+                    executeRebound();
+                }
+            }, 1000);
+        }
+
+        function executeRebound() {
+            // Rebound daha basit - %50 gol, %50 kaçar
+            const ball = document.getElementById('penaltyBall');
+            const resultEl = document.getElementById('penaltyResult');
+            const infoEl = document.getElementById('penaltyInfo');
+
+            ball.classList.add('shooting', 'shoot-center');
+
+            setTimeout(() => {
+                if (Math.random() < 0.5) {
+                    resultEl.textContent = '⚽ GOOOL!';
+                    resultEl.className = 'penalty-result goal';
+                    infoEl.textContent = 'İkinci vuruşta gol!';
+                    endPenalty(true, 'rebound_goal');
+                } else {
+                    resultEl.textContent = '❌ KAÇTI!';
+                    resultEl.className = 'penalty-result out';
+                    infoEl.textContent = 'İkinci vuruş da kaçtı!';
+                    endPenalty(false, 'rebound_miss');
+                }
+            }, 500);
+        }
+
+        function endPenalty(isGoal, resultType) {
+            // Gol olduysa skoru artır ve isim sor
+            if (isGoal && penaltyState.matchId !== null) {
+                const match = LiveMatchData.matches.find(m => m.id === penaltyState.matchId);
+                if (match) {
+                    // İsim sor
+                    setTimeout(() => {
+                        const scorerName = prompt(`⚽ GOL! ${penaltyState.team} için gol atan oyuncunun adı:`);
+                        if (scorerName) {
+                            // Bu bilgiyi Firebase'e gönderiyoruz - admin panel güncelleyecek
+                            console.log(`Penaltı golü: ${scorerName} (${penaltyState.team})`);
+                        }
+                    }, 500);
+                }
+            }
+
+            // 3 saniye sonra kapat
+            setTimeout(() => {
+                closePenalty();
+            }, 3000);
+        }
+
+        function closePenalty() {
+            document.getElementById('penaltyOverlay').classList.remove('active');
+            penaltyState.active = false;
+            // Penaltıyı işlenmiş olarak işaretle
+            if (penaltyState.matchId !== null) {
+                processedPenalties.add(penaltyState.matchId + '_' + Date.now());
+            }
+        }
+
+        // İşlenmiş penaltıları takip et
+        let processedPenalties = new Set();
+
+        // Firebase'den penaltı durumunu dinle
+        function checkPenaltyState(matches) {
+            matches.forEach(match => {
+                // Sadece aktif ve henüz işlenmemiş penaltıları başlat
+                const penaltyKey = match.id + '_penalty';
+                if (match.penaltyActive && !penaltyState.active && !processedPenalties.has(penaltyKey)) {
+                    processedPenalties.add(penaltyKey);
+                    startPenalty(match.id, match.penaltyTeam, match.penaltySide);
+                }
+                // penaltyActive false olduğunda key'i temizle (yeni penaltı için)
+                if (!match.penaltyActive) {
+                    processedPenalties.delete(penaltyKey);
                 }
             });
         }
