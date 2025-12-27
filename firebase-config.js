@@ -103,6 +103,9 @@ async function getAllDataFromFirebase() {
     }
 }
 
+// Alias for easier access
+const getAllData = getAllDataFromFirebase;
+
 function listenAllData(callback) {
     initFirebase().then(() => {
         window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'tribeData'), (snapshot) => {
@@ -149,6 +152,80 @@ function listenSuperKupa(callback) {
             if (snapshot.exists()) callback(snapshot.val());
         });
     });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 🗳️ OYLAMA SİSTEMİ
+// ═══════════════════════════════════════════════════════════════
+
+async function saveVotingData(data) {
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'voting'), data);
+        return true;
+    } catch (error) {
+        console.error('Oylama kayıt hatası:', error);
+        return false;
+    }
+}
+
+async function getVotingData() {
+    if (!_dbReady) await initFirebase();
+    try {
+        const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'voting'));
+        return snapshot.exists() ? snapshot.val() : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function listenVoting(callback) {
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'voting'), (snapshot) => {
+            callback(snapshot.exists() ? snapshot.val() : null);
+        });
+    });
+}
+
+async function submitVote(voterId, votes) {
+    if (!_dbReady) await initFirebase();
+    try {
+        // Daha önce oy kullandı mı kontrol et
+        const voterRef = window.firebaseRef(window.firebaseDb, `voting/voters/${voterId}`);
+        const voterSnapshot = await window.firebaseGet(voterRef);
+        if (voterSnapshot.exists()) {
+            return { success: false, error: 'already_voted' };
+        }
+
+        // Oyu kaydet
+        await window.firebaseSet(voterRef, { timestamp: Date.now(), votes });
+
+        // Her mevki için oy sayısını artır
+        for (const [position, playerName] of Object.entries(votes)) {
+            const votingData = await getVotingData();
+            if (votingData?.positions?.[position]) {
+                const playerIdx = votingData.positions[position].findIndex(p => p.name === playerName);
+                if (playerIdx !== -1) {
+                    votingData.positions[position][playerIdx].votes = (votingData.positions[position][playerIdx].votes || 0) + 1;
+                    await saveVotingData(votingData);
+                }
+            }
+        }
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+// Kullanıcı fingerprint oluştur (basit)
+function generateVoterId() {
+    const stored = localStorage.getItem('tribe_voter_id');
+    if (stored) return stored;
+
+    const id = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('tribe_voter_id', id);
+    return id;
 }
 
 // ═══════════════════════════════════════════════════════════════

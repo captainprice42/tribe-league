@@ -720,8 +720,9 @@
         </div>
     </div>
 
-    <!-- Merkezi Veri Dosyası -->
+
     <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
 
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -1193,8 +1194,49 @@
             return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // Initialize
-        init();
+        // Initialize with Firebase listener
+        document.addEventListener('DOMContentLoaded', () => {
+            // İlk yükleme
+            init();
+
+            // Firebase'den maç verileri geldiğinde yeniden hesapla
+            if (typeof listenMatches === 'function') {
+                listenMatches(() => {
+                    // Yeni veriyle tekrar hesapla
+                    const newTeamsData = buildTeamsData();
+                    const newH2HMatches = buildH2HMatches();
+                    Object.assign(teamsData, newTeamsData);
+                    Object.assign(h2hMatches, newH2HMatches);
+
+                    // Dropdown'ları güncelle
+                    populateSelects();
+
+                    // Eğer takımlar seçiliyse sonuçları güncelle
+                    updateComparison();
+                });
+            }
+        });
+
+        function populateSelects() {
+            const selectA = document.getElementById('teamASelect');
+            const selectB = document.getElementById('teamBSelect');
+            const currentA = selectA.value;
+            const currentB = selectB.value;
+
+            // Mevcut seçenekleri temizle (ilk option hariç)
+            selectA.innerHTML = '<option value="">Takım Seç...</option>';
+            selectB.innerHTML = '<option value="">Takım Seç...</option>';
+
+            Object.keys(teamsData).forEach(key => {
+                const team = teamsData[key];
+                selectA.innerHTML += `<option value="${key}">${team.name}</option>`;
+                selectB.innerHTML += `<option value="${key}">${team.name}</option>`;
+            });
+
+            // Eski seçimleri geri yükle
+            if (currentA) selectA.value = currentA;
+            if (currentB) selectB.value = currentB;
+        }
     </script>
 
     <!-- Theme Switcher -->

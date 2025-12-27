@@ -815,6 +815,194 @@
                 font-size: 0.7rem;
             }
         }
+
+        /* ═══════════════════════════════════════════════════════════════ */
+        /* VOTING SECTION STYLES */
+        /* ═══════════════════════════════════════════════════════════════ */
+        .voting-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .voting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .voting-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .voting-timer {
+            background: rgba(196, 255, 14, 0.1);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+        }
+
+        .voting-position-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .voting-position-title {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 0 0 15px;
+        }
+
+        .voting-players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .voting-player-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .voting-player-option:hover {
+            border-color: rgba(196, 255, 14, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .voting-player-option.selected {
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.1);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .voting-player-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .voting-player-name {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .voting-player-team {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .voting-submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 18px;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .voting-submit-btn:hover {
+            box-shadow: 0 0 30px var(--primary-glow);
+            transform: translateY(-3px);
+        }
+
+        .voting-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .voting-status {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .voting-status i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .already-voted {
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid #2ed573;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: #2ed573;
+        }
+
+        .already-voted i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Vote count and selection indicator */
+        .voting-player-votes {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .vote-check {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .voting-player-option {
+            position: relative;
+        }
+
+        .voting-player-option.selected {
+            animation: pulse-select 0.3s ease;
+        }
+
+        @keyframes pulse-select {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
@@ -893,6 +1081,18 @@
         <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
     </div>
 
+    <!-- VOTING SECTION (Admin tarafından aktif edildiğinde görünür) - ÜSTTE -->
+    <div class="voting-section" id="votingSection" style="display: none;">
+        <div class="voting-header">
+            <h2 class="voting-title"><i class="fas fa-vote-yea"></i> Haftanın XI'i Oylaması</h2>
+            <div class="voting-timer" id="votingTimer">Kalan: --:--</div>
+        </div>
+
+        <div id="votingContent">
+            <!-- Oylama durumuna göre doldurulacak -->
+        </div>
+    </div>
+
     <!-- MAIN CONTENT -->
     <div class="special-container" id="mainContainer">
         <button class="edit-btn" id="editBtn" onclick="openLogin()">
@@ -904,11 +1104,9 @@
             <div class="week-selector-wrapper">
                 <span class="week-selector-label">Hafta:</span>
                 <select class="week-selector" id="weekSelector" onchange="loadWeek(this.value)">
-                    <option value="1">1. Hafta</option>
-                    <option value="2" selected>2. Hafta</option>
-                    <option value="3">3. Hafta</option>
-                    <option value="4">4. Hafta</option>
-                    <option value="5">5. Hafta</option>
+                    <option value="12" selected>12. Hafta</option>
+                    <option value="13">13. Hafta</option>
+                    <option value="14">14. Hafta</option>
                 </select>
             </div>
         </div>
@@ -1048,6 +1246,9 @@
         </div>
     </div>
 
+    <!-- Firebase Config -->
+    <script src="../firebase-config.js"></script>
+
     <script>
         // Week Data
         const weeksData = {
@@ -1091,6 +1292,14 @@
         function loadWeek(week) {
             currentWeek = parseInt(week);
             renderPlayers();
+
+            // Oylama kazananlarını tekrar yerleştir
+            if (currentVotingData && !currentVotingData.active && currentVotingData.winners) {
+                // Sadece seçilen hafta için kazananları göster
+                if (currentVotingData.week === currentWeek) {
+                    setTimeout(() => placeWinnersOnPitch(currentVotingData.winners), 100);
+                }
+            }
         }
 
         function renderPlayers() {
@@ -1308,6 +1517,362 @@
 
         // Initialize
         renderPlayers();
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🗳️ KULLANICI OYLAMA SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let currentVotingData = null;
+        let userSelections = {};
+        let votingTimerInterval = null;
+
+        // Sayfayüklenince oylama verilerini kontrol et
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initVoting, 500);
+        });
+
+        async function initVoting() {
+            if (typeof getVotingData !== 'function') {
+                console.log('Firebase yüklenmedi');
+                return;
+            }
+
+            listenVoting((data) => {
+                currentVotingData = data;
+                renderVotingUI();
+
+                // Oylama bitmişse kazananları sahaya yerleştir
+                if (data && !data.active && data.winners) {
+                    placeWinnersOnPitch(data.winners);
+                }
+            });
+        }
+
+        // Mevki isimlerini pitch pozisyonlarına eşle
+        const positionToPitchMap = {
+            'Kaleci': 'GK',
+            'Sol Bek': 'LB',
+            'Stoper': 'LCB', // İlk stoper sol CB
+            'Sağ Bek': 'RB',
+            'Orta Saha': 'CM',
+            'Sol Kanat': 'LM',
+            'Sağ Kanat': 'RM',
+            'Forvet': 'ST',
+            // İngilizce alternatifler
+            'GK': 'GK',
+            'LB': 'LB',
+            'LCB': 'LCB',
+            'RCB': 'RCB',
+            'RB': 'RB',
+            'LM': 'LM',
+            'CM': 'CM',
+            'RM': 'RM',
+            'LW': 'LW',
+            'ST': 'ST',
+            'RW': 'RW'
+        };
+
+        // Kazananları sahaya yerleştir
+        function placeWinnersOnPitch(winners) {
+            console.log('Kazananları sahaya yerleştiriliyor:', winners);
+
+            // Tüm pozisyonları sıfırla değil, sadece winner olanları güncelle
+            for (const [posName, winner] of Object.entries(winners)) {
+                const pitchPos = positionToPitchMap[posName];
+                if (!pitchPos) {
+                    console.log('Eşleşmeyen mevki:', posName);
+                    continue;
+                }
+
+                // Pitch'teki ilgili player slot'u bul
+                const slot = document.querySelector(`[data-position="${pitchPos}"]`);
+                if (!slot) {
+                    console.log('Slot bulunamadı:', pitchPos);
+                    continue;
+                }
+
+                const card = slot.querySelector('.player-card');
+                const avatar = card?.querySelector('.player-avatar');
+                const nameEl = card?.querySelector('.player-name');
+                const teamInfoEl = card?.querySelector('.player-team-info') || createTeamInfoEl(card);
+
+                // Kazananı yerleştir
+                if (avatar) {
+                    const logoUrl = winner.logo || TribeData?.teams?.[winner.team]?.logo || '';
+                    if (logoUrl) {
+                        avatar.innerHTML = `<img src="${logoUrl}" alt="${winner.name}" style="width: 100%; height: 100%; object-fit: contain;"><span class="position-badge ${getPositionClass(pitchPos)}">${getPositionLabel(pitchPos)}</span>`;
+                    } else {
+                        avatar.innerHTML = `<i class="fas fa-user"></i><span class="position-badge ${getPositionClass(pitchPos)}">${getPositionLabel(pitchPos)}</span>`;
+                    }
+                }
+                if (nameEl) {
+                    nameEl.textContent = winner.name;
+                }
+                if (teamInfoEl && winner.team) {
+                    const teamData = TribeData?.teams?.[winner.team];
+                    if (teamData) {
+                        teamInfoEl.innerHTML = `<img class="player-team-logo" src="${teamData.logo}" alt="${winner.team}"><span class="player-team">${winner.team}</span>`;
+                    } else {
+                        teamInfoEl.innerHTML = `<span class="player-team">${winner.team}</span>`;
+                    }
+                }
+
+                // Slot'u dolu olarak işaretle
+                card?.classList.remove('player-empty');
+                slot.classList.remove('empty');
+                slot.classList.add('filled', 'winner-slot');
+            }
+        }
+
+        function renderVotingUI() {
+            const section = document.getElementById('votingSection');
+            const content = document.getElementById('votingContent');
+
+            // Oylama aktif değilse
+            if (!currentVotingData || !currentVotingData.active) {
+                // Kazananlar varsa göster
+                if (currentVotingData?.winners && Object.keys(currentVotingData.winners).length > 0) {
+                    section.style.display = 'block';
+                    content.innerHTML = renderWinnersDisplay();
+                    return;
+                }
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            // Daha önce oy kullandı mı kontrol et
+            const voterId = generateVoterId();
+            const hasVoted = currentVotingData.voters && currentVotingData.voters[voterId];
+
+            if (hasVoted) {
+                // Oy verdiyse sonuçları göster
+                content.innerHTML = renderVotingResults();
+                startVotingCountdown();
+                return;
+            }
+
+            // Oylama formunu oluştur
+            let html = '';
+            const positions = currentVotingData.positions || {};
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+
+                const positionTotal = players.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+                html += `
+                    <div class="voting-position-box">
+                        <h3 class="voting-position-title"><i class="fas fa-futbol"></i> ${posName}</h3>
+                        <div class="voting-players-grid">
+                            ${players.map((p, idx) => {
+                    const isSelected = userSelections[posName] === p.name;
+                    const percentage = positionTotal > 0 ? Math.round((p.votes || 0) / positionTotal * 100) : 0;
+                    return `
+                                <div class="voting-player-option ${isSelected ? 'selected' : ''}" 
+                                     data-position="${posName}" data-player="${p.name}"
+                                     style="cursor: pointer; ${isSelected ? 'border: 3px solid var(--primary); background: rgba(196, 255, 14, 0.2); box-shadow: 0 0 20px rgba(196, 255, 14, 0.5);' : ''}">
+                                    ${isSelected ? '<div class="vote-check" style="position: absolute; top: 5px; right: 5px; background: var(--primary); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="fas fa-check"></i></div>' : ''}
+                                    <img class="voting-player-logo" src="${TribeData?.teams?.[p.team]?.logo || 'https://via.placeholder.com/40?text=' + p.team.charAt(0)}" alt="${p.team}">
+                                    <div class="voting-player-name" style="${isSelected ? 'color: var(--primary); font-weight: bold;' : ''}">${p.name}</div>
+                                    <div class="voting-player-team">${p.team}</div>
+                                    <div class="voting-player-votes">${p.votes || 0} oy (${percentage}%)</div>
+                                </div>
+                            `}).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Seçim özeti
+            const selectedCount = Object.keys(userSelections).length;
+            const totalPositions = Object.keys(positions).length;
+
+            html += `
+                <div style="background: rgba(0,0,0,0.3); padding: 15px 20px; border-radius: 12px; margin-bottom: 15px; text-align: center;">
+                    <span style="color: var(--text-muted);">Seçilen:</span>
+                    <span style="color: var(--primary); font-weight: bold; margin-left: 8px;">${selectedCount} / ${totalPositions} mevki</span>
+                </div>
+                <button class="voting-submit-btn" id="submitVoteBtn" onclick="submitUserVote()">
+                    <i class="fas fa-paper-plane"></i> OYUMU GÖNDER
+                </button>
+            `;
+
+            content.innerHTML = html;
+            startVotingCountdown();
+        }
+
+        // Oylama sonuçları göster (oy vermiş kullanıcılar için)
+        function renderVotingResults() {
+            const positions = currentVotingData.positions || {};
+
+            // Toplam oy
+            let totalVotes = 0;
+            for (const players of Object.values(positions)) {
+                if (players) players.forEach(p => totalVotes += (p.votes || 0));
+            }
+
+            let html = `
+                <div class="already-voted">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Oyunuz Kaydedildi!</h3>
+                </div>
+                <div style="background: rgba(196,255,14,0.1); padding: 15px; border-radius: 12px; margin: 20px 0; text-align: center; border: 1px solid var(--primary);">
+                    <span style="color: var(--text-muted);">Toplam Oy:</span>
+                    <span style="color: var(--primary); font-weight: bold; font-size: 1.5rem; margin-left: 10px;">${totalVotes}</span>
+                </div>
+            `;
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+                const sorted = [...players].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                const positionTotal = players.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+                html += `<div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-family: var(--font-head);">${posName}</h4>
+                    ${sorted.map((p, i) => {
+                    const percentage = positionTotal > 0 ? Math.round((p.votes || 0) / positionTotal * 100) : 0;
+                    return `
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: ${i === 0 ? 'rgba(196,255,14,0.15)' : 'rgba(0,0,0,0.3)'}; border-radius: 10px; margin-bottom: 6px; ${i === 0 ? 'border: 1px solid var(--primary);' : ''}">
+                            <span style="font-weight: bold; color: ${i === 0 ? 'var(--primary)' : 'var(--text-muted)'}; width: 25px;">${i === 0 ? '🏆' : '#' + (i + 1)}</span>
+                            <img src="${TribeData?.teams?.[p.team]?.logo || 'https://via.placeholder.com/28?text=' + p.team.charAt(0)}" style="width: 28px; height: 28px; border-radius: 50%;">
+                            <span style="flex: 1; font-weight: ${i === 0 ? 'bold' : 'normal'};">${p.name}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">${p.team}</span>
+                            <span style="color: var(--primary); font-weight: bold;">${p.votes || 0}</span>
+                            <div style="background: rgba(196,255,14,0.2); width: ${percentage}px; max-width: 100px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: var(--primary); font-size: 0.8rem; font-weight: bold;">${percentage}%</span>
+                            </div>
+                        </div>
+                    `}).join('')}
+                </div>`;
+            }
+
+            return html;
+        }
+
+        // Oylama kazananlarını göster
+        function renderWinnersDisplay() {
+            const winners = currentVotingData.winners || {};
+
+            let html = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <i class="fas fa-trophy" style="font-size: 3rem; color: gold; margin-bottom: 10px;"></i>
+                    <h2 style="color: var(--primary); font-family: var(--font-head); margin: 0;">HAFTANIN EN İYİLERİ</h2>
+                    <p style="color: var(--text-muted); margin-top: 5px;">Oylamanız ile belirlendi</p>
+                </div>
+            `;
+
+            for (const [posName, winner] of Object.entries(winners)) {
+                html += `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(196,255,14,0.1); border: 1px solid var(--primary); border-radius: 14px; margin-bottom: 12px;">
+                        <span style="background: linear-gradient(135deg, gold, #f4a700); color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-family: var(--font-head);">${posName}</span>
+                        <img src="${winner.logo || TribeData?.teams?.[winner.team]?.logo || 'https://via.placeholder.com/40?text=' + winner.team.charAt(0)}" style="width: 40px; height: 40px; object-fit: contain;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; font-size: 1.1rem;">${winner.name}</div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">${winner.team}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">${winner.votes} oy</div>
+                            <div style="color: gold; font-size: 0.8rem;"><i class="fas fa-crown"></i> Kazanan</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return html;
+        }
+
+        function selectPlayer(position, playerName) {
+            console.log('selectPlayer called:', position, playerName);
+            // Aynı oyuncu seçiliyse seçimi kaldır
+            if (userSelections[position] === playerName) {
+                delete userSelections[position];
+            } else {
+                userSelections[position] = playerName;
+            }
+            console.log('userSelections:', JSON.stringify(userSelections));
+            renderVotingUI();
+        }
+
+        // Event delegation ile tıklama yönetimi
+        document.addEventListener('click', function (e) {
+            const option = e.target.closest('.voting-player-option');
+            if (option) {
+                const pos = option.dataset.position;
+                const player = option.dataset.player;
+                if (pos && player) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectPlayer(pos, player);
+                }
+            }
+        });
+
+        async function submitUserVote() {
+            const positions = currentVotingData?.positions || {};
+            const positionCount = Object.keys(positions).length;
+            const selectedCount = Object.keys(userSelections).length;
+
+            if (selectedCount === 0) {
+                alert('Lütfen en az bir oyuncu seçin!');
+                return;
+            }
+
+            const btn = document.getElementById('submitVoteBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+
+            try {
+                const voterId = generateVoterId();
+                const result = await submitVote(voterId, userSelections);
+
+                if (result.success) {
+                    alert('Oyunuz başarıyla kaydedildi! 🎉');
+                    userSelections = {};
+                    renderVotingUI();
+                } else if (result.error === 'already_voted') {
+                    alert('Bu oylamada zaten oy kullandınız!');
+                    renderVotingUI();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                alert('Oy gönderilirken bir hata oluştu: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> OYUMU GÖNDER';
+            }
+        }
+
+        function startVotingCountdown() {
+            if (votingTimerInterval) clearInterval(votingTimerInterval);
+
+            const timerEl = document.getElementById('votingTimer');
+
+            function updateTimer() {
+                if (!currentVotingData?.endTime) {
+                    timerEl.textContent = 'Süresiz';
+                    return;
+                }
+
+                const now = Date.now();
+                const remaining = currentVotingData.endTime - now;
+
+                if (remaining <= 0) {
+                    timerEl.textContent = 'Bitti';
+                    clearInterval(votingTimerInterval);
+                    return;
+                }
+
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((remaining % (1000 * 60)) / 1000);
+
+                timerEl.textContent = `Kalan: ${hours > 0 ? hours + ':' : ''}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            updateTimer();
+            votingTimerInterval = setInterval(updateTimer, 1000);
+        }
     </script>
 
     <script src="../theme-switcher.js"></script>

@@ -32,6 +32,16 @@
             box-sizing: border-box;
         }
 
+        /* Global Logo Fix */
+        img[src*="logo"],
+        img[src*="Logo"],
+        img[src*="wiki"],
+        img[src*="placeholder"],
+        .team-logo,
+        .bracket-logo {
+            object-fit: contain !important;
+        }
+
         body {
             background: var(--bg-body);
             background-image:
@@ -378,30 +388,7 @@
                 <div class="bracket-horizontal"></div>
                 <div class="bracket-line-bottom"></div>
             </div>
-            <div class="final-section" id="finalSection"></div>
         </div>
-
-        <!-- STANDINGS -->
-        <h2 class="section-title"><i class="fas fa-table"></i> PUAN DURUMU</h2>
-
-        <table class="standings-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Takım</th>
-                    <th>O</th>
-                    <th>G</th>
-                    <th>B</th>
-                    <th>M</th>
-                    <th>A</th>
-                    <th>Y</th>
-                    <th>Av</th>
-                    <th>P</th>
-                    <th>Form</th>
-                </tr>
-            </thead>
-            <tbody id="standingsBody"></tbody>
-        </table>
     </div>
 
     <!-- Data -->
@@ -412,14 +399,12 @@
         // TribeData'dan veri yükle
         function init() {
             renderMatches();
-            renderStandings();
 
             // 🔥 Firebase real-time listener
             listenSuperKupa((data) => {
                 console.log('🔥 Süper Kupa güncellemesi alındı!');
                 TribeData.superKupa = data;
                 renderMatches();
-                renderStandings();
             });
         }
 
@@ -482,56 +467,6 @@
 
             container.innerHTML = semiHtml;
             finalContainer.innerHTML = finalHtml;
-        }
-
-        function renderStandings() {
-            const standings = TribeData?.superKupa?.standings || [];
-            const tbody = document.getElementById('standingsBody');
-
-            if (standings.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" style="color: var(--text-muted); text-align: center;">Henüz veri yok</td></tr>';
-                return;
-            }
-
-            // Puana göre sırala
-            const sorted = [...standings].sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                const gdA = a.gf - a.ga;
-                const gdB = b.gf - b.ga;
-                if (gdB !== gdA) return gdB - gdA;
-                return b.gf - a.gf;
-            });
-
-            let html = '';
-            sorted.forEach((team, idx) => {
-                const gd = team.gf - team.ga;
-                const form = (team.form || []).slice(-5).map(f =>
-                    `<span class="form-box form-${f}">${f}</span>`
-                ).join('');
-
-                html += `
-                    <tr>
-                        <td class="rank-cell">${idx + 1}</td>
-                        <td>
-                            <div class="team-cell">
-                                <img src="${getLogoUrl(team.team)}" class="team-logo-sm">
-                                ${team.team}
-                            </div>
-                        </td>
-                        <td>${team.played}</td>
-                        <td>${team.won}</td>
-                        <td>${team.draw}</td>
-                        <td>${team.lost}</td>
-                        <td>${team.gf}</td>
-                        <td>${team.ga}</td>
-                        <td>${gd > 0 ? '+' : ''}${gd}</td>
-                        <td><span class="points-box">${team.points}</span></td>
-                        <td>${form || '-'}</td>
-                    </tr>
-                `;
-            });
-
-            tbody.innerHTML = html;
         }
 
         // Sayfa yüklendikten sonra başlat

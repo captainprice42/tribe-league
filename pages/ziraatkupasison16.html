@@ -247,6 +247,117 @@
             color: var(--gold);
         }
 
+        /* Bracket Tournament Styles */
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bracket-round {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .round-title-badge {
+            text-align: center;
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .bracket-matches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .bracket-match {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .bracket-match:hover {
+            border-color: rgba(196, 255, 14, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(196, 255, 14, 0.15);
+        }
+
+        .match-header {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(196, 255, 14, 0.1));
+            padding: 8px 15px;
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+            color: var(--gold);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .bracket-team {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .bracket-team.winner {
+            background: rgba(196, 255, 14, 0.1);
+        }
+
+        .bracket-team.winner .bracket-team-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .bracket-team.winner .bracket-score {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .bracket-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .bracket-team-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .bracket-score {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .bracket-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .bracket-note {
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
         /* Fixture Cards */
         .fixtures-list {
             display: flex;
@@ -565,27 +676,61 @@
         </div>
     </div>
 
-    <!-- Data -->
-    <script src="../data.js"></script>
     <script src="../firebase-config.js"></script>
 
     <script>
         let kupaData = null;
 
-        function init() {
-            renderFixtures();
-            renderStandings();
+        // Varsayılan Ziraat Kupası verisi
+        const defaultZiraatKupasi = {
+            round: 'Son 16',
+            season: '2024-2025',
+            matches: [
+                { home: 'Trabzonspor', away: 'Konyaspor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Galatasaray', away: 'Alanyaspor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Fenerbahçe', away: 'Samsunspor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Beşiktaş', away: 'Gaziantep FK', homeScore: null, awayScore: null, note: '' },
+                { home: 'Adana Demirspor', away: 'Eyüpspor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Başakşehir', away: 'Antalyaspor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Gençlerbirliği FK', away: 'Kayserispor', homeScore: null, awayScore: null, note: '' },
+                { home: 'Sivasspor', away: 'Bodrum FK', homeScore: null, awayScore: null, note: '' }
+            ]
+        };
+
+        async function init() {
+            // Firebase'den TribeData yükle
+            if (typeof getAllData === 'function') {
+                try {
+                    const data = await getAllData();
+                    if (data) {
+                        window.TribeData = data;
+                        console.log('✅ TribeData yüklendi');
+                    }
+                } catch (e) {
+                    console.log('Firebase veri yüklenemedi:', e);
+                }
+            }
+
+            // Varsayılan veriyi kullan eğer Firebase'de yoksa
+            if (!window.TribeData) window.TribeData = {};
+            if (!TribeData.ziraatKupasi) {
+                TribeData.ziraatKupasi = defaultZiraatKupasi;
+                console.log('🎯 Varsayılan Ziraat Kupası verisi kullanılıyor');
+            }
+
+            renderBracket();
             updateStats();
 
             // 🔥 Firebase real-time listener
-            listenZiraatKupasi((data) => {
-                console.log('🔥 Ziraat Kupası güncellemesi alındı!');
-                kupaData = data;
-                TribeData.ziraatKupasi = data;
-                renderFixtures();
-                renderStandings();
-                updateStats();
-            });
+            if (typeof listenZiraatKupasi === 'function') {
+                listenZiraatKupasi((data) => {
+                    console.log('🔥 Ziraat Kupası güncellemesi alındı!');
+                    kupaData = data;
+                    if (window.TribeData) TribeData.ziraatKupasi = data;
+                    renderBracket();
+                    updateStats();
+                });
+            }
         }
 
         function getLogoUrl(name) {
@@ -593,7 +738,7 @@
             return TribeData?.teams[name]?.logo || "https://via.placeholder.com/50?text=" + name.charAt(0);
         }
 
-        function renderFixtures() {
+        function renderBracket() {
             const data = TribeData?.ziraatKupasi;
             if (!data) {
                 document.getElementById('fixturesList').innerHTML = '<p style="color: var(--text-muted); text-align: center;">Veri yüklenemedi</p>';
@@ -605,32 +750,40 @@
             document.getElementById('seasonBadge').textContent = (data.season || '2024-2025') + ' SEZONU';
 
             const container = document.getElementById('fixturesList');
-            let html = '';
+
+            // Bracket görünümü için maçları 2'şerli grupla (sol-sağ)
+            let html = '<div class="bracket-container">';
+            html += '<div class="bracket-round">';
+            html += `<div class="round-title-badge"><i class="fas fa-trophy"></i> SON 16 TUR</div>`;
+            html += '<div class="bracket-matches">';
 
             data.matches.forEach((match, idx) => {
                 const homeScore = match.homeScore !== null ? match.homeScore : '-';
                 const awayScore = match.awayScore !== null ? match.awayScore : '-';
-                const scoreDisplay = homeScore === '-' && awayScore === '-' ? 'VS' : `${homeScore} - ${awayScore}`;
+                const isPlayed = homeScore !== '-' && awayScore !== '-';
+                const homeWon = isPlayed && parseInt(homeScore) > parseInt(awayScore);
+                const awayWon = isPlayed && parseInt(awayScore) > parseInt(homeScore);
 
                 html += `
-                    <div class="fixture-card">
-                        <div class="team-info">
-                            <img src="${getLogoUrl(match.home)}" class="team-logo">
-                            <span class="team-name">${match.home}</span>
+                    <div class="bracket-match">
+                        <div class="match-header">Maç ${idx + 1}</div>
+                        <div class="bracket-team ${homeWon ? 'winner' : ''}">
+                            <img src="${getLogoUrl(match.home)}" class="bracket-logo" alt="${match.home}">
+                            <span class="bracket-team-name">${match.home || 'TBD'}</span>
+                            <span class="bracket-score">${homeScore}</span>
                         </div>
-                        <div class="match-center">
-                            <span class="match-number">Maç ${idx + 1}</span>
-                            <div class="score-display">${scoreDisplay}</div>
-                            ${match.note ? `<div class="match-note">${match.note}</div>` : ''}
+                        <div class="bracket-divider"></div>
+                        <div class="bracket-team ${awayWon ? 'winner' : ''}">
+                            <img src="${getLogoUrl(match.away)}" class="bracket-logo" alt="${match.away}">
+                            <span class="bracket-team-name">${match.away || 'TBD'}</span>
+                            <span class="bracket-score">${awayScore}</span>
                         </div>
-                        <div class="team-info away">
-                            <img src="${getLogoUrl(match.away)}" class="team-logo">
-                            <span class="team-name">${match.away}</span>
-                        </div>
+                        ${match.note ? `<div class="bracket-note">${match.note}</div>` : ''}
                     </div>
                 `;
             });
 
+            html += '</div></div></div>';
             container.innerHTML = html;
         }
 

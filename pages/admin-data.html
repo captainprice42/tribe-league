@@ -33,6 +33,20 @@
             padding: 0;
         }
 
+        /* Global Logo Fix - Tüm logolar için orantılı görünüm */
+        img[src*="logo"],
+        img[src*="Logo"],
+        img[src*="wiki"],
+        img[src*="placeholder"],
+        .team-logo-img,
+        .fixture-team-logo,
+        .match-team-logo,
+        .kupa-logo {
+            object-fit: contain !important;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
         body {
             background: var(--bg-body);
             background-image: var(--gradient-1), var(--gradient-2);
@@ -1437,6 +1451,7 @@
             <div class="tab" onclick="switchTab('ziraat')"><i class="fas fa-award"></i> Ziraat Kupası</div>
             <div class="tab" onclick="switchTab('superkupa')"><i class="fas fa-medal"></i> Süper Kupa</div>
             <div class="tab" onclick="switchTab('livematch')"><i class="fas fa-broadcast-tower"></i> Canlı Maç</div>
+            <div class="tab" onclick="switchTab('voting')"><i class="fas fa-vote-yea"></i> Oylama</div>
         </div>
 
         <!-- Matches Panel -->
@@ -1517,6 +1532,16 @@
         <div class="panel" id="panel-fixtures">
             <div class="panel-title"><i class="fas fa-calendar"></i> Fikstür (Oynanmamış Maçlar)</div>
 
+            <!-- Hafta Yayınlama Kontrolleri -->
+            <div
+                style="background: rgba(196,255,14,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed var(--primary);">
+                <h4 style="color: var(--primary); margin-bottom: 15px;"><i class="fas fa-broadcast-tower"></i> Hafta
+                    Yayınlama</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Yayınlamak istediğiniz
+                    haftaları işaretleyin. Aktif haftalar kullanıcılara görünür.</p>
+                <div id="weekPublishToggles" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+
             <div class="quick-add">
                 <input type="number" id="newFixtureWeek" placeholder="Hafta" min="1">
                 <select id="newFixtureHome"></select>
@@ -1542,6 +1567,7 @@
             <!-- Add Player Form -->
             <div class="quick-add">
                 <input type="number" id="newPlayerNumber" placeholder="No" min="1" max="99" style="max-width: 80px;">
+                <input type="text" id="newPlayerGen" placeholder="Gen" style="max-width: 100px;">
                 <input type="text" id="newPlayerName" placeholder="Oyuncu Adı" style="flex: 2;">
                 <select id="newPlayerPosition">
                     <option value="KL">Kaleci (KL)</option>
@@ -1632,6 +1658,108 @@
 
             <div id="liveMatchList"></div>
         </div>
+
+        <!-- Voting Panel -->
+        <div class="panel" id="panel-voting">
+            <div class="panel-title"><i class="fas fa-vote-yea"></i> Haftanın XI'i Oylama Sistemi</div>
+
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Hafta 12'den itibaren oylama başlatabilirsiniz. Her mevki için oyuncu
+                adayları ekleyin ve bitiş saatini belirleyin.
+            </p>
+
+            <!-- Oylama Durumu -->
+            <div id="votingStatus"
+                style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border);">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <span style="color: var(--text-muted);">Durum:</span>
+                        <span id="votingStatusLabel"
+                            style="color: var(--danger); font-weight: 600; margin-left: 10px;">Pasif</span>
+                    </div>
+                    <div id="votingTimerSection" style="display: none;">
+                        <span style="color: var(--text-muted);">Bitiş:</span>
+                        <span id="votingEndTime"
+                            style="color: var(--primary); font-weight: 600; margin-left: 10px;">--:--</span>
+                        <button class="btn btn-warning" onclick="editVotingTimer()"
+                            style="margin-left: 10px; padding: 6px 12px;"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="clearVotingTimer()" style="padding: 6px 12px;"><i
+                                class="fas fa-trash"></i></button>
+                    </div>
+                    <button id="endVotingBtn" class="btn btn-danger" onclick="endVoting()" style="display: none;"><i
+                            class="fas fa-stop-circle"></i> Oylamayı Bitir</button>
+                </div>
+            </div>
+
+            <!-- Hafta Seçimi -->
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label>Oylama Haftası</label>
+                <select id="votingWeekSelect" class="form-control" style="max-width: 200px;">
+                    <option value="12" selected>12. Hafta</option>
+                    <option value="13">13. Hafta</option>
+                    <option value="14">14. Hafta</option>
+                </select>
+            </div>
+
+            <!-- Bitiş Saati Ayarı -->
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label>Bitiş Saati</label>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <input type="time" id="votingEndTimeInput" class="form-control" style="max-width: 150px;">
+                    <span style="color: var(--text-muted);">veya</span>
+                    <input type="number" id="votingDurationMinutes" class="form-control" placeholder="Dakika"
+                        style="max-width: 100px;">
+                    <span style="color: var(--text-muted);">dakika sonra bitir</span>
+                </div>
+            </div>
+
+            <!-- Oyuncu Ekleme Formu -->
+            <div
+                style="background: rgba(196,255,14,0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px dashed var(--primary);">
+                <h4 style="color: var(--primary); margin-bottom: 15px;"><i class="fas fa-user-plus"></i> Oylama Oyuncusu
+                    Ekle</h4>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <select id="votingPlayerPosition" class="form-control" style="min-width: 150px;">
+                        <option value="">Mevki Seç</option>
+                        <option value="Kaleci">Kaleci</option>
+                        <option value="Sol Bek">Sol Bek</option>
+                        <option value="Stoper">Stoper</option>
+                        <option value="Sağ Bek">Sağ Bek</option>
+                        <option value="Orta Saha">Orta Saha</option>
+                        <option value="Sol Kanat">Sol Kanat</option>
+                        <option value="Sağ Kanat">Sağ Kanat</option>
+                        <option value="Forvet">Forvet</option>
+                    </select>
+                    <select id="votingPlayerTeam" class="form-control" style="min-width: 150px;"></select>
+                    <input type="text" id="votingPlayerName" class="form-control" placeholder="Oyuncu Adı"
+                        style="flex: 1; min-width: 150px;">
+                    <button class="btn btn-primary" onclick="addVotingPlayerToList()"><i class="fas fa-plus"></i>
+                        Ekle</button>
+                </div>
+            </div>
+
+            <!-- Eklenen Oyuncular Listesi -->
+            <div id="votingPlayersList" style="margin-bottom: 25px;"></div>
+
+            <!-- Başlat/Kaydet Butonları -->
+            <div
+                style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-accent" onclick="saveVotingDraft()" style="padding: 12px 30px;">
+                    <i class="fas fa-save"></i> Taslağı Kaydet
+                </button>
+                <button class="btn btn-success" onclick="startVoting()" style="padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-play-circle"></i> Oylamayı Başlat
+                </button>
+            </div>
+
+            <!-- Oylama Sonuçları -->
+            <div id="votingResults" style="display: none; margin-top: 30px;">
+                <h3 style="color: var(--primary); margin-bottom: 15px;"><i class="fas fa-chart-bar"></i> Oylama
+                    Sonuçları</h3>
+                <div id="votingResultsContent"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Live Match Export Modal -->
@@ -1702,6 +1830,34 @@
 
         let currentWeek = 1;
         let dataLoaded = false;
+        let hasUnsavedChanges = false;
+
+        // Çıkış onayı - kaydedilmemiş değişiklikler varsa uyar
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?';
+            }
+        });
+
+        // Değişiklik işaretleme
+        function markUnsaved() {
+            hasUnsavedChanges = true;
+            const statusEl = document.getElementById('statusSaved');
+            if (statusEl) {
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Kaydedilmemiş değişiklikler';
+                statusEl.style.color = '#ffa502';
+            }
+        }
+
+        function markSaved() {
+            hasUnsavedChanges = false;
+            const statusEl = document.getElementById('statusSaved');
+            if (statusEl) {
+                statusEl.innerHTML = '<i class="fas fa-check"></i> Değişiklikler kaydedildi';
+                statusEl.style.color = '#2ed573';
+            }
+        }
 
         // Initialize - Firebase'den veri yükle
         async function init() {
@@ -2181,6 +2337,9 @@
             let html = '';
             let currentFixtureWeek = 0;
 
+            // Hafta toggle'larını render et
+            renderWeekPublishToggles();
+
             sorted.forEach((fixture, idx) => {
                 const realIdx = localData.fixtures.indexOf(fixture);
                 const homeLogo = localData.teams[fixture.home]?.logo || '';
@@ -2213,6 +2372,33 @@
             });
 
             document.getElementById('fixturesList').innerHTML = html || '<p style="color:var(--text-muted); text-align:center;">Fikstürde maç yok</p>';
+        }
+
+        // Hafta publish toggle'larını render et
+        let publishedWeeks = {};
+
+        function renderWeekPublishToggles() {
+            const weeks = new Set();
+            localData.fixtures.forEach(f => weeks.add(f.week));
+            localData.matches.forEach(m => weeks.add(m.week));
+
+            const sortedWeeks = [...weeks].sort((a, b) => a - b);
+            const container = document.getElementById('weekPublishToggles');
+
+            if (!container) return;
+
+            container.innerHTML = sortedWeeks.map(week => `
+                <label style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; cursor: pointer;">
+                    <input type="checkbox" ${publishedWeeks[week] ? 'checked' : ''} onchange="toggleWeekPublish(${week}, this.checked)" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    <span style="color: ${publishedWeeks[week] ? 'var(--primary)' : 'var(--text-muted)'};">Hafta ${week}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleWeekPublish(week, isPublished) {
+            publishedWeeks[week] = isPublished;
+            renderWeekPublishToggles();
+            markUnsaved();
         }
 
         function addFixture() {
@@ -3375,6 +3561,9 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     statusEl.style.color = '#2ed573';
                     statusEl.innerHTML = '<i class="fas fa-check"></i> Başarıyla yayınlandı!';
 
+                    // Kaydedilmemiş değişiklik işaretini temizle
+                    markSaved();
+
                     // Canlı maç verilerini de kaydet
                     await saveLiveMatchToFirebase(liveMatchData);
 
@@ -3406,6 +3595,365 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                 alert('Kod panoya kopyalandı!');
             });
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🗳️ OYLAMA SİSTEMİ (Basit Liste)
+        // ═══════════════════════════════════════════════════════════════
+        let votingData = {
+            active: false,
+            endTime: null,
+            positions: {},
+            voters: {}
+        };
+
+        let votingPlayersList = []; // Admin tarafından eklenen oyuncular
+        let votingTimerInterval = null;
+
+        // Takım dropdown'ını doldur
+        function populateVotingTeamSelect() {
+            const select = document.getElementById('votingPlayerTeam');
+            if (!select) return;
+            select.innerHTML = '<option value="">Takım Seç</option>' +
+                Object.keys(localData.teams).map(t =>
+                    `<option value="${t}">${t}</option>`
+                ).join('');
+        }
+
+        // Oyuncu ekle (listeye)
+        function addVotingPlayerToList() {
+            const position = document.getElementById('votingPlayerPosition').value;
+            const team = document.getElementById('votingPlayerTeam').value;
+            const name = document.getElementById('votingPlayerName').value.trim();
+
+            if (!position) {
+                alert('Lütfen mevki seçin!');
+                return;
+            }
+            if (!team) {
+                alert('Lütfen takım seçin!');
+                return;
+            }
+            if (!name) {
+                alert('Lütfen oyuncu adı girin!');
+                return;
+            }
+
+            // Aynı oyuncu zaten var mı?
+            const exists = votingPlayersList.find(p => p.name === name && p.position === position);
+            if (exists) {
+                alert('Bu oyuncu zaten eklenmiş!');
+                return;
+            }
+
+            votingPlayersList.push({
+                position,
+                team,
+                name,
+                votes: 0
+            });
+
+            renderVotingPlayersList();
+            saveVotingDraft();
+
+            // Formu temizle
+            document.getElementById('votingPlayerName').value = '';
+            markUnsaved();
+        }
+
+        // Oyuncu sil
+        function removeVotingPlayerFromList(index) {
+            votingPlayersList.splice(index, 1);
+            renderVotingPlayersList();
+            saveVotingDraft();
+        }
+
+        // Oyuncu listesini render et
+        function renderVotingPlayersList() {
+            const container = document.getElementById('votingPlayersList');
+            if (!container) return;
+
+            if (votingPlayersList.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Henüz oyuncu eklenmedi</p>';
+                return;
+            }
+
+            // Mevkilere göre grupla
+            const grouped = {};
+            votingPlayersList.forEach((p, idx) => {
+                if (!grouped[p.position]) grouped[p.position] = [];
+                grouped[p.position].push({ ...p, idx });
+            });
+
+            let html = '';
+            for (const [pos, players] of Object.entries(grouped)) {
+                html += `
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border);">
+                        <h4 style="color: var(--primary); margin: 0 0 10px;"><i class="fas fa-futbol"></i> ${pos}</h4>
+                        ${players.map(p => `
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 8px;">
+                                <img src="${localData.teams[p.team]?.logo || ''}" style="width: 30px; height: 30px; border-radius: 50%;">
+                                <span style="flex: 1;">${p.name}</span>
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">${p.team}</span>
+                                <span style="color: var(--primary); font-weight: bold;">${p.votes || 0} oy</span>
+                                <button class="btn btn-danger" onclick="removeVotingPlayerFromList(${p.idx})" style="padding: 5px 10px;"><i class="fas fa-times"></i></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Taslağı Firebase'e kaydet (F5'te kaybolmasın)
+        async function saveVotingDraft() {
+            const draftData = {
+                ...votingData,
+                positions: buildPositionsFromList()
+            };
+
+            if (typeof saveVotingData === 'function') {
+                await saveVotingData(draftData);
+            }
+        }
+
+        // Oyuncu listesinden positions objesi oluştur
+        function buildPositionsFromList() {
+            const positions = {};
+            votingPlayersList.forEach(p => {
+                if (!positions[p.position]) positions[p.position] = [];
+                positions[p.position].push({
+                    team: p.team,
+                    name: p.name,
+                    votes: p.votes || 0
+                });
+            });
+            return positions;
+        }
+
+        // Oylamayı başlat
+        function startVoting() {
+            const timeInput = document.getElementById('votingEndTimeInput').value;
+            const durationInput = document.getElementById('votingDurationMinutes').value;
+
+            let endTime;
+            if (timeInput) {
+                const [hours, mins] = timeInput.split(':');
+                const now = new Date();
+                endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, mins);
+                if (endTime <= now) endTime.setDate(endTime.getDate() + 1);
+            } else if (durationInput) {
+                endTime = new Date(Date.now() + parseInt(durationInput) * 60 * 1000);
+            } else {
+                alert('Lütfen bitiş saati veya süre girin!');
+                return;
+            }
+
+            if (votingPlayersList.length === 0) {
+                alert('En az bir oyuncu eklemelisiniz!');
+                return;
+            }
+
+            votingData = {
+                active: true,
+                week: parseInt(document.getElementById('votingWeekSelect').value) || 12,
+                endTime: endTime.getTime(),
+                positions: buildPositionsFromList(),
+                voters: {}
+            };
+
+            updateVotingUI();
+            startVotingTimer();
+            saveVotingToFirebase();
+            alert('Oylama başlatıldı! Bitiş: ' + endTime.toLocaleTimeString('tr-TR'));
+        }
+
+        function updateVotingUI() {
+            const statusLabel = document.getElementById('votingStatusLabel');
+            const timerSection = document.getElementById('votingTimerSection');
+            const endBtn = document.getElementById('endVotingBtn');
+
+            if (votingData.active) {
+                statusLabel.textContent = 'Aktif';
+                statusLabel.style.color = 'var(--success)';
+                timerSection.style.display = 'flex';
+                endBtn.style.display = 'inline-flex';
+                document.getElementById('votingEndTime').textContent = new Date(votingData.endTime).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                statusLabel.textContent = 'Pasif';
+                statusLabel.style.color = 'var(--danger)';
+                timerSection.style.display = 'none';
+                endBtn.style.display = 'none';
+            }
+
+            // Oy sayılarını göster
+            showVotingResults();
+        }
+
+        function startVotingTimer() {
+            if (votingTimerInterval) clearInterval(votingTimerInterval);
+            votingTimerInterval = setInterval(() => {
+                if (Date.now() >= votingData.endTime) {
+                    endVoting();
+                }
+            }, 1000);
+        }
+
+        function endVoting() {
+            votingData.active = false;
+            if (votingTimerInterval) clearInterval(votingTimerInterval);
+
+            // Kazananları seç ve kaydet
+            selectAndSaveWinners();
+
+            updateVotingUI();
+            saveVotingToFirebase();
+            alert('Oylama sona erdi! Kazananlar Haftanın XI\'ine yerleştirildi.');
+        }
+
+        // Oylama kazananlarını seç ve TOTW'a yerleştir
+        async function selectAndSaveWinners() {
+            const positions = votingData.positions || {};
+            const winners = {};
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+
+                // En çok oy alan oyuncuyu bul
+                const sorted = [...players].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                if (sorted.length > 0 && (sorted[0].votes || 0) > 0) {
+                    winners[posName] = {
+                        name: sorted[0].name,
+                        team: sorted[0].team,
+                        votes: sorted[0].votes || 0,
+                        logo: localData.teams[sorted[0].team]?.logo || ''
+                    };
+                }
+            }
+
+            // Firebase'e TOTW kazananlarını kaydet
+            votingData.winners = winners;
+            votingData.winnersTimestamp = Date.now();
+
+            if (typeof saveVotingData === 'function') {
+                await saveVotingData(votingData);
+            }
+
+            console.log('TOTW Kazananları:', winners);
+        }
+
+        function editVotingTimer() {
+            const newTime = prompt('Yeni bitiş saati (HH:MM):', '17:00');
+            if (newTime && newTime.match(/^\d{2}:\d{2}$/)) {
+                const [hours, mins] = newTime.split(':');
+                const now = new Date();
+                let endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, mins);
+                if (endTime <= now) endTime.setDate(endTime.getDate() + 1);
+                votingData.endTime = endTime.getTime();
+                updateVotingUI();
+                saveVotingToFirebase();
+            }
+        }
+
+        function clearVotingTimer() {
+            if (confirm('Zamanlayıcyı silmek istediğinize emin misiniz?')) {
+                votingData.endTime = null;
+                document.getElementById('votingEndTime').textContent = 'Manuel';
+                if (votingTimerInterval) clearInterval(votingTimerInterval);
+            }
+        }
+
+        function showVotingResults() {
+            const resultsDiv = document.getElementById('votingResults');
+            if (!resultsDiv) return;
+
+            resultsDiv.style.display = 'block';
+            let html = '';
+
+            const positions = votingData.positions || {};
+
+            // Toplam oy sayısı
+            let totalVotes = 0;
+            for (const players of Object.values(positions)) {
+                if (players) players.forEach(p => totalVotes += (p.votes || 0));
+            }
+
+            html += `<div style="background: rgba(196,255,14,0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 1px solid var(--primary);">
+                <span style="color: var(--text-muted);">Toplam Oy:</span>
+                <span style="color: var(--primary); font-weight: bold; font-size: 1.5rem; margin-left: 10px;">${totalVotes}</span>
+            </div>`;
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+                const sorted = [...players].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                const positionTotal = players.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+                html += `<div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">${posName}</h4>
+                    ${sorted.map((p, i) => {
+                    const percentage = positionTotal > 0 ? Math.round((p.votes || 0) / positionTotal * 100) : 0;
+                    return `
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: ${i === 0 ? 'rgba(196,255,14,0.15)' : 'rgba(0,0,0,0.2)'}; border-radius: 10px; margin-bottom: 6px; ${i === 0 ? 'border: 1px solid var(--primary);' : ''}">
+                            <span style="font-weight: bold; color: ${i === 0 ? 'var(--primary)' : 'var(--text-muted)'}; width: 25px;">#${i + 1}</span>
+                            <img src="${localData.teams[p.team]?.logo || ''}" style="width: 28px; height: 28px; border-radius: 50%;">
+                            <span style="flex: 1;">${p.name}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">${p.team}</span>
+                            <span style="color: var(--primary); font-weight: bold;">${p.votes || 0} oy</span>
+                            <span style="background: rgba(196,255,14,0.2); padding: 3px 8px; border-radius: 5px; color: var(--primary); font-weight: bold; min-width: 50px; text-align: center;">${percentage}%</span>
+                        </div>
+                    `}).join('')}
+                </div>`;
+            }
+
+            document.getElementById('votingResultsContent').innerHTML = html || '<p style="color: var(--text-muted);">Henüz oyuncu eklenmedi</p>';
+        }
+
+        async function saveVotingToFirebase() {
+            if (typeof saveVotingData === 'function') {
+                await saveVotingData(votingData);
+            }
+        }
+
+        async function loadVotingFromFirebase() {
+            // Takım dropdown'ını doldur
+            populateVotingTeamSelect();
+
+            // Real-time listener kullan - oylar anında güncellensin
+            if (typeof listenVoting === 'function') {
+                listenVoting((data) => {
+                    if (data) {
+                        votingData = data;
+
+                        // Positions'dan oyuncu listesini oluştur
+                        votingPlayersList = [];
+                        if (data.positions) {
+                            for (const [pos, players] of Object.entries(data.positions)) {
+                                players.forEach(p => {
+                                    votingPlayersList.push({
+                                        position: pos,
+                                        team: p.team,
+                                        name: p.name,
+                                        votes: p.votes || 0
+                                    });
+                                });
+                            }
+                        }
+
+                        renderVotingPlayersList();
+                        updateVotingUI();
+
+                        if (votingData.active && votingData.endTime) {
+                            startVotingTimer();
+                        }
+                    }
+                });
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadVotingFromFirebase, 1000);
+        });
     </script>
 
     <!-- Theme Switcher -->
