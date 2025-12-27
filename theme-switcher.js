@@ -475,12 +475,23 @@
     // ╔══════════════════════════════════════════════════════════════╗
     // ║  GLOBAL API                                                 ║
     // ╚══════════════════════════════════════════════════════════════╝
+    // Favicon ekle
+    function addFavicon() {
+        if (document.querySelector('link[rel="icon"]')) return; // Zaten varsa ekleme
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/x-icon';
+        favicon.href = basePath + 'image/favicon.ico';
+        document.head.appendChild(favicon);
+    }
+
     window.TribeTheme = {
         apply: applyTheme,
         toggle: function () {
             document.getElementById('tribeThemeDropdown')?.classList.toggle('active');
         },
         init: function () {
+            addFavicon();
             createNavigation();
             createThemeSwitcher();
             const saved = localStorage.getItem(STORAGE_KEY) || 'dark';
