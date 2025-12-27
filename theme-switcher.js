@@ -7,6 +7,25 @@
 (function () {
     'use strict';
 
+    // ╔══════════════════════════════════════════════════════════════╗
+    // ║  🚫 IP ENGELLEme SİSTEMİ                                     ║
+    // ╚══════════════════════════════════════════════════════════════╝
+    const BLOCKED_IPS = ['51.158.206.98'];
+
+    (async function checkIP() {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            if (BLOCKED_IPS.includes(data.ip)) {
+                document.documentElement.innerHTML = '';
+                document.body.innerHTML = '';
+                document.body.style.cssText = 'background:#000;margin:0;height:100vh;';
+                window.stop();
+                throw new Error('Erişim engellendi');
+            }
+        } catch (e) { }
+    })();
+
     const STORAGE_KEY = 'tribe-league-theme';
 
     // Sayfa path'ini belirle (pages/ içinde mi değil mi)
