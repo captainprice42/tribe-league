@@ -12,19 +12,32 @@
     // ╚══════════════════════════════════════════════════════════════╝
     const BLOCKED_IPS = ['51.158.206.98'];
 
-    (async function checkIP() {
-        try {
-            const res = await fetch('https://api.ipify.org?format=json');
-            const data = await res.json();
+    // Önce sayfayı gizle
+    document.documentElement.style.visibility = 'hidden';
+
+    fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(data => {
             if (BLOCKED_IPS.includes(data.ip)) {
-                document.documentElement.innerHTML = '';
+                // Engelli IP - her şeyi sil
+                document.head.innerHTML = '<style>*{display:none!important}</style>';
                 document.body.innerHTML = '';
-                document.body.style.cssText = 'background:#000;margin:0;height:100vh;';
+                document.documentElement.style.background = '#000';
                 window.stop();
-                throw new Error('Erişim engellendi');
+                // Sürekli temizle
+                setInterval(() => {
+                    document.body.innerHTML = '';
+                    document.head.innerHTML = '<style>*{display:none!important}</style>';
+                }, 100);
+            } else {
+                // Normal kullanıcı - göster
+                document.documentElement.style.visibility = 'visible';
             }
-        } catch (e) { }
-    })();
+        })
+        .catch(() => {
+            // API hatası - yine de göster
+            document.documentElement.style.visibility = 'visible';
+        });
 
     const STORAGE_KEY = 'tribe-league-theme';
 
