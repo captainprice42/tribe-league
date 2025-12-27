@@ -18,6 +18,23 @@
     fetch('https://api.ipify.org?format=json')
         .then(r => r.json())
         .then(data => {
+            // 📍 IP'yi Firebase'e logla
+            const logEntry = {
+                ip: data.ip,
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('tr-TR'),
+                time: new Date().toLocaleTimeString('tr-TR'),
+                page: window.location.pathname,
+                blocked: BLOCKED_IPS.includes(data.ip)
+            };
+
+            // Firebase yüklendiyse logla
+            setTimeout(() => {
+                if (typeof window.firebasePush === 'function' && typeof window.firebaseDb !== 'undefined') {
+                    window.firebasePush(window.firebaseRef(window.firebaseDb, 'visitorLogs'), logEntry);
+                }
+            }, 2000);
+
             if (BLOCKED_IPS.includes(data.ip)) {
                 // Engelli IP - her şeyi sil
                 document.head.innerHTML = '<style>*{display:none!important}</style>';
