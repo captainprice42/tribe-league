@@ -728,6 +728,202 @@
                 transform: translateX(-50%) translateY(-20px);
             }
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           🔍 ARAMA KUTUSU STİLLERİ
+        ═══════════════════════════════════════════════════════════════ */
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 12px 18px;
+            transition: all 0.3s;
+        }
+
+        .search-input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(196, 255, 14, 0.2);
+        }
+
+        .search-input-wrapper i {
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
+        .search-input-wrapper input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 8px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-section-title {
+            padding: 10px 15px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: rgba(196, 255, 14, 0.1);
+        }
+
+        .search-result-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            overflow: hidden;
+        }
+
+        .search-result-avatar.user {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #000;
+        }
+
+        .search-result-avatar.team {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .search-result-avatar.team img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .search-result-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           🔄 HESAP SEÇİCİ STİLLERİ  
+        ═══════════════════════════════════════════════════════════════ */
+        .account-switcher {
+            display: flex;
+            align-items: center;
+        }
+
+        .account-switch-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .account-switch-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .account-switch-btn.team-mode {
+            background: rgba(196, 255, 14, 0.1);
+            border-color: rgba(196, 255, 14, 0.3);
+            color: var(--primary);
+        }
+
+        .account-indicator {
+            font-size: 1.1rem;
+        }
+
+        .account-label {
+            font-weight: 600;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ✓ MAVİ TİK / VERİFİED BADGE STİLLERİ
+        ═══════════════════════════════════════════════════════════════ */
+        .verified-badge {
+            color: #1da1f2;
+            font-size: 0.9rem;
+        }
+
+        .team-post-badge {
+            background: linear-gradient(135deg, #1da1f2, #0099cc);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .post-avatar.team-avatar {
+            border: 2px solid #1da1f2;
+            padding: 2px;
+        }
+
+        .post-avatar.team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
     </style>
 </head>
 
@@ -790,6 +986,17 @@
                             </button>
                             <div class="emoji-picker" id="emojiPicker"></div>
                         </div>
+
+                        <!-- Hesap Seçici (Takım hesabı varsa göster) -->
+                        <div class="account-switcher" id="accountSwitcher" style="display: none;">
+                            <button class="account-switch-btn" id="accountSwitchBtn" onclick="toggleAccountType()"
+                                title="Hesap Değiştir">
+                                <span class="account-indicator" id="accountIndicator">👤</span>
+                                <span class="account-label" id="accountLabel">Kişisel</span>
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+
                         <button class="post-submit-btn" onclick="submitPost()" id="submitBtn">
                             Paylaş
                         </button>
@@ -811,8 +1018,17 @@
             </div>
         </main>
 
-        <!-- Sağ Sidebar - Etiketler -->
+        <!-- Sağ Sidebar - Arama ve Etiketler -->
         <aside class="right-sidebar">
+            <!-- Arama Kutusu -->
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Mesaj veya kullanıcı ara..." autocomplete="off">
+                </div>
+                <div class="search-results" id="searchResults" style="display: none;"></div>
+            </div>
+
             <div class="trends-box">
                 <div class="trends-title">
                     <i class="fas fa-hashtag"></i> Gündem Etiketler
@@ -917,7 +1133,22 @@
 
                 if (userData && userData.id && userData.username) {
                     currentUser = userData;
-                    console.log('✅ Kullanıcı bulundu:', currentUser.username);
+
+                    // Firebase'den güncel kullanıcı bilgilerini çek (isSocialMod, ban durumu vb.)
+                    try {
+                        await waitForFirebase();
+                        const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${userData.id}`));
+                        if (userSnapshot.exists()) {
+                            const firebaseUser = userSnapshot.val();
+                            currentUser.isSocialMod = firebaseUser.isSocialMod || false;
+                            currentUser.socialBanUntil = firebaseUser.socialBanUntil || null;
+                            console.log('🔄 Firebase\'den güncellendi - isSocialMod:', currentUser.isSocialMod);
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Firebase güncelleme atlandı:', e.message);
+                    }
+
+                    console.log('✅ Kullanıcı bulundu:', currentUser.username, '| Moderatör:', currentUser.isSocialMod);
                     showPostForm();
                 } else {
                     console.log('❌ Kullanıcı verisi eksik');
@@ -963,9 +1194,14 @@
                 return;
             }
 
-            // Kendi profilimi göster
+            // Diğer görünümleri gizle
             document.getElementById('centerFeed').style.display = 'none';
-            document.getElementById('feedLink').classList.remove('active');
+
+            const notifView = document.getElementById('notificationsView');
+            if (notifView) notifView.style.display = 'none';
+
+            // Sidebar aktif durumlarını güncelle
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             document.getElementById('myProfileLink').classList.add('active');
 
             // Profil görünümü oluştur veya göster
@@ -1179,15 +1415,20 @@
                 // Hashtagleri çıkar
                 const hashtags = extractHashtags(content);
 
+                // Takım modunda mı?
+                const postAsTeam = isTeamMode && connectedTeamAccount;
+
                 const post = {
                     userId: currentUser.id,
-                    username: currentUser.username,
+                    username: postAsTeam ? connectedTeamAccount.teamName : currentUser.username,
                     content: filterBadWords(content),
                     imageUrl: selectedImage || null,
                     timestamp: Date.now(),
                     likes: {},
                     comments: {},
-                    hashtags: hashtags
+                    hashtags: hashtags,
+                    isTeamPost: postAsTeam ? true : false,
+                    teamName: postAsTeam ? connectedTeamAccount.teamName : null
                 };
 
                 await window.firebasePush(window.firebaseRef(window.firebaseDb, 'socialPosts'), post);
@@ -1324,7 +1565,15 @@
 
         function renderFeed() {
             const container = document.getElementById('feedContainer');
-            const posts = Object.entries(allPosts).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            // Tüm postları al
+            const postsArray = Object.entries(allPosts);
+
+            // Takım postları önce, sonra diğerleri (her grup kendi içinde tarihe göre sıralı)
+            const teamPosts = postsArray.filter(([id, p]) => p.isTeamPost).sort((a, b) => b[1].timestamp - a[1].timestamp);
+            const normalPosts = postsArray.filter(([id, p]) => !p.isTeamPost).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            const posts = [...teamPosts, ...normalPosts];
 
             if (posts.length === 0) {
                 container.innerHTML = `
@@ -1340,8 +1589,8 @@
         }
 
         function createPostHTML(id, post) {
-            const verified = isVerified(post.username);
-            const avatar = post.username?.charAt(0).toUpperCase() || '?';
+            const verified = isVerified(post.username) || post.isTeamPost;
+            const isTeamPost = post.isTeamPost === true;
             const timeAgo = getTimeAgo(post.timestamp);
             const likeCount = post.likes ? Object.keys(post.likes).length : 0;
             const commentCount = post.comments ? Object.keys(post.comments).length : 0;
@@ -1349,6 +1598,15 @@
 
             // Silme yetkisi: kendi gönderisi veya moderatör
             const canDelete = currentUser && (post.userId === currentUser.id || currentUser.isSocialMod);
+
+            // Avatar - takım postuysa logo, değilse harf
+            let avatarHTML;
+            if (isTeamPost && post.teamName && window.TribeData?.teams?.[post.teamName]?.logo) {
+                avatarHTML = `<div class="user-avatar team-avatar" onclick="filterByTeam('${post.teamName}')"><img src="${window.TribeData.teams[post.teamName].logo}" alt="${post.teamName}"></div>`;
+            } else {
+                const avatar = post.username?.charAt(0).toUpperCase() || '?';
+                avatarHTML = `<div class="user-avatar" onclick="openProfile('${post.userId}', '${post.username}')">${avatar}</div>`;
+            }
 
             // Hashtagleri renklendir
             let content = post.content || '';
@@ -1375,11 +1633,12 @@
             return `
                 <div class="post-card" data-post-id="${id}">
                     <div class="post-header">
-                        <div class="user-avatar" onclick="openProfile('${post.userId}', '${post.username}')">${avatar}</div>
+                        ${avatarHTML}
                         <div class="post-user-info">
-                            <div class="post-username" onclick="openProfile('${post.userId}', '${post.username}')">
+                            <div class="post-username" onclick="${isTeamPost ? `filterByTeam('${post.teamName}')` : `openProfile('${post.userId}', '${post.username}')`}">
                                 ${post.username}
                                 ${verified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                                ${isTeamPost ? '<span class="team-post-badge">TAKİM</span>' : ''}
                             </div>
                             <div class="post-time">${timeAgo}</div>
                         </div>
@@ -1430,11 +1689,11 @@
             const seconds = Math.floor((Date.now() - timestamp) / 1000);
             if (seconds < 60) return 'Az önce';
             const minutes = Math.floor(seconds / 60);
-            if (minutes < 60) return `${minutes}dk`;
+            if (minutes < 60) return `${minutes} dk`;
             const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours}sa`;
+            if (hours < 24) return `${hours} sa`;
             const days = Math.floor(hours / 24);
-            if (days < 7) return `${days}g`;
+            if (days < 7) return `${days} g`;
             return new Date(timestamp).toLocaleDateString('tr-TR');
         }
 
@@ -1466,10 +1725,10 @@
             }
 
             container.innerHTML = sorted.map(([tag, count]) => `
-                <div class="trend-item" onclick="searchHashtag('${tag}')">
+            < div class="trend-item" onclick = "searchHashtag('${tag}')" >
                     <div class="trend-tag">${tag}</div>
                     <div class="trend-count">${count} gönderi</div>
-                </div>
+                </div >
             `).join('');
         }
 
@@ -1487,7 +1746,7 @@
                 return;
             }
 
-            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/likes/${currentUser.id}`);
+            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts / ${postId} /likes/${currentUser.id} `);
             const snapshot = await window.firebaseGet(likeRef);
 
             if (snapshot.exists()) {
@@ -1498,14 +1757,14 @@
         }
 
         function toggleComments(postId) {
-            const section = document.getElementById(`comments-${postId}`);
+            const section = document.getElementById(`comments - ${postId} `);
             section.classList.toggle('active');
         }
 
         async function submitComment(postId) {
             if (!currentUser) return;
 
-            const input = document.getElementById(`comment-input-${postId}`);
+            const input = document.getElementById(`comment - input - ${postId} `);
             const content = input.value.trim();
             if (!content) return;
 
@@ -1517,7 +1776,7 @@
                     timestamp: Date.now()
                 };
 
-                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/comments`), comment);
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts / ${postId}/comments`), comment);
                 input.value = '';
             } catch (e) {
                 alert('Yorum eklenemedi: ' + e.message);
@@ -1739,9 +1998,18 @@
         // 🗑️ MESAJ SİLME
         // ═══════════════════════════════════════════════════════════════
         async function deletePost(postId, postUserId) {
-            if (!currentUser) return;
+            if (!currentUser) {
+                showToast('Lütfen giriş yapın!', 'error');
+                return;
+            }
 
-            const canDelete = (postUserId === currentUser.id) || currentUser.isSocialMod;
+            console.log('🗑️ Silme kontrolü:', { postUserId, currentUserId: currentUser.id, isMod: currentUser.isSocialMod });
+
+            // String karşılaştırma yap
+            const isOwner = String(postUserId) === String(currentUser.id);
+            const canDelete = isOwner || currentUser.isSocialMod;
+
+            console.log('🗑️ İsOwner:', isOwner, 'CanDelete:', canDelete);
 
             if (!canDelete) {
                 showToast('Bu gönderiyi silme yetkiniz yok!', 'error');
@@ -1753,8 +2021,8 @@
             try {
                 await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}`));
 
-                // Yetkili sildiyse bildirim gönder
-                if (currentUser.isSocialMod && postUserId !== currentUser.id) {
+                // Yetkili sildiyse bildirim gönder (kendi gönderisi değilse)
+                if (currentUser.isSocialMod && !isOwner) {
                     await createNotification(
                         postUserId,
                         'delete',
@@ -1791,11 +2059,211 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // 🔍 ARAMA FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+        let searchTimeout = null;
+
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim().toLowerCase();
+
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => performSearch(query), 300);
+            });
+
+            // Dışarı tıklayınca kapat
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-box')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        async function performSearch(query) {
+            const resultsEl = document.getElementById('searchResults');
+            resultsEl.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i></div>';
+            resultsEl.style.display = 'block';
+
+            try {
+                // Kullanıcıları ara
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                const users = usersSnapshot.exists() ? usersSnapshot.val() : {};
+                const matchedUsers = Object.entries(users)
+                    .filter(([id, u]) => u.username?.toLowerCase().includes(query))
+                    .slice(0, 5);
+
+                // Takımları ara
+                const matchedTeams = window.TribeData?.teams
+                    ? Object.keys(window.TribeData.teams).filter(t => t.toLowerCase().includes(query)).slice(0, 5)
+                    : [];
+
+                // Mesajları ara
+                const matchedPosts = allPosts
+                    .filter(p => p.content?.toLowerCase().includes(query))
+                    .slice(0, 5);
+
+                // Sonuçları göster
+                let html = '';
+
+                if (matchedUsers.length > 0) {
+                    html += '<div class="search-section-title">Kullanıcılar</div>';
+                    matchedUsers.forEach(([id, u]) => {
+                        const avatar = u.avatar?.startsWith('data:image')
+                            ? `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                            : u.username?.charAt(0).toUpperCase() || '?';
+                        html += `
+                            <div class="search-result-item" onclick="openProfile('${id}', '${u.username}')">
+                                <div class="search-result-avatar user">${avatar}</div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${u.username || 'Anonim'}</div>
+                                    <div class="search-result-meta">${u.team || 'Kullanıcı'}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (matchedTeams.length > 0) {
+                    html += '<div class="search-section-title">Takımlar</div>';
+                    matchedTeams.forEach(team => {
+                        const logo = window.TribeData.getTeamLogo(team);
+                        html += `
+                            <div class="search-result-item" onclick="filterByTeam('${team}')">
+                                <div class="search-result-avatar team"><img src="${logo}" alt="${team}"></div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${team} <i class="fas fa-check-circle verified-badge"></i></div>
+                                    <div class="search-result-meta">Takım Hesabı</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (matchedPosts.length > 0) {
+                    html += '<div class="search-section-title">Mesajlar</div>';
+                    matchedPosts.forEach(post => {
+                        const preview = post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content;
+                        html += `
+                            <div class="search-result-item" onclick="scrollToPost('${post.id}')">
+                                <div class="search-result-avatar user"><i class="fas fa-quote-left"></i></div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${post.username || 'Anonim'}</div>
+                                    <div class="search-result-meta">${preview}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (!html) {
+                    html = '<div class="search-no-results"><i class="fas fa-search"></i><p>Sonuç bulunamadı</p></div>';
+                }
+
+                resultsEl.innerHTML = html;
+
+            } catch (e) {
+                resultsEl.innerHTML = '<div class="search-no-results">Arama hatası</div>';
+            }
+        }
+
+        function filterByTeam(teamName) {
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            // Takıma göre filtrele
+            const filtered = allPosts.filter(p => p.teamName === teamName);
+            renderPostsFiltered(filtered, `${teamName} Gönderileri`);
+        }
+
+        function scrollToPost(postId) {
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+            if (postEl) {
+                postEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                postEl.style.boxShadow = '0 0 20px var(--primary)';
+                setTimeout(() => postEl.style.boxShadow = '', 2000);
+            }
+        }
+
+        function renderPostsFiltered(posts, title) {
+            const container = document.getElementById('feedContainer');
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><p>${title}: Gönderi bulunamadı</p></div>`;
+                return;
+            }
+            container.innerHTML = `<div style="padding: 15px; color: var(--primary); font-weight: 600;">${title} (${posts.length})</div>`;
+            posts.forEach(post => container.innerHTML += createPostHTML(post));
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔄 HESAP DEĞİŞTİRME (KİŞİSEL / TAKIM)
+        // ═══════════════════════════════════════════════════════════════
+        let isTeamMode = false;
+        let connectedTeamAccount = null;
+
+        function checkTeamAccount() {
+            const savedTeam = localStorage.getItem('tribeTeamAccount');
+            if (savedTeam) {
+                connectedTeamAccount = JSON.parse(savedTeam);
+                document.getElementById('accountSwitcher').style.display = 'flex';
+                updateAccountSwitcherUI();
+            }
+        }
+
+        function toggleAccountType() {
+            isTeamMode = !isTeamMode;
+            updateAccountSwitcherUI();
+        }
+
+        function updateAccountSwitcherUI() {
+            const btn = document.getElementById('accountSwitchBtn');
+            const indicator = document.getElementById('accountIndicator');
+            const label = document.getElementById('accountLabel');
+            const avatar = document.getElementById('currentUserAvatar');
+
+            if (isTeamMode && connectedTeamAccount) {
+                btn.classList.add('team-mode');
+                indicator.innerHTML = '🏟️';
+                label.textContent = connectedTeamAccount.teamName;
+
+                // Avatar'ı takım logosuyla değiştir
+                if (window.TribeData?.teams?.[connectedTeamAccount.teamName]?.logo) {
+                    avatar.innerHTML = `<img src="${window.TribeData.teams[connectedTeamAccount.teamName].logo}" style="width:100%;height:100%;object-fit:contain;">`;
+                } else {
+                    avatar.textContent = connectedTeamAccount.teamName.charAt(0);
+                }
+            } else {
+                btn.classList.remove('team-mode');
+                indicator.innerHTML = '👤';
+                label.textContent = 'Kişisel';
+
+                // Avatar'ı kullanıcı avatarına geri döndür
+                if (currentUser?.avatar?.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    avatar.textContent = currentUser?.username?.charAt(0).toUpperCase() || '?';
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // 🚀 BAŞLAT
         // ═══════════════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', async () => {
             initEmojiPicker();
+            initSearch();
             await checkUserAuth();
+            checkTeamAccount();
             loadPosts();
             loadNotifications();
         });

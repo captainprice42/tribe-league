@@ -1875,29 +1875,71 @@
         <div class="panel" id="panel-users">
             <div class="panel-title"><i class="fas fa-users-cog"></i> Kullanıcı Yönetimi</div>
 
-            <p style="color: var(--text-muted); margin-bottom: 20px;">
-                <i class="fas fa-info-circle"></i> Kayıtlı tüm kullanıcıları görüntüleyin, düzenleyin veya silin.
-            </p>
-
-            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
-                <button class="btn btn-accent" onclick="loadAllUsers()"><i class="fas fa-sync"></i> Yenile</button>
-                <span id="usersCount" style="color: var(--text-muted); padding: 10px;"></span>
+            <!-- Alt Sekmeler -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="btn btn-primary user-subtab active" onclick="showUserSubtab('normal')">
+                    <i class="fas fa-user"></i> Normal Hesaplar
+                </button>
+                <button class="btn btn-warning user-subtab" onclick="showUserSubtab('admin')">
+                    <i class="fas fa-user-shield"></i> Admin Hesaplar
+                </button>
+                <button class="btn btn-accent user-subtab" onclick="showUserSubtab('team')">
+                    <i class="fas fa-tshirt"></i> Takım Hesapları
+                </button>
             </div>
 
-            <div style="overflow-x: auto;">
-                <table class="standings-table" id="usersTable">
-                    <thead>
-                        <tr>
-                            <th style="text-align:left;">Kullanıcı Adı</th>
-                            <th style="text-align:left;">E-posta</th>
-                            <th style="text-align:left;">Şifre</th>
-                            <th>Takım</th>
-                            <th>Kayıt Tarihi</th>
-                            <th>İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody"></tbody>
-                </table>
+            <!-- Normal Hesaplar -->
+            <div id="usersSubtab-normal" class="user-subtab-content">
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    <i class="fas fa-info-circle"></i> Kayıtlı tüm kullanıcıları görüntüleyin, yetkiler verin veya ban
+                    uygulayın.
+                </p>
+
+                <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-accent" onclick="loadAllUsers()"><i class="fas fa-sync"></i> Yenile</button>
+                    <span id="usersCount" style="color: var(--text-muted); padding: 10px;"></span>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="standings-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Kullanıcı</th>
+                                <th style="text-align:left;">E-posta</th>
+                                <th>Takım</th>
+                                <th>Sosyal Mod</th>
+                                <th>Ban Durumu</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Hesaplar -->
+            <div id="usersSubtab-admin" class="user-subtab-content" style="display: none;">
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    <i class="fas fa-shield-alt"></i> Admin yetkisine sahip hesaplar burada listelenir.
+                </p>
+                <div id="adminAccountsList"></div>
+            </div>
+
+            <!-- Takım Hesapları -->
+            <div id="usersSubtab-team" class="user-subtab-content" style="display: none;">
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    <i class="fas fa-tshirt"></i> 14 takım hesabı. Şifre değiştirebilir ve erişim izinlerini
+                    yönetebilirsiniz.
+                </p>
+
+                <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-success" onclick="initTeamAccounts()"><i class="fas fa-plus"></i> Takım
+                        Hesaplarını Oluştur</button>
+                    <button class="btn btn-accent" onclick="loadTeamAccounts()"><i class="fas fa-sync"></i>
+                        Yenile</button>
+                </div>
+
+                <div id="teamAccountsList"></div>
             </div>
         </div>
 
@@ -1962,6 +2004,18 @@
     <script src="../firebase-config.js"></script>
 
     <script>
+        // Firebase bağlantı bekleme
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                attempts++;
+            }
+            if (!window.firebaseDb) {
+                throw new Error('Firebase bağlantısı kurulamadı');
+            }
+        }
+
         // 🔐 Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
         // Şifre artık Firebase'de saklanıyor (adminConfig/passwordHash)
         const _SALT_KEY = 'TrIbE_LeAgUe_2024_sEcReT';
@@ -4703,6 +4757,322 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     loadVisitorLogs();
                 }
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 👥 KULLANICI YÖNETİMİ
+        // ═══════════════════════════════════════════════════════════════
+
+        // 14 Takım
+        const TEAMS = [
+            'Galatasaray', 'Fenerbahçe', 'Beşiktaş', 'Trabzonspor',
+            'Başakşehir', 'Adana Demirspor', 'Antalyaspor', 'Konyaspor',
+            'Sivasspor', 'Alanyaspor', 'Kayserispor', 'Samsunspor',
+            'Gaziantep FK', 'Kasımpaşa'
+        ];
+
+        // Alt sekme değiştir
+        function showUserSubtab(tab) {
+            document.querySelectorAll('.user-subtab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.user-subtab').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(`usersSubtab-${tab}`).style.display = 'block';
+            event.target.closest('.user-subtab').classList.add('active');
+
+            if (tab === 'normal') loadAllUsers();
+            if (tab === 'team') loadTeamAccounts();
+            if (tab === 'admin') loadAdminAccounts();
+        }
+
+        // Tüm kullanıcıları yükle
+        async function loadAllUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const countSpan = document.getElementById('usersCount');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
+
+            try {
+                await waitForFirebase();
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+
+                if (!snapshot.exists()) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Kayıtlı kullanıcı yok</td></tr>';
+                    countSpan.textContent = '0 kullanıcı';
+                    return;
+                }
+
+                const users = snapshot.val();
+                const userList = Object.entries(users).map(([id, u]) => ({ id, ...u }));
+                countSpan.textContent = `${userList.length} kullanıcı`;
+
+                tbody.innerHTML = userList.map(u => {
+                    const isBanned = u.socialBanUntil && Date.now() < u.socialBanUntil;
+                    const banRemaining = isBanned ? Math.ceil((u.socialBanUntil - Date.now()) / 60000) : 0;
+
+                    return `
+                        <tr>
+                            <td style="text-align:left;">
+                                <span style="font-weight: 600;">${u.username || 'Anonim'}</span>
+                                ${u.provider === 'google' ? '<i class="fab fa-google" style="color: #db4437; margin-left: 5px;"></i>' : ''}
+                            </td>
+                            <td style="text-align:left; color: var(--text-muted); font-size: 0.85rem;">${u.email || '-'}</td>
+                            <td>${u.team || '-'}</td>
+                            <td>
+                                <label class="toggle-switch" style="transform: scale(0.8);">
+                                    <input type="checkbox" ${u.isSocialMod ? 'checked' : ''} onchange="toggleSocialMod('${u.id}', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </td>
+                            <td>
+                                ${isBanned
+                            ? `<span style="color: #ff4757; font-size: 0.85rem;"><i class="fas fa-ban"></i> ${banRemaining}dk</span>`
+                            : '<span style="color: var(--success);">✓</span>'
+                        }
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="banUser('${u.id}')">
+                                    <i class="fas fa-ban"></i> Ban
+                                </button>
+                                <button class="btn btn-warning" style="padding: 6px 12px; font-size: 0.8rem;" onclick="unbanUser('${u.id}')">
+                                    <i class="fas fa-unlock"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="6" style="color: #ff4757;">Hata: ${e.message}</td></tr>`;
+            }
+        }
+
+        // Sosyal medya moderatör atama
+        async function toggleSocialMod(userId, isEnabled) {
+            try {
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${userId}`), {
+                    isSocialMod: isEnabled
+                });
+                showToast(isEnabled ? '✅ Sosyal medya moderatörü atandı' : '❌ Moderatörlük kaldırıldı', isEnabled ? 'success' : 'error');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        // Ban uygula
+        async function banUser(userId) {
+            const duration = prompt('Ban süresi (dakika cinsinden, örn: 60 = 1 saat, 1440 = 1 gün):');
+            if (!duration || isNaN(duration)) return;
+
+            const banUntil = Date.now() + (parseInt(duration) * 60 * 1000);
+
+            try {
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${userId}`), {
+                    socialBanUntil: banUntil
+                });
+
+                // Bildirim gönder
+                const notif = {
+                    type: 'ban',
+                    message: `Sosyal medya ban'ı aldınız (${duration} dakika)`,
+                    timestamp: Date.now(),
+                    read: false
+                };
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, `notifications/${userId}`), notif);
+
+                loadAllUsers();
+                showToast(`🚫 ${duration} dakika ban uygulandı`, 'success');
+            } catch (e) {
+                alert('Ban hatası: ' + e.message);
+            }
+        }
+
+        // Ban kaldır
+        async function unbanUser(userId) {
+            try {
+                await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `users/${userId}/socialBanUntil`));
+                loadAllUsers();
+                showToast('✅ Ban kaldırıldı', 'success');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        // Admin hesaplarını yükle (sosyal medya moderatörleri)
+        async function loadAdminAccounts() {
+            const container = document.getElementById('adminAccountsList');
+            container.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
+
+            try {
+                await waitForFirebase();
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="color: var(--text-muted);">Kayıtlı kullanıcı yok</p>';
+                    return;
+                }
+
+                const users = snapshot.val();
+                const admins = Object.entries(users)
+                    .filter(([id, u]) => u.isSocialMod === true)
+                    .map(([id, u]) => ({ id, ...u }));
+
+                if (admins.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+                            <i class="fas fa-user-shield" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                            <p>Henüz sosyal medya moderatörü atanmamış.</p>
+                            <p style="font-size: 0.85rem;">"Normal Hesaplar" sekmesinden kullanıcılara moderatör yetkisi verebilirsiniz.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div style="margin-bottom: 15px; color: var(--text-muted);">
+                        <i class="fas fa-user-shield" style="color: var(--primary);"></i> 
+                        <strong>${admins.length}</strong> sosyal medya moderatörü
+                    </div>
+                    ${admins.map(u => `
+                        <div style="background: rgba(196,255,14,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000;">
+                                ${u.username?.charAt(0).toUpperCase() || '?'}
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">${u.username || 'Anonim'}</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">${u.email || '-'}</div>
+                            </div>
+                            <span style="background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                                <i class="fas fa-check"></i> Moderatör
+                            </span>
+                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleSocialMod('${u.id}', false); setTimeout(loadAdminAccounts, 500);">
+                                <i class="fas fa-times"></i> Yetkiyi Kaldır
+                            </button>
+                        </div>
+                    `).join('')}
+                `;
+
+            } catch (e) {
+                container.innerHTML = `<p style="color: #ff4757;">Hata: ${e.message}</p>`;
+            }
+        }
+
+        // Takım hesaplarını yükle
+        async function loadTeamAccounts() {
+            const container = document.getElementById('teamAccountsList');
+            container.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
+
+            try {
+                await waitForFirebase();
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'teamAccounts'));
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+                            <i class="fas fa-tshirt" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                            <p>Takım hesapları henüz oluşturulmamış.</p>
+                            <p style="font-size: 0.85rem;">Yukarıdaki "Takım Hesaplarını Oluştur" butonuna tıklayın.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const teams = snapshot.val();
+                container.innerHTML = TEAMS.map(team => {
+                    const account = teams[team.replace(/\s+/g, '_')] || {};
+                    return `
+                        <div style="background: rgba(0,212,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <span style="font-weight: 600; min-width: 150px;">${team}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Şifre: <code>${account.password || 'YOK'}</code></span>
+                            <button class="btn btn-accent" style="padding: 6px 12px; font-size: 0.8rem; margin-left: auto;" onclick="changeTeamPassword('${team.replace(/\s+/g, '_')}')">
+                                <i class="fas fa-key"></i> Şifre Değiştir
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                container.innerHTML = `<p style="color: #ff4757;">Hata: ${e.message}</p>`;
+            }
+        }
+
+        // 14 Takım hesabını oluştur
+        async function initTeamAccounts() {
+            if (!confirm('14 takım hesabını Firebase\'e kaydetmek istediğinize emin misiniz?')) return;
+
+            try {
+                await waitForFirebase();
+
+                for (const team of TEAMS) {
+                    const key = team.replace(/\s+/g, '_');
+                    const password = generatePassword();
+
+                    await window.firebaseSet(window.firebaseRef(window.firebaseDb, `teamAccounts/${key}`), {
+                        name: team,
+                        password: password,
+                        createdAt: Date.now()
+                    });
+                }
+
+                loadTeamAccounts();
+                showToast('✅ 14 takım hesabı oluşturuldu!', 'success');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        // Takım şifresi değiştir
+        async function changeTeamPassword(teamKey) {
+            const newPassword = prompt('Yeni şifre girin:');
+            if (!newPassword || newPassword.length < 4) {
+                alert('Şifre en az 4 karakter olmalı!');
+                return;
+            }
+
+            try {
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `teamAccounts/${teamKey}`), {
+                    password: newPassword
+                });
+                loadTeamAccounts();
+                showToast('✅ Şifre güncellendi', 'success');
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        // Rastgele şifre oluştur
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let pass = '';
+            for (let i = 0; i < 8; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return pass;
+        }
+
+        // Toast notification (admin panel için)
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.admin-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'admin-toast';
+            toast.innerHTML = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 30px;
+                padding: 15px 25px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                ${type === 'success'
+                    ? 'background: linear-gradient(135deg, #2ed573, #7bed9f); color: #000;'
+                    : 'background: linear-gradient(135deg, #ff4757, #ff6b7a); color: #fff;'
+                }
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
         }
 
         // Sayfa yüklenince admin IP kontrolü

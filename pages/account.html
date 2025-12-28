@@ -742,6 +742,15 @@
                     </div>
                     <i class="fas fa-chevron-right"></i>
                 </div>
+                <div class="menu-item" onclick="showSection('teamAccount')" id="teamAccountMenuItem">
+                    <div class="menu-icon" style="background: linear-gradient(135deg, #00d4ff, #0099cc);"><i
+                            class="fas fa-shield-alt"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Takım Hesabı</div>
+                        <div class="menu-desc" id="teamAccountStatus">Takımına giriş yap</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
             </div>
 
             <!-- Alt Bölümler -->
@@ -806,6 +815,24 @@
                 <h2><i class="fas fa-cog"></i> Hesap Ayarları</h2>
 
                 <div class="settings-group">
+                    <label>Profil Fotoğrafı</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div id="settingsAvatarPreview"
+                            style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; overflow: hidden;">
+                            <span id="avatarInitial">?</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="avatarFileInput" accept="image/*" style="display: none;"
+                                onchange="handleAvatarUpload(event)">
+                            <button class="btn-save" onclick="document.getElementById('avatarFileInput').click()"
+                                style="width: 100%;">
+                                <i class="fas fa-camera"></i> Fotoğraf Yükle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
                     <label>Kullanıcı Adı</label>
                     <div class="settings-row">
                         <input type="text" class="form-input" id="settingsUsername" placeholder="Kullanıcı adı">
@@ -852,6 +879,64 @@
                 </div>
 
                 <div id="settingsMessage" class="settings-message"></div>
+            </div>
+
+            <!-- Takım Hesabı Girişi -->
+            <div class="profile-section" id="section-teamAccount">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-shield-alt"></i> Takım Hesabı</h2>
+
+                <div id="teamAccountContent">
+                    <!-- Giriş yapılmamışsa -->
+                    <div id="teamLoginForm" style="text-align: center;">
+                        <div
+                            style="background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px;">
+                            <i class="fas fa-info-circle"
+                                style="font-size: 2rem; color: var(--accent); margin-bottom: 10px;"></i>
+                            <p style="color: var(--text-muted); margin-bottom: 15px;">Takım hesabına giriş yaparak takım
+                                adına gönderi paylaşabilirsiniz.</p>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Şifre takımınız tarafından
+                                verilmiştir.</p>
+                        </div>
+
+                        <div class="settings-group">
+                            <label style="text-align: left;">Takım Şifresi</label>
+                            <div class="password-container">
+                                <input type="password" class="form-input" id="teamPasswordInput"
+                                    placeholder="Takım şifresini girin">
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePassword('teamPasswordInput')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="btn-submit" onclick="loginToTeamAccount()" style="margin-top: 10px;">
+                            <i class="fas fa-sign-in-alt"></i> Takıma Giriş Yap
+                        </button>
+
+                        <div id="teamLoginMessage" class="settings-message" style="margin-top: 15px;"></div>
+                    </div>
+
+                    <!-- Giriş yapılmışsa -->
+                    <div id="teamLoggedIn" style="display: none; text-align: center;">
+                        <div
+                            style="background: rgba(196,255,14,0.1); border: 1px solid rgba(196,255,14,0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px;">
+                            <img id="teamLogo" src="" alt="Takım"
+                                style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: contain; background: rgba(0,0,0,0.3); padding: 10px;">
+                            <h3 style="color: var(--primary); font-family: var(--font-head); font-size: 1.8rem;"
+                                id="teamNameDisplay">Takım Adı</h3>
+                            <p style="color: var(--success);"><i class="fas fa-check-circle"></i> Bağlı</p>
+                        </div>
+
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Sosyal medyada takım hesabından
+                            gönderi paylaşabilirsiniz.</p>
+
+                        <button class="btn-logout" onclick="logoutFromTeamAccount()">
+                            <i class="fas fa-sign-out-alt"></i> Takım Hesabından Çık
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <button class="btn-logout" onclick="handleLogout()">
@@ -1024,11 +1109,19 @@
                 ? `<i class="fas fa-futbol"></i> ${currentUser.team}`
                 : '<i class="fas fa-futbol"></i> Favori takım seçilmedi';
 
+            // Favori takım select'ini güncelle
+            if (currentUser.team) {
+                document.getElementById('settingsTeam').value = currentUser.team;
+            }
+
             // Menüyü göster, bölümleri gizle
             document.getElementById('profileMenu').style.display = 'flex';
             document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
 
             document.querySelector('.auth-header p').textContent = 'Hoş geldin, ' + currentUser.username + '!';
+
+            // Rozetleri güncelle
+            setTimeout(() => updateBadges(), 100);
         }
 
         // Çıkış
@@ -1121,7 +1214,59 @@
                         currentUser?.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('tr-TR') : 'Bilinmiyor';
                     document.getElementById('lastLoginDate').textContent = new Date().toLocaleDateString('tr-TR');
                 }
+
+                // Takım durumu açılınca favori takım bilgisini göster
+                if (section === 'team') {
+                    loadTeamStats();
+                }
+
+                // Rozetler açılınca güncelle
+                if (section === 'badges') {
+                    updateBadges();
+                }
             }
+        }
+
+        // Takım durumu yükle
+        async function loadTeamStats() {
+            const container = document.getElementById('teamStatsContent');
+
+            if (!currentUser?.team) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-futbol" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                        <p style="color: var(--text-muted);">Favori takım seçilmedi</p>
+                        <button class="btn-save" onclick="showSection('settings')" style="margin-top: 15px;">
+                            <i class="fas fa-cog"></i> Ayarlardan Takım Seç
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">
+                        ⚽ ${currentUser.team}
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Favori Takımın</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--primary); font-weight: 700;">⚽</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Taraftar</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700;">🏆</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Şampiyon</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--success); font-weight: 700;">💚</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Destekçi</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         // Kullanıcı adı güncelle
@@ -1132,7 +1277,24 @@
                 return;
             }
 
+            if (newUsername.length < 3) {
+                showSettingsMessage('Kullanıcı adı en az 3 karakter olmalı', 'error');
+                return;
+            }
+
             try {
+                // Kullanıcı adı benzersizlik kontrolü
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                if (usersSnapshot.exists()) {
+                    const users = usersSnapshot.val();
+                    for (const [uid, user] of Object.entries(users)) {
+                        if (uid !== currentUser.id && user.username && user.username.toLowerCase() === newUsername.toLowerCase()) {
+                            showSettingsMessage('Bu kullanıcı adı zaten kullanılıyor!', 'error');
+                            return;
+                        }
+                    }
+                }
+
                 currentUser.username = newUsername;
                 await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), { username: newUsername });
                 localStorage.setItem('tribeUser', JSON.stringify(currentUser));
@@ -1206,10 +1368,32 @@
                 document.getElementById('userTeam').innerHTML = team
                     ? `<i class="fas fa-futbol"></i> ${team}`
                     : '<i class="fas fa-futbol"></i> Favori takım seçilmedi';
+
+                // Rozet güncelle - Taraftar rozeti
+                updateBadges();
+
                 showSettingsMessage('Favori takım güncellendi!', 'success');
             } catch (e) {
                 showSettingsMessage('Güncelleme hatası', 'error');
             }
+        }
+
+        // Rozetleri güncelle
+        function updateBadges() {
+            const badges = document.querySelectorAll('.badge-item');
+            badges.forEach(badge => {
+                const badgeName = badge.querySelector('.badge-name')?.textContent;
+
+                // İlk Adım rozeti - her zaman aktif
+                if (badgeName === 'İlk Adım') {
+                    badge.classList.add('earned');
+                }
+
+                // Taraftar rozeti - favori takım seçildiyse aktif
+                if (badgeName === 'Taraftar' && currentUser?.team) {
+                    badge.classList.add('earned');
+                }
+            });
         }
 
         // Ayarlar mesajı göster
@@ -1272,8 +1456,178 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 🏟️ TAKIM HESABI FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Firebase bekleme
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                attempts++;
+            }
+        }
+
+        // Takım hesabına giriş yap
+        async function loginToTeamAccount() {
+            const password = document.getElementById('teamPasswordInput').value.trim();
+            const msgEl = document.getElementById('teamLoginMessage');
+
+            if (!password) {
+                msgEl.textContent = 'Şifre girin!';
+                msgEl.className = 'settings-message error';
+                return;
+            }
+
+            msgEl.textContent = 'Kontrol ediliyor...';
+            msgEl.className = 'settings-message';
+
+            try {
+                await waitForFirebase();
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'teamAccounts'));
+
+                if (!snapshot.exists()) {
+                    msgEl.textContent = 'Takım hesapları bulunamadı!';
+                    msgEl.className = 'settings-message error';
+                    return;
+                }
+
+                const accounts = snapshot.val();
+                let foundTeam = null;
+
+                // Şifreyi tüm takımlarda ara
+                for (const [key, account] of Object.entries(accounts)) {
+                    if (account.password === password) {
+                        foundTeam = { key, ...account };
+                        break;
+                    }
+                }
+
+                if (!foundTeam) {
+                    msgEl.textContent = 'Geçersiz şifre!';
+                    msgEl.className = 'settings-message error';
+                    return;
+                }
+
+                // Takım hesabını localStorage'a kaydet
+                const teamAccountData = {
+                    teamKey: foundTeam.key,
+                    teamName: foundTeam.name,
+                    loggedInAt: Date.now()
+                };
+                localStorage.setItem('tribeTeamAccount', JSON.stringify(teamAccountData));
+
+                // UI güncelle
+                showTeamLoggedIn(foundTeam.name);
+                msgEl.textContent = '';
+                msgEl.className = 'settings-message';
+
+            } catch (e) {
+                msgEl.textContent = 'Hata: ' + e.message;
+                msgEl.className = 'settings-message error';
+            }
+        }
+
+        // Takım hesabından çıkış
+        function logoutFromTeamAccount() {
+            localStorage.removeItem('tribeTeamAccount');
+            document.getElementById('teamLoginForm').style.display = 'block';
+            document.getElementById('teamLoggedIn').style.display = 'none';
+            document.getElementById('teamAccountStatus').textContent = 'Takımına giriş yap';
+            document.getElementById('teamPasswordInput').value = '';
+        }
+
+        // Takım giriş durumunu göster
+        function showTeamLoggedIn(teamName) {
+            document.getElementById('teamLoginForm').style.display = 'none';
+            document.getElementById('teamLoggedIn').style.display = 'block';
+            document.getElementById('teamNameDisplay').textContent = teamName;
+            document.getElementById('teamAccountStatus').textContent = teamName + ' bağlı ✓';
+
+            // Logo yükle
+            if (window.TribeData?.teams?.[teamName]?.logo) {
+                document.getElementById('teamLogo').src = window.TribeData.teams[teamName].logo;
+            } else {
+                document.getElementById('teamLogo').src = 'https://via.placeholder.com/80?text=' + teamName.charAt(0);
+            }
+        }
+
+        // Takım hesabı durumunu kontrol et
+        function checkTeamAccountStatus() {
+            const savedTeam = localStorage.getItem('tribeTeamAccount');
+            if (savedTeam) {
+                const teamData = JSON.parse(savedTeam);
+                showTeamLoggedIn(teamData.teamName);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📷 PROFİL FOTOĞRAFI FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Profil fotoğrafı yükle
+        async function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Boyut kontrolü (max 500KB)
+            if (file.size > 500 * 1024) {
+                showSettingsMessage('Dosya çok büyük! Max 500KB', 'error');
+                return;
+            }
+
+            // Base64'e çevir
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const base64 = e.target.result;
+
+                try {
+                    await waitForFirebase();
+
+                    // Firebase'e kaydet
+                    await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), {
+                        avatar: base64
+                    });
+
+                    // localStorage güncelle
+                    currentUser.avatar = base64;
+                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+
+                    // UI güncelle
+                    updateAvatarDisplay(base64);
+                    showSettingsMessage('Profil fotoğrafı güncellendi!', 'success');
+
+                } catch (e) {
+                    showSettingsMessage('Yükleme hatası', 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Avatar görüntüsünü güncelle
+        function updateAvatarDisplay(avatarData) {
+            const avatarEl = document.getElementById('userAvatar');
+            const previewEl = document.getElementById('settingsAvatarPreview');
+            const initialEl = document.getElementById('avatarInitial');
+
+            if (avatarData && avatarData.startsWith('data:image')) {
+                // Fotoğraf var
+                avatarEl.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                previewEl.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                // Varsayılan harf
+                const initial = currentUser?.username?.charAt(0).toUpperCase() || '?';
+                avatarEl.innerHTML = initial;
+                initialEl.textContent = initial;
+            }
+        }
+
         // Sayfa yüklenince oturum kontrol
         checkSession();
+
+        // Takım hesabı durumunu da kontrol et
+        setTimeout(checkTeamAccountStatus, 500);
     </script>
 
     <script src="../theme-switcher.js"></script>
