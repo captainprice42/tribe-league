@@ -1196,25 +1196,41 @@
 
         // Initialize with Firebase listener
         document.addEventListener('DOMContentLoaded', () => {
-            // İlk yükleme
-            init();
+            // Firebase veri yüklenene kadar bekle
+            let dataLoaded = false;
 
-            // Firebase'den maç verileri geldiğinde yeniden hesapla
-            if (typeof listenMatches === 'function') {
-                listenMatches(() => {
-                    // Yeni veriyle tekrar hesapla
+            // Firebase real-time listener ile veriyi al
+            if (typeof listenAllData === 'function') {
+                listenAllData((data) => {
+                    if (data) {
+                        // TribeData'yı güncelle
+                        Object.assign(window.TribeData, data);
+
+                        // Takım verilerini oluştur
+                        const newTeamsData = buildTeamsData();
+                        const newH2HMatches = buildH2HMatches();
+                        Object.assign(teamsData, newTeamsData);
+                        Object.assign(h2hMatches, newH2HMatches);
+
+                        // Dropdown'ları doldur
+                        populateSelects();
+                        dataLoaded = true;
+                        console.log('✅ H2H Pro: Takım verileri yüklendi');
+                    }
+                });
+            }
+
+            // 3 saniye fallback - eğer Firebase yüklenmediyse mevcut TribeData kullan
+            setTimeout(() => {
+                if (!dataLoaded && typeof TribeData !== 'undefined' && TribeData.teams) {
                     const newTeamsData = buildTeamsData();
                     const newH2HMatches = buildH2HMatches();
                     Object.assign(teamsData, newTeamsData);
                     Object.assign(h2hMatches, newH2HMatches);
-
-                    // Dropdown'ları güncelle
                     populateSelects();
-
-                    // Eğer takımlar seçiliyse sonuçları güncelle
-                    updateComparison();
-                });
-            }
+                    console.log('⚠️ H2H Pro: Fallback veri kullanıldı');
+                }
+            }, 3000);
         });
 
         function populateSelects() {

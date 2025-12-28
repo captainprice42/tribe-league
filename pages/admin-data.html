@@ -43,8 +43,66 @@
         .match-team-logo,
         .kupa-logo {
             object-fit: contain !important;
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 40px !important;
+            max-height: 40px !important;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        /* Panel içindeki logolar için özel boyut */
+        .panel img[src*="logo"],
+        .panel img[src*="wiki"],
+        .panel img[src*="placeholder"],
+        #ziraatMatchesList img,
+        #superKupaMatchesList img {
+            width: 35px !important;
+            height: 35px !important;
+            max-width: 35px !important;
+            max-height: 35px !important;
+            object-fit: contain !important;
+        }
+
+        /* Modern Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #333;
+            border-radius: 32px;
+            transition: 0.4s;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--primary);
+        }
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(28px);
         }
 
         body {
@@ -1452,6 +1510,7 @@
             <div class="tab" onclick="switchTab('superkupa')"><i class="fas fa-medal"></i> Süper Kupa</div>
             <div class="tab" onclick="switchTab('livematch')"><i class="fas fa-broadcast-tower"></i> Canlı Maç</div>
             <div class="tab" onclick="switchTab('voting')"><i class="fas fa-vote-yea"></i> Oylama</div>
+            <div class="tab" onclick="switchTab('users')"><i class="fas fa-users-cog"></i> Kullanıcılar</div>
             <div class="tab" id="settingsTab" onclick="switchTab('settings')" style="display: none;"><i
                     class="fas fa-cog"></i> Ayarlar</div>
         </div>
@@ -1601,6 +1660,33 @@
             </p>
 
             <div id="ziraatMatchesList"></div>
+
+            <hr style="border-color: var(--border); margin: 30px 0;">
+
+            <!-- Eleme Ağacı Düzenleme -->
+            <div class="panel-title" style="font-size: 1.4rem;"><i class="fas fa-sitemap"></i> Eleme Ağacı (Çeyrek Final
+                - Final)</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Çeyrek final, yarı final ve final maçlarını düzenleyin.
+            </p>
+
+            <!-- Çeyrek Final -->
+            <h4 style="color: var(--primary); margin: 20px 0 15px;"><i class="fas fa-flag"></i> Çeyrek Final (4 Maç)
+            </h4>
+            <div class="grid-2" id="ziraatQuarterFinalsList"></div>
+
+            <!-- Yarı Final -->
+            <h4 style="color: var(--gold); margin: 30px 0 15px;"><i class="fas fa-medal"></i> Yarı Final (2 Maç)</h4>
+            <div class="grid-2" id="ziraatSemiFinalsList"></div>
+
+            <!-- Final -->
+            <h4 style="color: var(--accent); margin: 30px 0 15px;"><i class="fas fa-trophy"></i> Final</h4>
+            <div id="ziraatFinalMatch" style="max-width: 500px;"></div>
+
+            <div style="margin-top: 25px; text-align: right;">
+                <button class="btn btn-success" onclick="saveZiraatBracket()"><i class="fas fa-save"></i> Eleme Ağacını
+                    Kaydet</button>
+            </div>
         </div>
 
         <!-- Süper Kupa Panel -->
@@ -1634,6 +1720,28 @@
                     </thead>
                     <tbody id="superKupaStandingsBody"></tbody>
                 </table>
+            </div>
+
+            <hr style="border-color: var(--border); margin: 30px 0;">
+
+            <!-- Eleme Ağacı Düzenleme -->
+            <div class="panel-title" style="font-size: 1.4rem;"><i class="fas fa-sitemap"></i> Eleme Ağacı (Yarı Final -
+                Final)</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Yarı final ve final maçlarını düzenleyin.
+            </p>
+
+            <!-- Yarı Final -->
+            <h4 style="color: var(--gold); margin: 20px 0 15px;"><i class="fas fa-medal"></i> Yarı Final (2 Maç)</h4>
+            <div class="grid-2" id="superKupaSemiFinalsList"></div>
+
+            <!-- Final -->
+            <h4 style="color: var(--accent); margin: 30px 0 15px;"><i class="fas fa-trophy"></i> Final</h4>
+            <div id="superKupaFinalMatch" style="max-width: 500px;"></div>
+
+            <div style="margin-top: 25px; text-align: right;">
+                <button class="btn btn-success" onclick="saveSuperKupaBracket()"><i class="fas fa-save"></i> Eleme
+                    Ağacını Kaydet</button>
             </div>
         </div>
 
@@ -1762,6 +1870,60 @@
                 <div id="votingResultsContent"></div>
             </div>
         </div>
+
+        <!-- Users Panel -->
+        <div class="panel" id="panel-users">
+            <div class="panel-title"><i class="fas fa-users-cog"></i> Kullanıcı Yönetimi</div>
+
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Kayıtlı tüm kullanıcıları görüntüleyin, düzenleyin veya silin.
+            </p>
+
+            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-accent" onclick="loadAllUsers()"><i class="fas fa-sync"></i> Yenile</button>
+                <span id="usersCount" style="color: var(--text-muted); padding: 10px;"></span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="standings-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Kullanıcı Adı</th>
+                            <th style="text-align:left;">E-posta</th>
+                            <th style="text-align:left;">Şifre</th>
+                            <th>Takım</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="panel" id="panel-settings">
+            <div class="panel-title"><i class="fas fa-cog"></i> Sistem Ayarları</div>
+
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Sistem ayarları bu panelden yönetilir.
+            </p>
+
+            <!-- Ziyaretçi Logları -->
+            <div
+                style="background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--accent); margin: 0;"><i class="fas fa-list-alt"></i> Son Ziyaretçiler</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-accent" onclick="loadVisitorLogs()"><i class="fas fa-sync"></i>
+                            Yenile</button>
+                        <button class="btn btn-danger" onclick="clearVisitorLogs()"><i class="fas fa-trash"></i>
+                            Temizle</button>
+                    </div>
+                </div>
+                <div id="visitorLogsContainer" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Live Match Export Modal -->
@@ -1800,9 +1962,8 @@
     <script src="../firebase-config.js"></script>
 
     <script>
-        // Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
-        // Şifre değeri bu dosyada saklanmaz, sadece hash değeri kontrol edilir
-        const _0x4f2a = ['3d7e9f2b1c8a45d6e0f7b2c9a8d5e4f3b2a1c0d9e8f7a6b5c4d3e2f1a0b9c8d7'];
+        // 🔐 Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
+        // Şifre artık Firebase'de saklanıyor (adminConfig/passwordHash)
         const _SALT_KEY = 'TrIbE_LeAgUe_2024_sEcReT';
 
         // SHA-256 hash fonksiyonu
@@ -1816,8 +1977,27 @@
             return hashHex;
         }
 
-        // Şifre hash'i - SHA-256 ile şifrelenmiş, tersine çevrilemez
-        const PASS_HASH = 'a19f87b8254a8bdd6e0b5b10492bb0866aa326c55155096f433ed9e5becde9f2';
+        // Firebase'den admin şifre hash'ini al
+        async function getAdminPasswordHash() {
+            try {
+                // Firebase yüklenene kadar bekle
+                if (typeof window.firebaseGet !== 'function') {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'adminConfig/passwordHash'));
+                if (snapshot.exists()) {
+                    return snapshot.val();
+                }
+                // Fallback: Firebase'de yoksa varsayılan hash'i yükle ve kaydet
+                const defaultHash = 'a19f87b8254a8bdd6e0b5b10492bb0866aa326c55155096f433ed9e5becde9f2';
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'adminConfig/passwordHash'), defaultHash);
+                return defaultHash;
+            } catch (error) {
+                console.error('Admin şifre hash alınamadı:', error);
+                return null;
+            }
+        }
 
         // Local data copy (editable)
         let localData = {
@@ -1910,23 +2090,39 @@
             renderLiveMatches();
         }
 
-        // Login
+        // Login - Firebase'den şifre kontrolü
         async function login() {
-            const pass = document.getElementById('passwordInput').value;
-            const hash = await hashPassword(pass);
+            const loginBtn = document.querySelector('#loginScreen button');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kontrol ediliyor...';
+            loginBtn.disabled = true;
 
-            // Hash'i kontrol et
-            if (hash === PASS_HASH) {
-                // Oturumu localStorage'a kaydet
-                localStorage.setItem('tribe-admin-auth', 'true');
-                localStorage.setItem('tribe-admin-time', Date.now().toString());
+            try {
+                const pass = document.getElementById('passwordInput').value;
+                const hash = await hashPassword(pass);
 
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'block';
-                init();
-            } else {
+                // Firebase'den doğru hash'i al ve karşılaştır
+                const correctHash = await getAdminPasswordHash();
+
+                if (correctHash && hash === correctHash) {
+                    // Oturumu localStorage'a kaydet
+                    localStorage.setItem('tribe-admin-auth', 'true');
+                    localStorage.setItem('tribe-admin-time', Date.now().toString());
+
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainContainer').style.display = 'block';
+                    init();
+                } else {
+                    document.getElementById('loginError').style.display = 'block';
+                    document.getElementById('passwordInput').value = '';
+                }
+            } catch (error) {
+                console.error('Login hatası:', error);
                 document.getElementById('loginError').style.display = 'block';
-                document.getElementById('passwordInput').value = '';
+                document.getElementById('loginError').textContent = 'Bağlantı hatası!';
+            } finally {
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
             }
         }
 
@@ -1959,6 +2155,11 @@
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             event.target.closest('.tab').classList.add('active');
             document.getElementById('panel-' + tabName).classList.add('active');
+
+            // Kullanıcılar tabı açıldığında yükle
+            if (tabName === 'users') {
+                loadAllUsers();
+            }
         }
 
         // Populate team selects
@@ -3956,6 +4157,556 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(loadVotingFromFirebase, 1000);
         });
+
+        // ═══════════════════════════════════════════════════════════════
+        // 👥 KULLANICI YÖNETİMİ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        let allUsers = {};
+
+        async function loadAllUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const countEl = document.getElementById('usersCount');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
+
+            try {
+                if (typeof getAllUsers === 'function') {
+                    allUsers = await getAllUsers();
+                } else {
+                    // Fallback
+                    const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                    allUsers = snapshot.exists() ? snapshot.val() : {};
+                }
+
+                renderUsersTable();
+                countEl.textContent = `Toplam: ${Object.keys(allUsers).length} kullanıcı`;
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #ff4757;">Yükleme hatası</td></tr>';
+                console.error('Kullanıcı yükleme hatası:', e);
+            }
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
+
+            if (Object.keys(allUsers).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Henüz kayıtlı kullanıcı yok</td></tr>';
+                return;
+            }
+
+            let html = '';
+            Object.entries(allUsers).forEach(([id, user]) => {
+                const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('tr-TR') : '-';
+                const password = user.password ? atob(user.password) : (user.provider === 'google' ? '(Google)' : '-');
+                const teamLogo = user.team && localData.teams[user.team] ? `<img src="${localData.teams[user.team].logo}" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;">` : '';
+
+                html += `
+                    <tr>
+                        <td style="text-align:left;">
+                            <span style="color: var(--primary); font-weight: 600;">${user.username || '-'}</span>
+                            ${user.provider === 'google' ? '<i class="fab fa-google" style="color: #4285f4; margin-left: 5px;" title="Google ile giriş"></i>' : ''}
+                        </td>
+                        <td style="text-align:left; color: var(--text-muted);">${user.email || '-'}</td>
+                        <td style="text-align:left;">
+                            <code style="background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 5px; font-size: 0.85rem;">${password}</code>
+                        </td>
+                        <td>${teamLogo}${user.team || '-'}</td>
+                        <td style="color: var(--text-muted);">${createdAt}</td>
+                        <td>
+                            <button class="btn btn-accent" onclick="editUserPrompt('${id}')" style="padding: 6px 10px; margin-right: 5px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteUserPrompt('${id}')" style="padding: 6px 10px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        async function deleteUserPrompt(userId) {
+            const user = allUsers[userId];
+            if (!user) return;
+
+            if (confirm(`"${user.username}" kullanıcısını silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+                try {
+                    if (typeof deleteUserFromFirebase === 'function') {
+                        await deleteUserFromFirebase(userId);
+                    } else {
+                        await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `users/${userId}`));
+                    }
+                    delete allUsers[userId];
+                    renderUsersTable();
+                    document.getElementById('usersCount').textContent = `Toplam: ${Object.keys(allUsers).length} kullanıcı`;
+                    alert('Kullanıcı silindi!');
+                } catch (e) {
+                    alert('Silme hatası: ' + e.message);
+                }
+            }
+        }
+
+        async function editUserPrompt(userId) {
+            const user = allUsers[userId];
+            if (!user) return;
+
+            const newUsername = prompt('Yeni kullanıcı adı:', user.username);
+            if (newUsername === null) return;
+
+            const newEmail = prompt('Yeni e-posta:', user.email);
+            if (newEmail === null) return;
+
+            const newPassword = prompt('Yeni şifre (boş bırakılırsa değişmez):', '');
+
+            try {
+                const updates = {
+                    username: newUsername || user.username,
+                    email: newEmail || user.email
+                };
+
+                if (newPassword && newPassword.trim() !== '') {
+                    updates.password = btoa(newPassword);
+                }
+
+                if (typeof updateUserInFirebase === 'function') {
+                    await updateUserInFirebase(userId, updates);
+                } else {
+                    await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${userId}`), updates);
+                }
+
+                // Local güncelle
+                Object.assign(allUsers[userId], updates);
+                renderUsersTable();
+                alert('Kullanıcı güncellendi!');
+            } catch (e) {
+                alert('Güncelleme hatası: ' + e.message);
+            }
+        }
+
+        // Kullanıcılar paneli açıldığında yükle
+        // (switchTab fonksiyonunda çağrılacak)
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🏆 ELEME AĞACI DÜZENLEME FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Bracket verisi için varsayılan yapı
+        function getDefaultBracket() {
+            return {
+                quarterFinals: [
+                    { home: '', away: '', homeScore: null, awayScore: null },
+                    { home: '', away: '', homeScore: null, awayScore: null },
+                    { home: '', away: '', homeScore: null, awayScore: null },
+                    { home: '', away: '', homeScore: null, awayScore: null }
+                ],
+                semiFinals: [
+                    { home: '', away: '', homeScore: null, awayScore: null },
+                    { home: '', away: '', homeScore: null, awayScore: null }
+                ],
+                final: { home: '', away: '', homeScore: null, awayScore: null }
+            };
+        }
+
+        // Maç kartı HTML oluştur
+        function createMatchEditor(match, prefix, index) {
+            const teamOptions = Object.keys(localData.teams || {}).map(t =>
+                `<option value="${t}" ${match.home === t ? 'selected' : ''}>${t}</option>`
+            ).join('');
+            const teamOptions2 = Object.keys(localData.teams || {}).map(t =>
+                `<option value="${t}" ${match.away === t ? 'selected' : ''}>${t}</option>`
+            ).join('');
+
+            return `
+                <div class="bracket-editor-card" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <select id="${prefix}_home_${index}" class="form-control" style="flex: 1; min-width: 120px;">
+                            <option value="">Takım Seç</option>
+                            ${teamOptions}
+                        </select>
+                        <input type="number" id="${prefix}_homeScore_${index}" class="form-control" placeholder="-" min="0" value="${match.homeScore !== null ? match.homeScore : ''}" style="width: 60px; text-align: center;">
+                        <span style="color: var(--text-muted);">vs</span>
+                        <input type="number" id="${prefix}_awayScore_${index}" class="form-control" placeholder="-" min="0" value="${match.awayScore !== null ? match.awayScore : ''}" style="width: 60px; text-align: center;">
+                        <select id="${prefix}_away_${index}" class="form-control" style="flex: 1; min-width: 120px;">
+                            <option value="">Takım Seç</option>
+                            ${teamOptions2}
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Ziraat Kupası bracket editörü render
+        function renderZiraatBracketEditor() {
+            const bracket = localData.ziraatKupasi?.bracket || getDefaultBracket();
+
+            // Çeyrek Final
+            const qfContainer = document.getElementById('ziraatQuarterFinalsList');
+            if (qfContainer) {
+                qfContainer.innerHTML = bracket.quarterFinals.map((m, i) =>
+                    createMatchEditor(m, 'ziraat_qf', i)
+                ).join('');
+            }
+
+            // Yarı Final
+            const sfContainer = document.getElementById('ziraatSemiFinalsList');
+            if (sfContainer) {
+                sfContainer.innerHTML = bracket.semiFinals.map((m, i) =>
+                    createMatchEditor(m, 'ziraat_sf', i)
+                ).join('');
+            }
+
+            // Final
+            const fContainer = document.getElementById('ziraatFinalMatch');
+            if (fContainer) {
+                fContainer.innerHTML = createMatchEditor(bracket.final, 'ziraat_f', 0);
+            }
+        }
+
+        // Ziraat Kupası bracket kaydet
+        async function saveZiraatBracket() {
+            const bracket = {
+                quarterFinals: [],
+                semiFinals: [],
+                final: {}
+            };
+
+            // Çeyrek Final
+            for (let i = 0; i < 4; i++) {
+                bracket.quarterFinals.push({
+                    home: document.getElementById(`ziraat_qf_home_${i}`)?.value || '',
+                    away: document.getElementById(`ziraat_qf_away_${i}`)?.value || '',
+                    homeScore: document.getElementById(`ziraat_qf_homeScore_${i}`)?.value ? parseInt(document.getElementById(`ziraat_qf_homeScore_${i}`).value) : null,
+                    awayScore: document.getElementById(`ziraat_qf_awayScore_${i}`)?.value ? parseInt(document.getElementById(`ziraat_qf_awayScore_${i}`).value) : null
+                });
+            }
+
+            // Yarı Final
+            for (let i = 0; i < 2; i++) {
+                bracket.semiFinals.push({
+                    home: document.getElementById(`ziraat_sf_home_${i}`)?.value || '',
+                    away: document.getElementById(`ziraat_sf_away_${i}`)?.value || '',
+                    homeScore: document.getElementById(`ziraat_sf_homeScore_${i}`)?.value ? parseInt(document.getElementById(`ziraat_sf_homeScore_${i}`).value) : null,
+                    awayScore: document.getElementById(`ziraat_sf_awayScore_${i}`)?.value ? parseInt(document.getElementById(`ziraat_sf_awayScore_${i}`).value) : null
+                });
+            }
+
+            // Final
+            bracket.final = {
+                home: document.getElementById('ziraat_f_home_0')?.value || '',
+                away: document.getElementById('ziraat_f_away_0')?.value || '',
+                homeScore: document.getElementById('ziraat_f_homeScore_0')?.value ? parseInt(document.getElementById('ziraat_f_homeScore_0').value) : null,
+                awayScore: document.getElementById('ziraat_f_awayScore_0')?.value ? parseInt(document.getElementById('ziraat_f_awayScore_0').value) : null
+            };
+
+            // Local data'ya kaydet
+            if (!localData.ziraatKupasi) localData.ziraatKupasi = {};
+            localData.ziraatKupasi.bracket = bracket;
+
+            // Firebase'e kaydet
+            try {
+                await saveAllToFirebase();
+                alert('✅ Ziraat Kupası eleme ağacı kaydedildi!');
+            } catch (e) {
+                alert('❌ Kaydetme hatası: ' + e.message);
+            }
+        }
+
+        // Süper Kupa bracket editörü (4 takım: 2 yarı final + 1 final)
+        function renderSuperKupaBracketEditor() {
+            const bracket = localData.superKupa?.bracket || {
+                semiFinals: [
+                    { home: '', away: '', homeScore: null, awayScore: null },
+                    { home: '', away: '', homeScore: null, awayScore: null }
+                ],
+                final: { home: '', away: '', homeScore: null, awayScore: null }
+            };
+
+            // Yarı Final
+            const sfContainer = document.getElementById('superKupaSemiFinalsList');
+            if (sfContainer) {
+                sfContainer.innerHTML = bracket.semiFinals.map((m, i) =>
+                    createMatchEditor(m, 'super_sf', i)
+                ).join('');
+            }
+
+            // Final
+            const fContainer = document.getElementById('superKupaFinalMatch');
+            if (fContainer) {
+                fContainer.innerHTML = createMatchEditor(bracket.final, 'super_f', 0);
+            }
+        }
+
+        // Süper Kupa bracket kaydet
+        async function saveSuperKupaBracket() {
+            const bracket = {
+                semiFinals: [],
+                final: {}
+            };
+
+            // Yarı Final
+            for (let i = 0; i < 2; i++) {
+                bracket.semiFinals.push({
+                    home: document.getElementById(`super_sf_home_${i}`)?.value || '',
+                    away: document.getElementById(`super_sf_away_${i}`)?.value || '',
+                    homeScore: document.getElementById(`super_sf_homeScore_${i}`)?.value ? parseInt(document.getElementById(`super_sf_homeScore_${i}`).value) : null,
+                    awayScore: document.getElementById(`super_sf_awayScore_${i}`)?.value ? parseInt(document.getElementById(`super_sf_awayScore_${i}`).value) : null
+                });
+            }
+
+            // Final
+            bracket.final = {
+                home: document.getElementById('super_f_home_0')?.value || '',
+                away: document.getElementById('super_f_away_0')?.value || '',
+                homeScore: document.getElementById('super_f_homeScore_0')?.value ? parseInt(document.getElementById('super_f_homeScore_0').value) : null,
+                awayScore: document.getElementById('super_f_awayScore_0')?.value ? parseInt(document.getElementById('super_f_awayScore_0').value) : null
+            };
+
+            // Local data'ya kaydet
+            if (!localData.superKupa) localData.superKupa = {};
+            localData.superKupa.bracket = bracket;
+
+            // Firebase'e kaydet
+            try {
+                await saveAllToFirebase();
+                alert('✅ Süper Kupa eleme ağacı kaydedildi!');
+            } catch (e) {
+                alert('❌ Kaydetme hatası: ' + e.message);
+            }
+        }
+
+        // Ziraat ve Süper Kupa render wrapper (init'te çağrılacak)
+        function renderZiraatKupasi() {
+            // Mevcut maçları render et (ziraatMatchesList)
+            const container = document.getElementById('ziraatMatchesList');
+            if (container && localData.ziraatKupasi?.matches) {
+                let html = '';
+                localData.ziraatKupasi.matches.forEach((match, idx) => {
+                    html += `
+                        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <img src="${getTeamLogo(match.home)}" style="width: 30px; height: 30px; object-fit: contain;">
+                                <span>${match.home || 'TBD'}</span>
+                                <input type="number" value="${match.homeScore !== null ? match.homeScore : ''}" onchange="updateZiraatMatch(${idx}, 'homeScore', this.value)" style="width: 50px; padding: 5px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 5px; color: var(--text-main);">
+                                <span style="color: var(--text-muted);">-</span>
+                                <input type="number" value="${match.awayScore !== null ? match.awayScore : ''}" onchange="updateZiraatMatch(${idx}, 'awayScore', this.value)" style="width: 50px; padding: 5px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 5px; color: var(--text-main);">
+                                <span>${match.away || 'TBD'}</span>
+                                <img src="${getTeamLogo(match.away)}" style="width: 30px; height: 30px; object-fit: contain;">
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || '<p style="color: var(--text-muted);">Maç bulunamadı</p>';
+            }
+
+            // Bracket editörü render et
+            renderZiraatBracketEditor();
+        }
+
+        function renderSuperKupa() {
+            // Mevcut maçları render et (superKupaMatchesList)
+            const container = document.getElementById('superKupaMatchesList');
+            if (container && localData.superKupa?.matches) {
+                let html = '';
+                localData.superKupa.matches.forEach((match, idx) => {
+                    html += `
+                        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <img src="${getTeamLogo(match.home)}" style="width: 30px; height: 30px; object-fit: contain;">
+                                <span>${match.home || 'TBD'}</span>
+                                <input type="number" value="${match.homeScore !== null ? match.homeScore : ''}" onchange="updateSuperKupaMatch(${idx}, 'homeScore', this.value)" style="width: 50px; padding: 5px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 5px; color: var(--text-main);">
+                                <span style="color: var(--text-muted);">-</span>
+                                <input type="number" value="${match.awayScore !== null ? match.awayScore : ''}" onchange="updateSuperKupaMatch(${idx}, 'awayScore', this.value)" style="width: 50px; padding: 5px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 5px; color: var(--text-main);">
+                                <span>${match.away || 'TBD'}</span>
+                                <img src="${getTeamLogo(match.away)}" style="width: 30px; height: 30px; object-fit: contain;">
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || '<p style="color: var(--text-muted);">Maç bulunamadı</p>';
+            }
+
+            // Bracket editörü render et
+            renderSuperKupaBracketEditor();
+        }
+
+        function getTeamLogo(teamName) {
+            if (!teamName) return '../image/placeholder.png';
+            const team = localData.teams?.[teamName];
+            return team?.logo || `https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/${teamName.replace(/\s/g, '_')}_logo.svg/100px-${teamName.replace(/\s/g, '_')}_logo.svg.png`;
+        }
+
+        function updateZiraatMatch(idx, field, value) {
+            if (localData.ziraatKupasi?.matches?.[idx]) {
+                localData.ziraatKupasi.matches[idx][field] = value ? parseInt(value) : null;
+                markUnsaved();
+            }
+        }
+
+        function updateSuperKupaMatch(idx, field, value) {
+            if (localData.superKupa?.matches?.[idx]) {
+                localData.superKupa.matches[idx][field] = value ? parseInt(value) : null;
+                markUnsaved();
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ⚙️ AYARLAR PANELİ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        const ADMIN_IP = '88.241.180.6';
+        let siteSettings = {
+            ipLoggingEnabled: false,
+            blockedIPs: ['51.158.206.98']
+        };
+
+        // Admin IP kontrolü - Ayarlar sekmesini göster
+        async function checkAdminAccess() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                if (data.ip === ADMIN_IP) {
+                    document.getElementById('settingsTab').style.display = 'block';
+                    loadSiteSettings();
+                }
+            } catch (e) { }
+        }
+
+        // Ayarları Firebase'den yükle
+        async function loadSiteSettings() {
+            if (typeof window.firebaseDb !== 'undefined') {
+                try {
+                    const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'siteSettings'));
+                    if (snapshot.exists()) {
+                        siteSettings = { ...siteSettings, ...snapshot.val() };
+                    }
+                } catch (e) { }
+            }
+            renderSettingsUI();
+            loadVisitorLogs();
+        }
+
+        // Ayarları Firebase'e kaydet
+        async function saveSiteSettings() {
+            if (typeof window.firebaseDb !== 'undefined') {
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'siteSettings'), siteSettings);
+            }
+        }
+
+        // Ayarlar UI'ı güncelle
+        function renderSettingsUI() {
+            // IP Loglama toggle
+            const toggle = document.getElementById('ipLoggingToggle');
+            const status = document.getElementById('ipLoggingStatus');
+            if (toggle) toggle.checked = siteSettings.ipLoggingEnabled;
+            if (status) {
+                status.innerHTML = siteSettings.ipLoggingEnabled
+                    ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> IP loglama <strong>aktif</strong> - Ziyaretçiler kaydediliyor'
+                    : '<i class="fas fa-times-circle" style="color: var(--text-muted);"></i> IP loglama <strong>kapalı</strong>';
+            }
+
+            // Engelli IP listesi
+            const blockedList = document.getElementById('blockedIPsList');
+            if (blockedList) {
+                if (siteSettings.blockedIPs?.length > 0) {
+                    blockedList.innerHTML = siteSettings.blockedIPs.map(ip => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,71,87,0.1); border-radius: 8px; margin-bottom: 8px;">
+                            <code style="color: #ff4757;">${ip}</code>
+                            <button class="btn btn-sm" onclick="removeBlockedIP('${ip}')" style="background: transparent; color: #ff4757; border: 1px solid #ff4757; padding: 5px 10px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    blockedList.innerHTML = '<p style="color: var(--text-muted);">Engelli IP yok</p>';
+                }
+            }
+        }
+
+        // IP Loglama toggle
+        async function toggleIPLogging(enabled) {
+            siteSettings.ipLoggingEnabled = enabled;
+            await saveSiteSettings();
+            renderSettingsUI();
+        }
+
+        // Engelli IP ekle
+        async function addBlockedIP() {
+            const input = document.getElementById('newBlockedIP');
+            const ip = input.value.trim();
+            if (ip && /^\d+\.\d+\.\d+\.\d+$/.test(ip)) {
+                if (!siteSettings.blockedIPs) siteSettings.blockedIPs = [];
+                if (!siteSettings.blockedIPs.includes(ip)) {
+                    siteSettings.blockedIPs.push(ip);
+                    await saveSiteSettings();
+                    renderSettingsUI();
+                    input.value = '';
+                }
+            } else {
+                alert('Geçerli bir IP adresi girin (örn: 192.168.1.1)');
+            }
+        }
+
+        // Engelli IP kaldır
+        async function removeBlockedIP(ip) {
+            siteSettings.blockedIPs = siteSettings.blockedIPs.filter(i => i !== ip);
+            await saveSiteSettings();
+            renderSettingsUI();
+        }
+
+        // Ziyaretçi loglarını yükle
+        async function loadVisitorLogs() {
+            const container = document.getElementById('visitorLogsContainer');
+            if (!container) return;
+
+            container.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
+
+            try {
+                if (typeof window.firebaseDb !== 'undefined') {
+                    const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'visitorLogs'));
+                    if (snapshot.exists()) {
+                        const logs = snapshot.val();
+                        const logsArray = Object.entries(logs).map(([key, val]) => ({ id: key, ...val }));
+                        logsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                        container.innerHTML = logsArray.slice(0, 50).map(log => `
+                            <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="color: ${log.blocked ? '#ff4757' : 'var(--primary)'}; font-weight: 600;">
+                                        <i class="fas ${log.blocked ? 'fa-ban' : 'fa-user'}"></i> ${log.ip}
+                                    </span>
+                                    <span style="color: var(--text-muted); font-size: 0.8rem;">${log.date} ${log.time}</span>
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <i class="fas fa-globe"></i> ${log.browser || 'Bilinmiyor'} · 
+                                    <i class="fas fa-desktop"></i> ${log.os || 'Bilinmiyor'} · 
+                                    <i class="fas fa-expand"></i> ${log.screenSize || '?'} · 
+                                    <i class="fas fa-file"></i> ${log.page || '/'}
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="color: var(--text-muted);">Henüz log yok</p>';
+                    }
+                }
+            } catch (e) {
+                container.innerHTML = '<p style="color: #ff4757;">Yükleme hatası</p>';
+            }
+        }
+
+        // Logları temizle
+        async function clearVisitorLogs() {
+            if (confirm('Tüm ziyaretçi loglarını silmek istediğinize emin misiniz?')) {
+                if (typeof window.firebaseDb !== 'undefined') {
+                    await window.firebaseRemove(window.firebaseRef(window.firebaseDb, 'visitorLogs'));
+                    loadVisitorLogs();
+                }
+            }
+        }
+
+        // Sayfa yüklenince admin IP kontrolü
+        setTimeout(checkAdminAccess, 2000);
     </script>
 
     <!-- Theme Switcher -->

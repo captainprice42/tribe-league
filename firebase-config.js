@@ -25,9 +25,13 @@ async function initFirebase() {
     try {
         const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
         const { getDatabase, ref, set, get, onValue, push, remove, update } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js');
+        const { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
 
         _dbApp = initializeApp(_dbConfig);
         _dbInstance = getDatabase(_dbApp);
+
+        // Auth instance
+        const auth = getAuth(_dbApp);
 
         window.firebaseDb = _dbInstance;
         window.firebaseRef = ref;
@@ -37,6 +41,13 @@ async function initFirebase() {
         window.firebasePush = push;
         window.firebaseRemove = remove;
         window.firebaseUpdate = update;
+
+        // Auth functions
+        window.firebaseAuth = auth;
+        window.firebaseGoogleProvider = new GoogleAuthProvider();
+        window.firebaseSignInWithPopup = signInWithPopup;
+        window.firebaseSignOut = signOut;
+        window.firebaseOnAuthStateChanged = onAuthStateChanged;
 
         _dbReady = true;
         return true;
@@ -150,6 +161,51 @@ function listenSuperKupa(callback) {
     initFirebase().then(() => {
         window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'superKupa'), (snapshot) => {
             if (snapshot.exists()) callback(snapshot.val());
+        });
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 👥 KULLANICI YÖNETİMİ (Admin için)
+// ═══════════════════════════════════════════════════════════════
+
+async function getAllUsers() {
+    if (!_dbReady) await initFirebase();
+    try {
+        const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+        return snapshot.exists() ? snapshot.val() : {};
+    } catch (error) {
+        console.error('Kullanıcı listesi alınamadı:', error);
+        return {};
+    }
+}
+
+async function deleteUserFromFirebase(userId) {
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `users/${userId}`));
+        return true;
+    } catch (error) {
+        console.error('Kullanıcı silinemedi:', error);
+        return false;
+    }
+}
+
+async function updateUserInFirebase(userId, data) {
+    if (!_dbReady) await initFirebase();
+    try {
+        await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${userId}`), data);
+        return true;
+    } catch (error) {
+        console.error('Kullanıcı güncellenemedi:', error);
+        return false;
+    }
+}
+
+function listenUsers(callback) {
+    initFirebase().then(() => {
+        window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'users'), (snapshot) => {
+            callback(snapshot.exists() ? snapshot.val() : {});
         });
     });
 }

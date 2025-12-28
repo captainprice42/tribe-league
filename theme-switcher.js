@@ -7,111 +7,6 @@
 (function () {
     'use strict';
 
-    // ╔══════════════════════════════════════════════════════════════╗
-    // ║  🚫 IP ENGELLEme SİSTEMİ                                     ║
-    // ╚══════════════════════════════════════════════════════════════╝
-    const BLOCKED_IPS = ['51.158.206.98'];
-
-    // Önce sayfayı gizle
-    document.documentElement.style.visibility = 'hidden';
-
-    fetch('https://api.ipify.org?format=json')
-        .then(r => r.json())
-        .then(data => {
-            // 📍 Kapsamlı ziyaretçi verisi topla
-            const ua = navigator.userAgent;
-            const logEntry = {
-                // Temel bilgiler
-                ip: data.ip,
-                timestamp: new Date().toISOString(),
-                date: new Date().toLocaleDateString('tr-TR'),
-                time: new Date().toLocaleTimeString('tr-TR'),
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-
-                // Sayfa bilgileri
-                page: window.location.pathname,
-                fullUrl: window.location.href,
-                referrer: document.referrer || 'Doğrudan giriş',
-
-                // Cihaz bilgileri
-                screenWidth: screen.width,
-                screenHeight: screen.height,
-                screenSize: `${screen.width}x${screen.height}`,
-                windowSize: `${window.innerWidth}x${window.innerHeight}`,
-                colorDepth: screen.colorDepth + ' bit',
-                pixelRatio: window.devicePixelRatio,
-
-                // Tarayıcı bilgileri
-                userAgent: ua,
-                browser: getBrowser(ua),
-                os: getOS(ua),
-                platform: navigator.platform,
-                language: navigator.language,
-                languages: navigator.languages?.join(', ') || navigator.language,
-                cookiesEnabled: navigator.cookieEnabled,
-                doNotTrack: navigator.doNotTrack,
-
-                // Bağlantı bilgileri
-                connectionType: navigator.connection?.effectiveType || 'bilinmiyor',
-                downlink: navigator.connection?.downlink ? navigator.connection.downlink + ' Mbps' : 'bilinmiyor',
-
-                // Cihaz tipi
-                deviceType: /Mobile|Android|iPhone|iPad/.test(ua) ? 'Mobil' : 'Masaüstü',
-                touchScreen: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-
-                // Durum
-                blocked: BLOCKED_IPS.includes(data.ip)
-            };
-
-            // Tarayıcı tespit fonksiyonu
-            function getBrowser(ua) {
-                if (ua.includes('Firefox')) return 'Firefox';
-                if (ua.includes('Edg')) return 'Edge';
-                if (ua.includes('Chrome')) return 'Chrome';
-                if (ua.includes('Safari')) return 'Safari';
-                if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
-                return 'Bilinmiyor';
-            }
-
-            // İşletim sistemi tespit fonksiyonu
-            function getOS(ua) {
-                if (ua.includes('Windows NT 10')) return 'Windows 10/11';
-                if (ua.includes('Windows')) return 'Windows';
-                if (ua.includes('Mac OS')) return 'MacOS';
-                if (ua.includes('Linux')) return 'Linux';
-                if (ua.includes('Android')) return 'Android';
-                if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
-                return 'Bilinmiyor';
-            }
-
-            // Firebase yüklendiyse logla
-            setTimeout(() => {
-                if (typeof window.firebasePush === 'function' && typeof window.firebaseDb !== 'undefined') {
-                    window.firebasePush(window.firebaseRef(window.firebaseDb, 'visitorLogs'), logEntry);
-                }
-            }, 2000);
-
-            if (BLOCKED_IPS.includes(data.ip)) {
-                // Engelli IP - her şeyi sil
-                document.head.innerHTML = '<style>*{display:none!important}</style>';
-                document.body.innerHTML = '';
-                document.documentElement.style.background = '#000';
-                window.stop();
-                // Sürekli temizle
-                setInterval(() => {
-                    document.body.innerHTML = '';
-                    document.head.innerHTML = '<style>*{display:none!important}</style>';
-                }, 100);
-            } else {
-                // Normal kullanıcı - göster
-                document.documentElement.style.visibility = 'visible';
-            }
-        })
-        .catch(() => {
-            // API hatası - yine de göster
-            document.documentElement.style.visibility = 'visible';
-        });
-
     const STORAGE_KEY = 'tribe-league-theme';
 
     // Sayfa path'ini belirle (pages/ içinde mi değil mi)
@@ -130,6 +25,7 @@
         { name: 'Asist Kralları', href: 'assists.html', icon: 'fa-hands-helping' },
         { name: 'Ziraat Kupası', href: 'ziraatkupasison16.html', icon: 'fa-award' },
         { name: 'H2H', href: 'h2h-pro.html', icon: 'fa-exchange-alt' },
+        { name: 'Hesabım', href: 'account.html', icon: 'fa-user' },
         { name: 'Admin', href: 'admin-data.html', icon: 'fa-cog' }
     ];
 

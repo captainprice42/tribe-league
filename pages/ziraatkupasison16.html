@@ -603,6 +603,137 @@
             background: var(--red);
             color: #fff;
         }
+
+        /* Tournament Bracket Styles */
+        .tournament-bracket {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 250px;
+        }
+
+        .bracket-round-title {
+            text-align: center;
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .bracket-match-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .bracket-match-card.final {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .bracket-team-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+
+        .bracket-team-row.winner {
+            background: rgba(196, 255, 14, 0.1);
+        }
+
+        .bracket-team-row.winner .b-team-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .bracket-team-row+.bracket-team-row {
+            border-top: 1px solid var(--border);
+        }
+
+        .b-team-logo {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .b-team-name {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .b-team-score {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .bracket-team-row.winner .b-team-score {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .bracket-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .connector-line {
+            width: 30px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .connector-vertical {
+            width: 2px;
+            height: 60px;
+            background: var(--gold);
+        }
+
+        /* Bracket Tree (Simple) */
+        .bracket-tree {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bracket-tree-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .tournament-bracket {
+                flex-direction: column;
+            }
+
+            .bracket-round {
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -651,27 +782,24 @@
                 </div>
             </div>
 
-            <!-- Standings Panel -->
+            <!-- Eleme Ağacı Panel -->
             <div class="glass-panel">
                 <div class="panel-header">
-                    <h2 class="panel-title"><i class="fas fa-list-ol"></i> PUAN DURUMU</h2>
+                    <h2 class="panel-title"><i class="fas fa-sitemap"></i> ELEME AĞACI</h2>
                 </div>
-                <table class="standings-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>TAKIM</th>
-                            <th>O</th>
-                            <th>G</th>
-                            <th>B</th>
-                            <th>M</th>
-                            <th>AV</th>
-                            <th>P</th>
-                            <th>FORM</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standingsBody"></tbody>
-                </table>
+                <div class="bracket-tree" id="bracketTree">
+                    <p style="color: var(--text-muted); text-align: center;">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width Bracket View -->
+        <div class="glass-panel" style="margin: 30px auto; max-width: 1600px;">
+            <div class="panel-header">
+                <h2 class="panel-title"><i class="fas fa-trophy"></i> TURNUVA GÖRSELİ</h2>
+            </div>
+            <div class="tournament-bracket" id="tournamentBracket">
+                <p style="color: var(--text-muted); text-align: center;">Yükleniyor...</p>
             </div>
         </div>
     </div>
@@ -842,7 +970,190 @@
             document.getElementById('roundName').textContent = data.round || 'SON 16';
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        // Maç kazananını bul
+        function getWinner(match) {
+            if (!match || match.homeScore === null || match.awayScore === null) return null;
+            if (match.homeScore > match.awayScore) return match.home;
+            if (match.awayScore > match.homeScore) return match.away;
+            return null; // Beraberlik durumu
+        }
+
+        // Eleme ağacı basit görünüm
+        function renderBracketTree() {
+            const data = TribeData?.ziraatKupasi;
+            const container = document.getElementById('bracketTree');
+            if (!container) return;
+
+            if (!data || !data.bracket) {
+                // bracket verisi yoksa Son 16 maçlarından kazananları göster
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Eleme ağacı bilgisi henüz eklenmedi</p>';
+                return;
+            }
+
+            const bracket = data.bracket;
+            let html = '';
+
+            // Çeyrek Final
+            if (bracket.quarterFinals && bracket.quarterFinals.length > 0) {
+                html += '<div class="bracket-tree-row">';
+                bracket.quarterFinals.forEach((match, idx) => {
+                    const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                    const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                    const winner = getWinner(match);
+
+                    html += `
+                        <div class="bracket-match-card">
+                            <div style="padding: 8px 15px; background: rgba(196,255,14,0.1); font-family: var(--font-head); color: var(--primary); text-align: center;">ÇEYREK FİNAL ${idx + 1}</div>
+                            <div class="bracket-team-row ${winner === match.home ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.home)}" class="b-team-logo">
+                                <span class="b-team-name">${match.home || 'TBD'}</span>
+                                <span class="b-team-score">${homeScore}</span>
+                            </div>
+                            <div class="bracket-team-row ${winner === match.away ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.away)}" class="b-team-logo">
+                                <span class="b-team-name">${match.away || 'TBD'}</span>
+                                <span class="b-team-score">${awayScore}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            // Yarı Final
+            if (bracket.semiFinals && bracket.semiFinals.length > 0) {
+                html += '<div class="bracket-tree-row" style="max-width: 600px; margin: 20px auto;">';
+                bracket.semiFinals.forEach((match, idx) => {
+                    const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                    const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                    const winner = getWinner(match);
+
+                    html += `
+                        <div class="bracket-match-card">
+                            <div style="padding: 8px 15px; background: rgba(255,215,0,0.15); font-family: var(--font-head); color: var(--gold); text-align: center;">YARI FİNAL ${idx + 1}</div>
+                            <div class="bracket-team-row ${winner === match.home ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.home)}" class="b-team-logo">
+                                <span class="b-team-name">${match.home || 'TBD'}</span>
+                                <span class="b-team-score">${homeScore}</span>
+                            </div>
+                            <div class="bracket-team-row ${winner === match.away ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.away)}" class="b-team-logo">
+                                <span class="b-team-name">${match.away || 'TBD'}</span>
+                                <span class="b-team-score">${awayScore}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            // Final
+            if (bracket.final) {
+                const match = bracket.final;
+                const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                const winner = getWinner(match);
+
+                html += `
+                    <div class="bracket-tree-row" style="max-width: 350px; margin: 20px auto;">
+                        <div class="bracket-match-card final">
+                            <div style="padding: 10px 15px; background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(196,255,14,0.15)); font-family: var(--font-head); font-size: 1.2rem; color: var(--gold); text-align: center;"><i class="fas fa-trophy"></i> FİNAL</div>
+                            <div class="bracket-team-row ${winner === match.home ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.home)}" class="b-team-logo">
+                                <span class="b-team-name">${match.home || 'TBD'}</span>
+                                <span class="b-team-score">${homeScore}</span>
+                            </div>
+                            <div class="bracket-team-row ${winner === match.away ? 'winner' : ''}">
+                                <img src="${getLogoUrl(match.away)}" class="b-team-logo">
+                                <span class="b-team-name">${match.away || 'TBD'}</span>
+                                <span class="b-team-score">${awayScore}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html || '<p style="color: var(--text-muted); text-align: center;">Eleme ağacı verisi yok</p>';
+        }
+
+        // Turnuva görseli (yatay bracket)
+        function renderTournamentBracket() {
+            const data = TribeData?.ziraatKupasi;
+            const container = document.getElementById('tournamentBracket');
+            if (!container) return;
+
+            if (!data || !data.bracket) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Turnuva bilgisi admin panelden düzenlenebilir</p>';
+                return;
+            }
+
+            const bracket = data.bracket;
+
+            function renderMatchCard(match, title, isFinal = false) {
+                if (!match) return '<div class="bracket-match-card" style="opacity: 0.5;"><p style="text-align:center; padding: 20px; color: var(--text-muted);">TBD</p></div>';
+
+                const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                const winner = getWinner(match);
+
+                return `
+                    <div class="bracket-match-card ${isFinal ? 'final' : ''}">
+                        <div style="padding: 8px 15px; background: ${isFinal ? 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(196,255,14,0.15))' : 'rgba(255,255,255,0.05)'}; font-family: var(--font-head); color: ${isFinal ? 'var(--gold)' : 'var(--primary)'}; text-align: center;">${title}</div>
+                        <div class="bracket-team-row ${winner === match.home ? 'winner' : ''}">
+                            <img src="${getLogoUrl(match.home)}" class="b-team-logo">
+                            <span class="b-team-name">${match.home || 'TBD'}</span>
+                            <span class="b-team-score">${homeScore}</span>
+                        </div>
+                        <div class="bracket-team-row ${winner === match.away ? 'winner' : ''}">
+                            <img src="${getLogoUrl(match.away)}" class="b-team-logo">
+                            <span class="b-team-name">${match.away || 'TBD'}</span>
+                            <span class="b-team-score">${awayScore}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let html = '';
+
+            // Çeyrek Final Round
+            if (bracket.quarterFinals && bracket.quarterFinals.length > 0) {
+                html += '<div class="bracket-round">';
+                html += '<div class="bracket-round-title"><i class="fas fa-flag"></i> ÇEYREK FİNAL</div>';
+                bracket.quarterFinals.forEach((m, i) => {
+                    html += renderMatchCard(m, `Maç ${i + 1}`);
+                });
+                html += '</div>';
+            }
+
+            // Yarı Final Round
+            if (bracket.semiFinals && bracket.semiFinals.length > 0) {
+                html += '<div class="bracket-round">';
+                html += '<div class="bracket-round-title"><i class="fas fa-medal"></i> YARI FİNAL</div>';
+                bracket.semiFinals.forEach((m, i) => {
+                    html += renderMatchCard(m, `Maç ${i + 1}`);
+                });
+                html += '</div>';
+            }
+
+            // Final
+            if (bracket.final) {
+                html += '<div class="bracket-round">';
+                html += '<div class="bracket-round-title"><i class="fas fa-trophy"></i> FİNAL</div>';
+                html += renderMatchCard(bracket.final, 'FİNAL', true);
+                html += '</div>';
+            }
+
+            container.innerHTML = html || '<p style="color: var(--text-muted); text-align: center;">Turnuva verisi yok</p>';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            // Eleme ağacını da render et
+            setTimeout(() => {
+                renderBracketTree();
+                renderTournamentBracket();
+            }, 1500);
+        });
     </script>
 
     <script src="../theme-switcher.js"></script>
