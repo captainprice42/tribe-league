@@ -4,1096 +4,1817 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sosyal Medya - Tribe League</title>
-    <meta name="description" content="Tribe League sosyal medya kanalları - Discord, YouTube ve daha fazlası">
+    <title>Tribe Social - Sosyal Medya</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Teko:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
             --bg-body: #0a0a0e;
             --bg-card: #141419;
-            --bg-card-hover: #1a1a20;
+            --bg-glass: rgba(20, 20, 25, 0.95);
             --primary: #c4ff0e;
             --primary-glow: rgba(196, 255, 14, 0.4);
-            --secondary: #5742f5;
-            --discord: #5865F2;
-            --youtube: #FF0000;
-            --twitter: #1DA1F2;
-            --instagram: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            --twitch: #9146FF;
+            --accent: #00d4ff;
             --text-main: #ffffff;
             --text-muted: #8b8b96;
             --border: rgba(255, 255, 255, 0.08);
-            --radius: 16px;
+            --red: #ff4757;
+            --green: #2ed573;
+            --gold: #ffd700;
+            --font-main: 'Outfit', sans-serif;
             --font-head: 'Teko', sans-serif;
-            --font-body: 'Outfit', sans-serif;
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             background: var(--bg-body);
             color: var(--text-main);
-            font-family: var(--font-body);
-            padding: 0;
-            margin: 0;
+            font-family: var(--font-main);
             min-height: 100vh;
         }
 
-        .special-container {
+        /* ═══════════════════════════════════════════════════════════════
+           3 SÜTUNLU TWITTER TARZI LAYOUT
+        ═══════════════════════════════════════════════════════════════ */
+        .social-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 70px;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* Sol Sidebar */
+        .left-sidebar {
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 30px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(196, 255, 14, 0.1);
+            color: var(--primary);
+        }
+
+        .sidebar-link.active {
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .sidebar-link i {
+            width: 25px;
+            font-size: 1.2rem;
+        }
+
+        .notif-badge {
+            background: #ff4757;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Merkez Feed */
+        .center-feed {
+            border-right: 1px solid var(--border);
+            min-height: 100%;
+        }
+
+        .feed-header {
+            position: sticky;
+            top: 70px;
+            background: rgba(10, 10, 14, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .feed-header h2 {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Sağ Sidebar - Etiketler */
+        .right-sidebar {
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .trends-box {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 30px;
-            max-width: 1200px;
-            margin: 30px auto;
-            position: relative;
+            border-radius: 16px;
+            padding: 20px;
         }
 
-        .header-banner {
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-            background: linear-gradient(135deg, #222 0%, #111 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px 30px;
-            margin-bottom: 30px;
-        }
-
-        .header-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
-            opacity: 0.1;
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.1;
-            }
-
-            50% {
-                transform: scale(1.1);
-                opacity: 0.2;
-            }
-        }
-
-        .header-banner h1 {
+        .trends-title {
             font-family: var(--font-head);
-            font-size: 3.5rem;
+            font-size: 1.3rem;
             color: var(--primary);
-            margin: 0;
-            line-height: 1;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Edit Button */
-        .edit-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
-            color: #000;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-            cursor: pointer;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--primary-glow);
-            z-index: 100;
         }
 
-        .edit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--primary-glow);
+        .trend-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        /* Login Modal */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .trend-item:last-child {
+            border-bottom: none;
+        }
+
+        .trend-item:hover {
+            padding-left: 10px;
+        }
+
+        .trend-tag {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .trend-count {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Post Form */
+        .post-form {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .post-form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .post-textarea {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            resize: none;
+            min-height: 80px;
+        }
+
+        .post-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .post-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .post-tools {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .post-tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .login-overlay.active {
+        .post-tool-btn:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .post-submit-btn {
+            background: linear-gradient(135deg, var(--primary), #a8d900);
+            border: none;
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .post-submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+
+        .post-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            position: relative;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .image-preview .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Emoji Picker - Düzeltilmiş */
+        .emoji-picker {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+            width: 220px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .emoji-picker.active {
+            display: grid;
+        }
+
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .emoji-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.15);
+        }
+
+        /* Feed */
+        .feed {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-card {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .post-card:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .post-username:hover {
+            color: var(--primary);
+        }
+
+        .verified-badge {
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        .post-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-btn.liked {
+            color: var(--red);
+        }
+
+        .stat-btn.liked i {
+            animation: heartBeat 0.3s ease;
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        .comments-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .comments-section.active {
+            display: block;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .comment-submit {
+            background: var(--primary);
+            border: none;
+            color: #000;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-submit:hover {
+            transform: scale(1.1);
+        }
+
+        /* Profile Modal */
+        .profile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .profile-modal.active {
             display: flex;
         }
 
-        .login-box {
+        .profile-content {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 40px;
             border-radius: 20px;
-            text-align: center;
-            width: 380px;
-            box-shadow: 0 0 60px var(--primary-glow);
-            animation: slideUp 0.4s ease;
+            width: 100%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        @keyframes slideUp {
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 12px;
+            border: 3px solid var(--bg-card);
+        }
+
+        .profile-name {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .profile-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .profile-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .profile-posts {
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .login-required {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .login-required a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .social-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+
+            .center-feed {
+                border: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .post-stats {
+                gap: 10px;
+            }
+
+            .stat-btn {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Toast Notification Animasyonları */
+        @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateX(-50%) translateY(-20px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(-50%) translateY(0);
             }
         }
 
-        .login-title {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            margin: 0 0 25px;
-            color: #fff;
-        }
-
-        .login-title i {
-            color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .login-input {
-            width: 100%;
-            background: #000;
-            border: 2px solid var(--border);
-            color: #fff;
-            padding: 14px 16px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .login-input:focus {
-            border-color: var(--primary);
-        }
-
-        .login-btn {
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 14px;
-            font-weight: bold;
-            font-family: var(--font-head);
-            font-size: 1.3rem;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: 0.3s;
-        }
-
-        .login-btn:hover {
-            box-shadow: 0 0 25px var(--primary-glow);
-        }
-
-        .login-error {
-            color: #ff4466;
-            margin-top: 15px;
-            display: none;
-            font-size: 0.9rem;
-        }
-
-        .login-close {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: #666;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .login-close:hover {
-            color: #fff;
-        }
-
-        /* Social Grid Layout */
-        .social-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 900px) {
-            .social-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Platform Card */
-        .platform-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a22 100%);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: all 0.4s ease;
-        }
-
-        .platform-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .platform-header {
-            padding: 20px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .platform-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #fff;
-        }
-
-        .platform-icon.discord {
-            background: var(--discord);
-        }
-
-        .platform-icon.youtube {
-            background: var(--youtube);
-        }
-
-        .platform-icon.twitter {
-            background: var(--twitter);
-        }
-
-        .platform-icon.instagram {
-            background: var(--instagram);
-        }
-
-        .platform-icon.twitch {
-            background: var(--twitch);
-        }
-
-        .platform-info h3 {
-            font-family: var(--font-head);
-            font-size: 1.8rem;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        .platform-info p {
-            margin: 5px 0 0;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .platform-content {
-            padding: 20px;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Discord Widget Wrapper */
-        .discord-widget-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .discord-widget-wrapper iframe {
-            border-radius: 12px;
-            border: none;
-        }
-
-        /* YouTube Embed */
-        .youtube-wrapper {
-            width: 100%;
-        }
-
-        .youtube-embed {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 12px;
-            border: none;
-        }
-
-        .youtube-channel-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            padding: 12px 25px;
-            background: var(--youtube);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 10px;
-            font-family: var(--font-head);
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-
-        .youtube-channel-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
-        }
-
-        /* Discord Invite Card */
-        .discord-invite-card {
-            background: linear-gradient(135deg, #36393f 0%, #2f3136 100%);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            width: 100%;
-            max-width: 350px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .discord-logo {
-            width: 80px;
-            height: 80px;
-            background: var(--discord);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 2.5rem;
-            color: #fff;
-            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.3);
-        }
-
-        .discord-title {
-            font-family: var(--font-head);
-            font-size: 1.8rem;
-            color: #fff;
-            margin: 0 0 10px;
-        }
-
-        .discord-desc {
-            color: #b9bbbe;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        .discord-join-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 14px 30px;
-            background: var(--discord);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 10px;
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .discord-join-btn:hover {
-            background: #4752c4;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
-        }
-
-        /* Quick Links Section */
-        .quick-links-section {
-            margin-top: 30px;
-        }
-
-        .section-title {
-            font-family: var(--font-head);
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quick-links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .quick-link-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            text-decoration: none;
-            color: #fff;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quick-link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .quick-link-card:hover::before {
-            left: 100%;
-        }
-
-        .quick-link-card:hover {
-            transform: translateX(5px);
-            border-color: var(--primary);
-        }
-
-        .quick-link-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-
-        .quick-link-icon.discord {
-            background: var(--discord);
-        }
-
-        .quick-link-icon.youtube {
-            background: var(--youtube);
-        }
-
-        .quick-link-icon.twitter {
-            background: var(--twitter);
-        }
-
-        .quick-link-icon.instagram {
-            background: var(--instagram);
-        }
-
-        .quick-link-icon.twitch {
-            background: var(--twitch);
-        }
-
-        .quick-link-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .quick-link-text strong {
-            font-family: var(--font-head);
-            font-size: 1.2rem;
-        }
-
-        .quick-link-text span {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        /* Stats Section */
-        .stats-section {
-            margin-top: 30px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(196, 255, 14, 0.05) 0%, rgba(87, 66, 245, 0.05) 100%);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(196, 255, 14, 0.1);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .stat-icon.discord {
-            color: var(--discord);
-        }
-
-        .stat-icon.youtube {
-            color: var(--youtube);
-        }
-
-        .stat-icon.twitter {
-            color: var(--twitter);
-        }
-
-        .stat-icon.twitch {
-            color: var(--twitch);
-        }
-
-        .stat-value {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            color: var(--primary);
-            line-height: 1;
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        /* Edit Mode */
-        .edit-mode [contenteditable="true"] {
-            outline: 2px dashed var(--primary);
-            outline-offset: 2px;
-            background: rgba(196, 255, 14, 0.05);
-            border-radius: 4px;
-            min-width: 30px;
-            padding: 2px 4px;
-        }
-
-        .edit-mode [contenteditable="true"]:focus {
-            outline: 2px solid var(--primary);
-            background: rgba(196, 255, 14, 0.15);
-        }
-
-        /* Edit Toolbar */
-        .edit-toolbar {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 15px 20px;
-            gap: 12px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.3s ease;
-        }
-
-        .edit-toolbar.active {
-            display: flex;
-        }
-
-        .toolbar-btn {
-            background: #222;
-            color: #fff;
-            border: 1px solid var(--border);
-            padding: 12px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: var(--font-head);
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-
-        .toolbar-btn:hover {
-            background: #333;
-        }
-
-        .toolbar-btn.primary {
-            background: var(--primary);
-            color: #000;
-            border: none;
-        }
-
-        .toolbar-btn.primary:hover {
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .toolbar-btn.danger {
-            background: #dc3545;
-            border: none;
-        }
-
-        .toolbar-btn.danger:hover {
-            background: #c82333;
-        }
-
-        /* Export Modal */
-        .export-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .export-modal.active {
-            display: flex;
-        }
-
-        .export-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            width: 700px;
-            max-width: 90%;
-            padding: 30px;
-            border-radius: 16px;
-            animation: slideUp 0.4s ease;
-        }
-
-        .export-title {
-            font-family: var(--font-head);
-            font-size: 2rem;
-            color: var(--primary);
-            margin: 0 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .export-textarea {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
-            color: #e0e0e0;
-            border: 2px solid var(--border);
-            font-family: 'Outfit', 'Consolas', monospace;
-            font-size: 0.85rem;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 12px;
-            resize: none;
-            line-height: 1.5;
-            transition: 0.3s;
-        }
-
-        .export-textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(196, 255, 14, 0.15);
-            outline: none;
-        }
-
-        .export-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        /* Live Indicator */
-        .live-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 0, 0, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: #ff4444;
-            margin-left: 10px;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #ff0000;
-            border-radius: 50%;
-            animation: livePulse 1.5s infinite;
-        }
-
-        @keyframes livePulse {
-
-            0%,
-            100% {
+        @keyframes slideUp {
+            from {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateX(-50%) translateY(0);
             }
 
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="social-layout">
+        <!-- Sol Sidebar -->
+        <aside class="left-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-link active" id="feedLink" onclick="showFeedView(); return false;">
+                    <i class="fas fa-home"></i>
+                    <span>Gönderiler</span>
+                </a>
+                <a href="#" class="sidebar-link" id="notificationsLink" onclick="showNotifications(); return false;">
+                    <i class="fas fa-bell"></i>
+                    <span>Bildirimler</span>
+                    <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                </a>
+                <a href="#" class="sidebar-link" id="myProfileLink" onclick="showMyProfile(); return false;">
+                    <i class="fas fa-user"></i>
+                    <span>Hesabım</span>
+                </a>
+            </nav>
+        </aside>
 
-    <!-- LOGIN MODAL -->
-    <div class="login-overlay" id="loginOverlay">
-        <span class="login-close" onclick="closeLogin()">&times;</span>
-        <div class="login-box">
-            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
-            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
-            <input type="password" id="password" class="login-input" placeholder="Şifre">
-            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
-            <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
-        </div>
-    </div>
-
-    <!-- EXPORT MODAL -->
-    <div class="export-modal" id="exportModal">
-        <div class="export-box">
-            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
-            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın (CTRL+A sonra CTRL+C)</p>
-            <textarea id="exportCode" class="export-textarea" readonly></textarea>
-            <div class="export-actions">
-                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
-                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+        <!-- Merkez Feed -->
+        <main class="center-feed">
+            <div class="feed-header">
+                <h2 id="feedTitle"><i class="fas fa-comments"></i> Anasayfa</h2>
             </div>
-        </div>
-    </div>
 
-    <!-- EDIT TOOLBAR -->
-    <div class="edit-toolbar" id="editToolbar">
-        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
-        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="special-container" id="mainContainer">
-        <button class="edit-btn" id="editBtn" onclick="openLogin()">
-            <i class="fas fa-edit"></i> DÜZENLE
-        </button>
-
-        <div class="header-banner">
-            <h1>SOSYAL MEDYA</h1>
-            <p class="header-subtitle">Tribe League ile tüm platformlarda bağlantıda kalın!</p>
-        </div>
-
-        <!-- Main Platform Cards -->
-        <div class="social-grid">
-            <!-- Discord Card -->
-            <div class="platform-card">
-                <div class="platform-header">
-                    <div class="platform-icon discord">
-                        <i class="fab fa-discord"></i>
-                    </div>
-                    <div class="platform-info">
-                        <h3>Discord Sunucusu</h3>
-                        <p>Topluluğumuza katılın, sohbet edin!</p>
-                    </div>
-                </div>
-                <div class="platform-content">
-                    <div class="discord-invite-card">
-                        <div class="discord-logo">
-                            <i class="fab fa-discord"></i>
+            <!-- Center Feed Content (Gönderiler görünümü) -->
+            <div id="centerFeed">
+                <!-- Post Form -->
+                <div class="post-form" id="postForm" style="display: none;">
+                    <div class="post-form-header">
+                        <div class="user-avatar" id="currentUserAvatar">?</div>
+                        <div>
+                            <div style="font-weight: 600;" id="currentUserName">Yükleniyor...</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Herkese açık</div>
                         </div>
-                        <h3 class="discord-title">TRIBE LEAGUE</h3>
-                        <p class="discord-desc">Türkiye'nin en büyük RP futbol topluluğuna katıl!</p>
-                        <div class="discord-stats"
-                            style="display: flex; gap: 30px; margin: 20px 0; justify-content: center;">
-                            <div style="text-align: center;">
-                                <div style="font-family: var(--font-head); font-size: 2rem; color: var(--primary);"
-                                    contenteditable="true">1,250</div>
-                                <div style="color: var(--text-muted); font-size: 0.85rem;">Üye</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-family: var(--font-head); font-size: 2rem; color: #43b581;">●</div>
-                                <div style="color: var(--text-muted); font-size: 0.85rem;">Çevrimiçi</div>
-                            </div>
+                    </div>
+
+                    <textarea class="post-textarea" id="postContent" placeholder="Neler oluyor?"></textarea>
+
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="" alt="Preview">
+                        <button class="remove-image" onclick="removeImage()"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div class="post-actions">
+                        <div class="post-tools">
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;"
+                                onchange="handleImageSelect(event)">
+                            <button class="post-tool-btn" onclick="document.getElementById('imageInput').click()"
+                                title="Fotoğraf">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="post-tool-btn" onclick="toggleEmojiPicker()" title="Emoji">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <div class="emoji-picker" id="emojiPicker"></div>
                         </div>
-                        <a href="https://discord.gg/tribeleague" target="_blank" class="discord-join-btn">
-                            <i class="fab fa-discord"></i> Sunucuya Katıl
-                        </a>
+                        <button class="post-submit-btn" onclick="submitPost()" id="submitBtn">
+                            Paylaş
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Login Required -->
+                <div class="login-required" id="loginRequired">
+                    <i class="fas fa-lock" style="font-size: 1.8rem; margin-bottom: 12px; display: block;"></i>
+                    <p>Gönderi paylaşmak için <a href="account.html">giriş yapın</a></p>
+                </div>
+
+                <!-- Feed -->
+                <div class="feed" id="feedContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Gönderiler yükleniyor...
                     </div>
                 </div>
             </div>
+        </main>
 
-            <!-- YouTube Card -->
-            <div class="platform-card">
-                <div class="platform-header">
-                    <div class="platform-icon youtube">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                    <div class="platform-info">
-                        <h3>YouTube
-                            <span class="live-indicator">
-                                <span class="live-dot"></span>
-                                CANLI YAYINLAR
-                            </span>
-                        </h3>
-                        <p>Maçları canlı izleyin!</p>
-                    </div>
+        <!-- Sağ Sidebar - Etiketler -->
+        <aside class="right-sidebar">
+            <div class="trends-box">
+                <div class="trends-title">
+                    <i class="fas fa-hashtag"></i> Gündem Etiketler
                 </div>
-                <div class="platform-content">
-                    <div class="youtube-wrapper">
-                        <iframe class="youtube-embed"
-                            src="https://www.youtube.com/embed/live_stream?channel=UC_CHANNEL_ID" title="YouTube Live"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                    <a href="https://www.youtube.com/@TribeLeague1/streams" target="_blank"
-                        class="youtube-channel-link">
-                        <i class="fab fa-youtube"></i> Tüm Yayınlar
-                    </a>
+                <div id="trendsList">
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>
                 </div>
             </div>
-        </div>
+        </aside>
+    </div>
 
-        <!-- Quick Links -->
-        <div class="quick-links-section">
-            <h2 class="section-title"><i class="fas fa-link"></i> Hızlı Bağlantılar</h2>
-            <div class="quick-links-grid">
-                <a href="https://discord.gg/tribeleague" target="_blank" class="quick-link-card">
-                    <div class="quick-link-icon discord"><i class="fab fa-discord"></i></div>
-                    <div class="quick-link-text">
-                        <strong>Discord</strong>
-                        <span>discord.gg/tribeleague</span>
-                    </div>
-                </a>
-                <a href="https://www.youtube.com/@TribeLeague1" target="_blank" class="quick-link-card">
-                    <div class="quick-link-icon youtube"><i class="fab fa-youtube"></i></div>
-                    <div class="quick-link-text">
-                        <strong>YouTube</strong>
-                        <span>@TribeLeague1</span>
-                    </div>
-                </a>
-                <a href="https://www.youtube.com/@TribeLeague1/streams" target="_blank" class="quick-link-card">
-                    <div class="quick-link-icon youtube"><i class="fas fa-broadcast-tower"></i></div>
-                    <div class="quick-link-text">
-                        <strong>Canlı Yayınlar</strong>
-                        <span>YouTube Streams</span>
-                    </div>
-                </a>
+    <!-- Profile Modal -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-content">
+            <div class="profile-header">
+                <button class="profile-close" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <div class="profile-name" id="profileName">
+                    <span id="profileNameText">Kullanıcı</span>
+                    <i class="fas fa-check-circle verified-badge" id="profileVerified" style="display: none;"></i>
+                </div>
             </div>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="stats-section">
-            <h2 class="section-title"><i class="fas fa-chart-bar"></i> Topluluk İstatistikleri</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon discord"><i class="fab fa-discord"></i></div>
-                    <div class="stat-value" contenteditable="true">1,250</div>
-                    <div class="stat-label">Discord Üyesi</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon youtube"><i class="fab fa-youtube"></i></div>
-                    <div class="stat-value" contenteditable="true">500</div>
-                    <div class="stat-label">YouTube Abonesi</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon youtube"><i class="fas fa-eye"></i></div>
-                    <div class="stat-value" contenteditable="true">10K+</div>
-                    <div class="stat-label">Toplam İzlenme</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="color: var(--primary);"><i class="fas fa-futbol"></i></div>
-                    <div class="stat-value" contenteditable="true">16</div>
-                    <div class="stat-label">Sezon</div>
-                </div>
+            <div class="profile-tabs">
+                <div class="profile-tab active" onclick="switchProfileTab('posts', this)">Gönderiler</div>
+                <div class="profile-tab" onclick="switchProfileTab('likes', this)">Beğeniler</div>
+            </div>
+            <div class="profile-posts" id="profilePosts">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
             </div>
         </div>
     </div>
+
+    <script src="../firebase-config.js"></script>
+    <script src="../data.js"></script>
 
     <script>
-        // Encoded credentials (same as other pages)
-        const validUsers = [
-            { u: atob('YWRtaW4='), p: atob('dHJpYmUyMDI0') },
-            { u: atob('bW9k'), p: atob('bGVhZ3VlMTIz') }
+        // ═══════════════════════════════════════════════════════════════
+        // 🛡️ KÜFÜR FİLTRESİ VE YASAKLI KELİMELER
+        // ═══════════════════════════════════════════════════════════════
+        const BANNED_WORDS = [
+            'amk', 'aq', 'mk', 'oc', 'oç', 'oe', 'piç', 'pic', 'am', 'amcık', 'amcik',
+            'sik', 'yarrak', 'yarak', 'orospu', 'orospuçocuğu', 'sikerim', 'sikeyim',
+            'kahpe', 'pezevenk', 'göt', 'got', 'taşak', 'tasak', 'meme', 'kaltak',
+            'şerefsiz', 'serefsiz', 'puşt', 'pust', 'ibne', 'anan', 'anani', 'ananı',
+            'amına', 'amina', 'sikim', 'sikimin', 'siktir', 'amın', 'amin', 'götüne',
+            'feryadı', 'feryadi'
         ];
 
-        let isEditMode = false;
+        const VERIFIED_ACCOUNTS = [
+            'Galatasaray', 'Fenerbahçe', 'Beşiktaş', 'Trabzonspor', 'Başakşehir',
+            'Alanyaspor', 'Antalyaspor', 'Konyaspor', 'Samsunspor', 'Kayserispor',
+            'Göztepe', 'Gaziantep FK', 'Eyüpspor', 'Gençlerbirliği', 'Adana Demirspor',
+            'TribeLeague', 'Admin'
+        ];
 
-        function openLogin() {
-            document.getElementById('loginOverlay').classList.add('active');
-            document.getElementById('username').focus();
+        function filterBadWords(text) {
+            let filtered = text;
+            BANNED_WORDS.forEach(word => {
+                const regex = new RegExp('\\b' + word + '\\b', 'gi');
+                filtered = filtered.replace(regex, '####');
+            });
+            return filtered;
         }
 
-        function closeLogin() {
-            document.getElementById('loginOverlay').classList.remove('active');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('loginError').style.display = 'none';
+        function isVerified(username) {
+            return VERIFIED_ACCOUNTS.some(v => v.toLowerCase() === username?.toLowerCase());
         }
 
-        function tryLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+        // ═══════════════════════════════════════════════════════════════
+        // 😀 EMOJİ LİSTESİ
+        // ═══════════════════════════════════════════════════════════════
+        const EMOJIS = [
+            '😀', '😂', '🤣', '😍', '😎', '🤔',
+            '😢', '😡', '🔥', '💪', '👍', '👎',
+            '❤️', '💔', '⚽', '🏆', '🥇', '🎉',
+            '👏', '🙌', '💯', '✨', '😱', '🤡'
+        ];
 
-            const isValid = validUsers.some(v => v.u === user && v.p === pass);
+        // ═══════════════════════════════════════════════════════════════
+        // 🔐 KULLANICI DURUMU
+        // ═══════════════════════════════════════════════════════════════
+        let currentUser = null;
+        let allPosts = {};
+        let currentProfileUserId = null;
 
-            if (isValid) {
-                closeLogin();
-                enterEditMode();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
+        async function checkUserAuth() {
+            console.log('🔐 Kullanıcı kontrolü başlıyor...');
+            try {
+                // localStorage'dan tribeUser key'ini oku (account.html ile uyumlu)
+                const storedUser = localStorage.getItem('tribeUser');
+                console.log('📦 localStorage tribeUser:', storedUser ? 'VAR' : 'YOK');
+
+                if (!storedUser) {
+                    console.log('❌ tribeUser bulunamadı');
+                    showLoginRequired();
+                    return;
+                }
+
+                // JSON parse et
+                const userData = JSON.parse(storedUser);
+                console.log('📋 User data:', userData.username);
+
+                if (userData && userData.id && userData.username) {
+                    currentUser = userData;
+                    console.log('✅ Kullanıcı bulundu:', currentUser.username);
+                    showPostForm();
+                } else {
+                    console.log('❌ Kullanıcı verisi eksik');
+                    showLoginRequired();
+                }
+            } catch (e) {
+                console.error('❌ Auth kontrol hatası:', e);
+                showLoginRequired();
             }
         }
 
-        // Enter on password field
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') tryLogin();
-        });
+        function showLoginRequired() {
+            document.getElementById('postForm').style.display = 'none';
+            document.getElementById('loginRequired').style.display = 'block';
+        }
 
-        function enterEditMode() {
-            isEditMode = true;
-            document.getElementById('mainContainer').classList.add('edit-mode');
-            document.getElementById('editToolbar').classList.add('active');
-            document.getElementById('editBtn').style.display = 'none';
+        function showPostForm() {
+            document.getElementById('loginRequired').style.display = 'none';
+            document.getElementById('postForm').style.display = 'block';
 
-            // Enable contenteditable
-            document.querySelectorAll('[contenteditable]').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
+            const avatar = currentUser.username?.charAt(0).toUpperCase() || '?';
+            document.getElementById('currentUserAvatar').textContent = avatar;
+            document.getElementById('currentUserName').textContent = currentUser.username || 'Anonim';
+        }
+
+        function showFeedView() {
+            // Feed görünümüne geç
+            document.getElementById('centerFeed').style.display = 'block';
+
+            const myProfileView = document.getElementById('myProfileView');
+            if (myProfileView) myProfileView.style.display = 'none';
+
+            const notifView = document.getElementById('notificationsView');
+            if (notifView) notifView.style.display = 'none';
+
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('feedLink').classList.add('active');
+        }
+
+        function showMyProfile() {
+            if (!currentUser) {
+                window.location.href = 'account.html';
+                return;
+            }
+
+            // Kendi profilimi göster
+            document.getElementById('centerFeed').style.display = 'none';
+            document.getElementById('feedLink').classList.remove('active');
+            document.getElementById('myProfileLink').classList.add('active');
+
+            // Profil görünümü oluştur veya göster
+            let profileView = document.getElementById('myProfileView');
+            if (!profileView) {
+                profileView = document.createElement('div');
+                profileView.id = 'myProfileView';
+                profileView.style.cssText = 'padding: 0;';
+                document.querySelector('.center-feed').appendChild(profileView);
+            }
+            profileView.style.display = 'block';
+
+            renderMyProfile();
+        }
+
+        function renderMyProfile() {
+            const view = document.getElementById('myProfileView');
+            const avatar = currentUser.username?.charAt(0).toUpperCase() || '?';
+            const verified = isVerified(currentUser.username);
+
+            // Kullanıcının gönderileri
+            const myPosts = Object.entries(allPosts)
+                .filter(([id, p]) => p.userId === currentUser.id)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            // Kullanıcının beğenileri
+            const likedPosts = Object.entries(allPosts)
+                .filter(([id, p]) => p.likes && p.likes[currentUser.id])
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            // Kullanıcının yeniden paylaştıkları (retweet henüz yok, boş bırak)
+            const retweetedPosts = [];
+
+            view.innerHTML = `
+                <div style="background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary); margin: 0 auto 15px; border: 3px solid #fff;">
+                        ${avatar}
+                    </div>
+                    <div style="font-family: var(--font-head); font-size: 1.8rem; color: #000; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        ${currentUser.username}
+                        ${verified ? '<i class="fas fa-check-circle" style="color: #fff;"></i>' : ''}
+                    </div>
+                    ${currentUser.team ? `<div style="color: rgba(0,0,0,0.7); margin-top: 5px;"><i class="fas fa-futbol"></i> ${currentUser.team}</div>` : ''}
+                </div>
+
+                <div style="display: flex; border-bottom: 1px solid var(--border);">
+                    <button class="my-profile-tab active" onclick="switchMyProfileTab('posts', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--primary); border-bottom: 2px solid var(--primary); cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-pencil-alt"></i> Gönderiler <span style="color: var(--text-muted);">(${myPosts.length})</span>
+                    </button>
+                    <button class="my-profile-tab" onclick="switchMyProfileTab('likes', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: pointer;">
+                        <i class="fas fa-heart"></i> Beğeniler <span>(${likedPosts.length})</span>
+                    </button>
+                    <button class="my-profile-tab" onclick="switchMyProfileTab('retweets', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: pointer;">
+                        <i class="fas fa-retweet"></i> Repostlar <span>(${retweetedPosts.length})</span>
+                    </button>
+                </div>
+
+                <div id="myProfileContent" style="padding: 0;">
+                    ${renderMyPostsList(myPosts)}
+                </div>
+            `;
+        }
+
+        function switchMyProfileTab(tab, btn) {
+            // Tab stillerini güncelle
+            document.querySelectorAll('.my-profile-tab').forEach(t => {
+                t.style.color = 'var(--text-muted)';
+                t.style.borderBottomColor = 'transparent';
             });
+            btn.style.color = 'var(--primary)';
+            btn.style.borderBottomColor = 'var(--primary)';
+
+            const content = document.getElementById('myProfileContent');
+
+            if (tab === 'posts') {
+                const myPosts = Object.entries(allPosts)
+                    .filter(([id, p]) => p.userId === currentUser.id)
+                    .sort((a, b) => b[1].timestamp - a[1].timestamp);
+                content.innerHTML = renderMyPostsList(myPosts);
+            } else if (tab === 'likes') {
+                const likedPosts = Object.entries(allPosts)
+                    .filter(([id, p]) => p.likes && p.likes[currentUser.id])
+                    .sort((a, b) => b[1].timestamp - a[1].timestamp);
+                content.innerHTML = renderLikedPostsList(likedPosts);
+            } else if (tab === 'retweets') {
+                content.innerHTML = '<div class="empty-state" style="padding: 40px;"><i class="fas fa-retweet" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz repost yok</p></div>';
+            }
         }
 
-        function exitEditMode() {
-            isEditMode = false;
-            document.getElementById('mainContainer').classList.remove('edit-mode');
-            document.getElementById('editToolbar').classList.remove('active');
-            document.getElementById('editBtn').style.display = 'flex';
+        function renderMyPostsList(posts) {
+            if (posts.length === 0) {
+                return '<div class="empty-state" style="padding: 40px;"><i class="fas fa-pencil-alt" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz gönderi yok</p></div>';
+            }
+            return posts.map(([id, post]) => `
+                <div style="padding: 15px 20px; border-bottom: 1px solid var(--border);">
+                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">${getTimeAgo(post.timestamp)}</div>
+                    <div style="line-height: 1.5;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 10px;">` : ''}
+                    <div style="display: flex; gap: 15px; margin-top: 10px; color: var(--text-muted); font-size: 0.9rem;">
+                        <span><i class="fas fa-heart"></i> ${post.likes ? Object.keys(post.likes).length : 0}</span>
+                        <span><i class="fas fa-comment"></i> ${post.comments ? Object.keys(post.comments).length : 0}</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function exportHTML() {
-            // Clone the main container
-            const container = document.getElementById('mainContainer');
-            const clone = container.cloneNode(true);
-
-            // Remove edit-mode class
-            clone.classList.remove('edit-mode');
-
-            // Reset contenteditable to false for display
-            clone.querySelectorAll('[contenteditable]').forEach(el => {
-                el.setAttribute('contenteditable', 'false');
-            });
-
-            // Show edit button in export
-            const editBtn = clone.querySelector('.edit-btn');
-            if (editBtn) editBtn.style.display = 'flex';
-
-            // Get current page HTML
-            const fullHTML = document.documentElement.outerHTML;
-
-            // Create clean HTML by parsing and rebuilding
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(fullHTML, 'text/html');
-
-            // Remove edit-mode class from body elements
-            doc.querySelector('#mainContainer')?.classList.remove('edit-mode');
-
-            // Reset contenteditable
-            doc.querySelectorAll('[contenteditable]').forEach(el => {
-                el.setAttribute('contenteditable', 'false');
-            });
-
-            // Hide modals and toolbar
-            const loginOverlay = doc.querySelector('#loginOverlay');
-            if (loginOverlay) loginOverlay.classList.remove('active');
-
-            const editToolbar = doc.querySelector('#editToolbar');
-            if (editToolbar) editToolbar.classList.remove('active');
-
-            const exportModal = doc.querySelector('#exportModal');
-            if (exportModal) exportModal.classList.remove('active');
-
-            // Show edit button
-            const expEditBtn = doc.querySelector('#editBtn');
-            if (expEditBtn) expEditBtn.style.display = 'flex';
-
-            // Get final HTML
-            const finalHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
-
-            // Show export modal
-            document.getElementById('exportCode').value = finalHTML;
-            document.getElementById('exportModal').classList.add('active');
+        function renderLikedPostsList(posts) {
+            if (posts.length === 0) {
+                return '<div class="empty-state" style="padding: 40px;"><i class="fas fa-heart" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz beğeni yok</p></div>';
+            }
+            return posts.map(([id, post]) => `
+                <div style="padding: 15px 20px; border-bottom: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #000; font-size: 0.8rem;">
+                            ${post.username?.charAt(0).toUpperCase() || '?'}
+                        </div>
+                        <span style="font-weight: 600;">${post.username}</span>
+                        ${isVerified(post.username) ? '<i class="fas fa-check-circle" style="color: var(--accent); font-size: 0.85rem;"></i>' : ''}
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">${getTimeAgo(post.timestamp)}</span>
+                    </div>
+                    <div style="line-height: 1.5;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 10px;">` : ''}
+                </div>
+            `).join('');
         }
 
-        function closeExport() {
-            document.getElementById('exportModal').classList.remove('active');
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📝 GÖNDERİ İŞLEMLERİ
+        // ═══════════════════════════════════════════════════════════════
+        let selectedImage = null;
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 50 * 1024 * 1024) {
+                alert('Dosya boyutu 50MB\'dan küçük olmalı!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedImage = e.target.result;
+                document.getElementById('previewImg').src = selectedImage;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         }
 
-        function copyCode() {
-            const textarea = document.getElementById('exportCode');
-            textarea.select();
-            document.execCommand('copy');
+        function removeImage() {
+            selectedImage = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageInput').value = '';
+        }
 
-            // Visual feedback
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+        // Spam koruması değişkenleri
+        let lastPostTime = 0;
+        let spamAttempts = 0;
+        const POST_COOLDOWN = 3000; // 3 saniye
+        const SPAM_PENALTY = 5000; // +5 saniye ceza
+
+        async function submitPost() {
+            if (!currentUser) {
+                showToast('Lütfen giriş yapın!', 'error');
+                return;
+            }
+
+            // Ban kontrolü
+            if (await isUserBanned()) {
+                return;
+            }
+
+            // Spam koruması - Timeout kontrolü
+            const now = Date.now();
+            const timeSinceLastPost = now - lastPostTime;
+            const requiredCooldown = POST_COOLDOWN + (spamAttempts * SPAM_PENALTY);
+
+            if (timeSinceLastPost < requiredCooldown) {
+                const remaining = Math.ceil((requiredCooldown - timeSinceLastPost) / 1000);
+                spamAttempts++;
+
+                if (spamAttempts >= 3) {
+                    // 1 saat ban uygula
+                    await applySocialBan(currentUser.id, 60 * 60 * 1000); // 1 saat
+                    showToast('🚫 Spam nedeniyle 1 saat sosyal medya ban\'ı aldınız!', 'error');
+                    spamAttempts = 0;
+                    return;
+                }
+
+                showToast(`⏳ Lütfen ${remaining} saniye bekleyin! (Spam uyarısı ${spamAttempts}/3)`, 'error');
+                return;
+            }
+
+            const content = document.getElementById('postContent').value.trim();
+            if (!content && !selectedImage) {
+                showToast('Lütfen bir şeyler yazın veya fotoğraf ekleyin!', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                // Firebase hazır mı kontrol et
+                if (!window.firebaseDb) {
+                    await waitForFirebase();
+                }
+
+                // Hashtagleri çıkar
+                const hashtags = extractHashtags(content);
+
+                const post = {
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    content: filterBadWords(content),
+                    imageUrl: selectedImage || null,
+                    timestamp: Date.now(),
+                    likes: {},
+                    comments: {},
+                    hashtags: hashtags
+                };
+
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, 'socialPosts'), post);
+
+                document.getElementById('postContent').value = '';
+                removeImage();
+
+                // Başarılı - spam sayacını sıfırla
+                lastPostTime = Date.now();
+                spamAttempts = 0;
+
+                // Toast notification
+                showToast('✅ Gönderi paylaşıldı!', 'success');
+
+                // Etiketleri güncelle
+                updateTrends();
+            } catch (e) {
+                console.error('Gönderi hatası:', e);
+                showToast('❌ Hata: ' + e.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Paylaş';
+            }
+        }
+
+        // Ban kontrolü
+        async function isUserBanned() {
+            if (!currentUser) return false;
+
+            try {
+                const banRef = window.firebaseRef(window.firebaseDb, `users/${currentUser.id}/socialBanUntil`);
+                const snapshot = await window.firebaseGet(banRef);
+
+                if (snapshot.exists()) {
+                    const banUntil = snapshot.val();
+                    if (Date.now() < banUntil) {
+                        const remaining = Math.ceil((banUntil - Date.now()) / 60000);
+                        showToast(`🚫 Sosyal medya ban\'ınız var! Kalan süre: ${remaining} dakika`, 'error');
+                        return true;
+                    } else {
+                        // Ban süresi dolmuş, kaldır
+                        await window.firebaseRemove(banRef);
+                    }
+                }
+            } catch (e) {
+                console.error('Ban kontrol hatası:', e);
+            }
+            return false;
+        }
+
+        // Ban uygula
+        async function applySocialBan(userId, durationMs) {
+            const banUntil = Date.now() + durationMs;
+            await window.firebaseSet(window.firebaseRef(window.firebaseDb, `users/${userId}/socialBanUntil`), banUntil);
+
+            // Bildirim oluştur
+            await createNotification(userId, 'ban', 'Spam nedeniyle sosyal medya ban\'ı aldınız.');
+        }
+
+        function extractHashtags(text) {
+            const regex = /#(\w+)/g;
+            const matches = text.match(regex);
+            return matches ? matches.map(h => h.toLowerCase()) : [];
+        }
+
+        // Firebase hazır olana kadar bekle
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                attempts++;
+            }
+            if (!window.firebaseDb) {
+                throw new Error('Firebase bağlantısı kurulamadı');
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            // Varsa eski toast'ı kaldır
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideDown 0.3s ease;
+                ${type === 'success'
+                    ? 'background: linear-gradient(135deg, var(--primary), #a8d900); color: #000;'
+                    : 'background: linear-gradient(135deg, #ff4757, #ff6b7a); color: #fff;'
+                }
+            `;
+            document.body.appendChild(toast);
+
+            // 3 saniye sonra kaldır
             setTimeout(() => {
-                btn.innerHTML = originalHTML;
-            }, 2000);
+                toast.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
-        // Prevent links from navigating in edit mode when clicking on editable content
-        document.querySelectorAll('.quick-link-card').forEach(card => {
-            card.addEventListener('click', function (e) {
-                if (isEditMode && e.target.hasAttribute('contenteditable')) {
-                    e.preventDefault();
+        // ═══════════════════════════════════════════════════════════════
+        // 📰 FEED YÜKLEMESİ
+        // ═══════════════════════════════════════════════════════════════
+        async function loadPosts() {
+            try {
+                // Firebase hazır olana kadar bekle
+                await waitForFirebase();
+
+                window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'socialPosts'), (snapshot) => {
+                    allPosts = snapshot.exists() ? snapshot.val() : {};
+                    renderFeed();
+                    updateTrends();
+                });
+            } catch (e) {
+                console.error('Feed yükleme hatası:', e);
+                document.getElementById('feedContainer').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Bağlantı hatası. Sayfayı yenileyin.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContainer');
+            const posts = Object.entries(allPosts).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <p>Henüz gönderi yok. İlk sen paylaş!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = posts.map(([id, post]) => createPostHTML(id, post)).join('');
+        }
+
+        function createPostHTML(id, post) {
+            const verified = isVerified(post.username);
+            const avatar = post.username?.charAt(0).toUpperCase() || '?';
+            const timeAgo = getTimeAgo(post.timestamp);
+            const likeCount = post.likes ? Object.keys(post.likes).length : 0;
+            const commentCount = post.comments ? Object.keys(post.comments).length : 0;
+            const isLiked = currentUser && post.likes && post.likes[currentUser.id];
+
+            // Silme yetkisi: kendi gönderisi veya moderatör
+            const canDelete = currentUser && (post.userId === currentUser.id || currentUser.isSocialMod);
+
+            // Hashtagleri renklendir
+            let content = post.content || '';
+            content = content.replace(/#(\w+)/g, '<span style="color: var(--primary);">#$1</span>');
+
+            let commentsHTML = '';
+            if (post.comments) {
+                const comments = Object.entries(post.comments).sort((a, b) => a[1].timestamp - b[1].timestamp);
+                commentsHTML = comments.slice(0, 5).map(([cId, c]) => `
+                    <div class="comment">
+                        <div class="comment-avatar">${c.username?.charAt(0).toUpperCase() || '?'}</div>
+                        <div class="comment-content">
+                            <div class="comment-username">
+                                ${c.username}
+                                ${isVerified(c.username) ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                            </div>
+                            <div class="comment-text">${c.content}</div>
+                            <div class="comment-time">${getTimeAgo(c.timestamp)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            return `
+                <div class="post-card" data-post-id="${id}">
+                    <div class="post-header">
+                        <div class="user-avatar" onclick="openProfile('${post.userId}', '${post.username}')">${avatar}</div>
+                        <div class="post-user-info">
+                            <div class="post-username" onclick="openProfile('${post.userId}', '${post.username}')">
+                                ${post.username}
+                                ${verified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                            </div>
+                            <div class="post-time">${timeAgo}</div>
+                        </div>
+                        ${canDelete ? `
+                            <button class="delete-post-btn" onclick="deletePost('${id}', '${post.userId}')" title="Gönderiyi Sil" style="
+                                background: none;
+                                border: none;
+                                color: var(--text-muted);
+                                cursor: pointer;
+                                padding: 8px;
+                                border-radius: 50%;
+                                transition: all 0.2s;
+                                margin-left: auto;
+                            " onmouseover="this.style.color='#ff4757';this.style.background='rgba(255,71,87,0.1)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="post-content">${content}</div>
+                    ${post.imageUrl ? `<img class="post-image" src="${post.imageUrl}" alt="Post">` : ''}
+                    <div class="post-stats">
+                        <button class="stat-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${id}')">
+                            <i class="fas fa-heart"></i> ${likeCount}
+                        </button>
+                        <button class="stat-btn" onclick="toggleComments('${id}')">
+                            <i class="fas fa-comment"></i> ${commentCount}
+                        </button>
+                        <button class="stat-btn" onclick="sharePost('${id}')">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${id}">
+                        ${commentsHTML}
+                        ${currentUser ? `
+                            <div class="comment-form">
+                                <input type="text" class="comment-input" id="comment-input-${id}" placeholder="Yorum yaz..." onkeypress="if(event.key==='Enter')submitComment('${id}')">
+                                <button class="comment-submit" onclick="submitComment('${id}')">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            if (seconds < 60) return 'Az önce';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}dk`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}sa`;
+            const days = Math.floor(hours / 24);
+            if (days < 7) return `${days}g`;
+            return new Date(timestamp).toLocaleDateString('tr-TR');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // # ETİKETLER (TRENDS)
+        // ═══════════════════════════════════════════════════════════════
+        function updateTrends() {
+            const hashtagCounts = {};
+
+            Object.values(allPosts).forEach(post => {
+                // Sadece içerikten hashtag çıkar (çift sayımı önle)
+                const tags = extractHashtags(post.content || '');
+                // Benzersiz etiketler için Set kullan
+                const uniqueTags = [...new Set(tags)];
+                uniqueTags.forEach(tag => {
+                    hashtagCounts[tag] = (hashtagCounts[tag] || 0) + 1;
+                });
+            });
+
+            const sorted = Object.entries(hashtagCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const container = document.getElementById('trendsList');
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Henüz etiket yok</div>';
+                return;
+            }
+
+            container.innerHTML = sorted.map(([tag, count]) => `
+                <div class="trend-item" onclick="searchHashtag('${tag}')">
+                    <div class="trend-tag">${tag}</div>
+                    <div class="trend-count">${count} gönderi</div>
+                </div>
+            `).join('');
+        }
+
+        function searchHashtag(tag) {
+            // TODO: Hashtag araması
+            alert(`${tag} etiketli gönderiler`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ❤️ BEĞENİ VE YORUM
+        // ═══════════════════════════════════════════════════════════════
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                alert('Beğenmek için giriş yapın!');
+                return;
+            }
+
+            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/likes/${currentUser.id}`);
+            const snapshot = await window.firebaseGet(likeRef);
+
+            if (snapshot.exists()) {
+                await window.firebaseRemove(likeRef);
+            } else {
+                await window.firebaseSet(likeRef, true);
+            }
+        }
+
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-${postId}`);
+            section.classList.toggle('active');
+        }
+
+        async function submitComment(postId) {
+            if (!currentUser) return;
+
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            try {
+                const comment = {
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    content: filterBadWords(content),
+                    timestamp: Date.now()
+                };
+
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/comments`), comment);
+                input.value = '';
+            } catch (e) {
+                alert('Yorum eklenemedi: ' + e.message);
+            }
+        }
+
+        function sharePost(postId) {
+            const url = window.location.href.split('?')[0] + `?post=${postId}`;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('🔗 Link kopyalandı!');
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 👤 PROFİL
+        // ═══════════════════════════════════════════════════════════════
+        function openProfile(userId, username) {
+            currentProfileUserId = userId;
+            const modal = document.getElementById('profileModal');
+            const avatar = document.getElementById('profileAvatar');
+            const nameText = document.getElementById('profileNameText');
+            const verified = document.getElementById('profileVerified');
+
+            avatar.textContent = username?.charAt(0).toUpperCase() || '?';
+            nameText.textContent = username;
+            verified.style.display = isVerified(username) ? 'inline' : 'none';
+
+            loadUserPosts(userId);
+            modal.classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function loadUserPosts(userId) {
+            const container = document.getElementById('profilePosts');
+            const userPosts = Object.entries(allPosts)
+                .filter(([id, post]) => post.userId === userId)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            if (userPosts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Henüz gönderi yok</p></div>';
+                return;
+            }
+
+            container.innerHTML = userPosts.map(([id, post]) => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 6px;">${getTimeAgo(post.timestamp)}</div>
+                    <div style="font-size: 0.95rem;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">` : ''}
+                </div>
+            `).join('');
+        }
+
+        function loadUserLikes(userId) {
+            const container = document.getElementById('profilePosts');
+            const likedPosts = Object.entries(allPosts)
+                .filter(([id, post]) => post.likes && post.likes[userId])
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            if (likedPosts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Henüz beğeni yok</p></div>';
+                return;
+            }
+
+            container.innerHTML = likedPosts.map(([id, post]) => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="font-weight: 600; margin-bottom: 4px;">${post.username}</div>
+                    <div style="font-size: 0.95rem;">${post.content || ''}</div>
+                </div>
+            `).join('');
+        }
+
+        function switchProfileTab(tab, element) {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+
+            if (tab === 'posts') {
+                loadUserPosts(currentProfileUserId);
+            } else if (tab === 'likes') {
+                loadUserLikes(currentProfileUserId);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔔 BİLDİRİM SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let userNotifications = [];
+
+        async function createNotification(userId, type, message, postId = null) {
+            const notification = {
+                type: type, // 'ban', 'delete', 'warning', 'like', 'comment'
+                message: message,
+                postId: postId,
+                timestamp: Date.now(),
+                read: false
+            };
+
+            await window.firebasePush(window.firebaseRef(window.firebaseDb, `notifications/${userId}`), notification);
+        }
+
+        async function loadNotifications() {
+            if (!currentUser) return;
+
+            window.firebaseOnValue(window.firebaseRef(window.firebaseDb, `notifications/${currentUser.id}`), (snapshot) => {
+                if (snapshot.exists()) {
+                    userNotifications = Object.entries(snapshot.val())
+                        .map(([id, n]) => ({ id, ...n }))
+                        .sort((a, b) => b.timestamp - a.timestamp);
+
+                    // Okunmamış bildirim sayısı
+                    const unreadCount = userNotifications.filter(n => !n.read).length;
+                    const badge = document.getElementById('notifBadge');
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = 'inline-flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } else {
+                    userNotifications = [];
+                    document.getElementById('notifBadge').style.display = 'none';
                 }
             });
+        }
+
+        function showNotifications() {
+            if (!currentUser) {
+                window.location.href = 'account.html';
+                return;
+            }
+
+            document.getElementById('centerFeed').style.display = 'none';
+            const myProfileView = document.getElementById('myProfileView');
+            if (myProfileView) myProfileView.style.display = 'none';
+
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('notificationsLink').classList.add('active');
+
+            let notifView = document.getElementById('notificationsView');
+            if (!notifView) {
+                notifView = document.createElement('div');
+                notifView.id = 'notificationsView';
+                document.querySelector('.center-feed').appendChild(notifView);
+            }
+            notifView.style.display = 'block';
+
+            renderNotifications();
+            markNotificationsRead();
+        }
+
+        function renderNotifications() {
+            const view = document.getElementById('notificationsView');
+
+            if (userNotifications.length === 0) {
+                view.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-bell"></i> Bildirimler</h3>
+                        <div class="empty-state">
+                            <i class="fas fa-bell-slash" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px;"></i>
+                            <p>Henüz bildirim yok</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            view.innerHTML = `
+                <div style="padding: 20px;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-bell"></i> Bildirimler</h3>
+                    ${userNotifications.map(n => `
+                        <div style="padding: 15px; background: ${n.read ? 'transparent' : 'rgba(196, 255, 14, 0.05)'}; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center;">
+                            <i class="fas ${getNotifIcon(n.type)}" style="color: ${getNotifColor(n.type)}; font-size: 1.2rem;"></i>
+                            <div style="flex: 1;">
+                                <div>${n.message}</div>
+                                <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">${getTimeAgo(n.timestamp)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getNotifIcon(type) {
+            const icons = {
+                'ban': 'fa-ban',
+                'delete': 'fa-trash',
+                'warning': 'fa-exclamation-triangle',
+                'like': 'fa-heart',
+                'comment': 'fa-comment'
+            };
+            return icons[type] || 'fa-bell';
+        }
+
+        function getNotifColor(type) {
+            const colors = {
+                'ban': '#ff4757',
+                'delete': '#ff6b7a',
+                'warning': '#ffa502',
+                'like': '#ff4757',
+                'comment': 'var(--accent)'
+            };
+            return colors[type] || 'var(--primary)';
+        }
+
+        async function markNotificationsRead() {
+            if (!currentUser || userNotifications.length === 0) return;
+
+            for (const n of userNotifications.filter(x => !x.read)) {
+                await window.firebaseSet(
+                    window.firebaseRef(window.firebaseDb, `notifications/${currentUser.id}/${n.id}/read`),
+                    true
+                );
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🗑️ MESAJ SİLME
+        // ═══════════════════════════════════════════════════════════════
+        async function deletePost(postId, postUserId) {
+            if (!currentUser) return;
+
+            const canDelete = (postUserId === currentUser.id) || currentUser.isSocialMod;
+
+            if (!canDelete) {
+                showToast('Bu gönderiyi silme yetkiniz yok!', 'error');
+                return;
+            }
+
+            if (!confirm('Bu gönderiyi silmek istediğinize emin misiniz?')) return;
+
+            try {
+                await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}`));
+
+                // Yetkili sildiyse bildirim gönder
+                if (currentUser.isSocialMod && postUserId !== currentUser.id) {
+                    await createNotification(
+                        postUserId,
+                        'delete',
+                        '⚠️ Gönderiniz bir moderatör tarafından silindi. Lütfen kurallara uyun.'
+                    );
+                }
+
+                showToast('🗑️ Gönderi silindi', 'success');
+            } catch (e) {
+                console.error('Silme hatası:', e);
+                showToast('❌ Silme hatası: ' + e.message, 'error');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 😀 EMOJİ PICKER
+        // ═══════════════════════════════════════════════════════════════
+        function initEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.innerHTML = EMOJIS.map(e =>
+                `<button class="emoji-btn" onclick="insertEmoji('${e}')">${e}</button>`
+            ).join('');
+        }
+
+        function toggleEmojiPicker() {
+            document.getElementById('emojiPicker').classList.toggle('active');
+        }
+
+        function insertEmoji(emoji) {
+            const textarea = document.getElementById('postContent');
+            textarea.value += emoji;
+            textarea.focus();
+            document.getElementById('emojiPicker').classList.remove('active');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🚀 BAŞLAT
+        // ═══════════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', async () => {
+            initEmojiPicker();
+            await checkUserAuth();
+            loadPosts();
+            loadNotifications();
+        });
+
+        document.addEventListener('click', (e) => {
+            const picker = document.getElementById('emojiPicker');
+            if (!e.target.closest('.post-tools')) {
+                picker.classList.remove('active');
+            }
+        });
+
+        document.getElementById('profileModal').addEventListener('click', (e) => {
+            if (e.target.id === 'profileModal') {
+                closeProfileModal();
+            }
         });
     </script>
 
     <script src="../theme-switcher.js"></script>
-
 </body>
 
 </html>

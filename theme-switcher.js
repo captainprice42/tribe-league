@@ -24,6 +24,7 @@
         { name: 'Gol Kralları', href: 'scorers.html', icon: 'fa-futbol' },
         { name: 'Asist Kralları', href: 'assists.html', icon: 'fa-hands-helping' },
         { name: 'Ziraat Kupası', href: 'ziraatkupasison16.html', icon: 'fa-award' },
+        { name: 'Sosyal', href: 'social.html', icon: 'fa-comments' },
         { name: 'H2H', href: 'h2h-pro.html', icon: 'fa-exchange-alt' },
         { name: 'Hesabım', href: 'account.html', icon: 'fa-user' },
         { name: 'Admin', href: 'admin-data.html', icon: 'fa-cog' }
