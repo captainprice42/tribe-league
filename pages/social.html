@@ -444,6 +444,14 @@
             animation: heartBeat 0.3s ease;
         }
 
+        .stat-btn.reposted {
+            color: var(--green);
+        }
+
+        .stat-btn.reposted i {
+            animation: heartBeat 0.3s ease;
+        }
+
         @keyframes heartBeat {
 
             0%,
@@ -913,12 +921,19 @@
             margin-left: 5px;
         }
 
-        .post-avatar.team-avatar {
+        .user-avatar.team-avatar {
             border: 2px solid #1da1f2;
-            padding: 2px;
+            padding: 3px;
+            background: var(--bg-card);
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            min-height: 45px;
+            max-width: 45px;
+            max-height: 45px;
         }
 
-        .post-avatar.team-avatar img {
+        .user-avatar.team-avatar img {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -1117,46 +1132,83 @@
         async function checkUserAuth() {
             console.log('🔐 Kullanıcı kontrolü başlıyor...');
             try {
-                // localStorage'dan tribeUser key'ini oku (account.html ile uyumlu)
+                // 1. Önce localStorage'dan kontrol et
                 const storedUser = localStorage.getItem('tribeUser');
                 console.log('📦 localStorage tribeUser:', storedUser ? 'VAR' : 'YOK');
 
-                if (!storedUser) {
-                    console.log('❌ tribeUser bulunamadı');
-                    showLoginRequired();
-                    return;
+                if (storedUser) {
+                    const userData = JSON.parse(storedUser);
+                    console.log('📋 User data:', userData.username);
+
+                    if (userData && userData.id && userData.username) {
+                        currentUser = userData;
+                        await updateUserFromFirebase(userData.id);
+                        showPostForm();
+                        return;
+                    }
                 }
 
-                // JSON parse et
-                const userData = JSON.parse(storedUser);
-                console.log('📋 User data:', userData.username);
+                // 2. localStorage'da yoksa Firebase Auth kontrol et
+                console.log('🔥 Firebase Auth kontrol ediliyor...');
+                await waitForFirebase();
 
-                if (userData && userData.id && userData.username) {
-                    currentUser = userData;
-
-                    // Firebase'den güncel kullanıcı bilgilerini çek (isSocialMod, ban durumu vb.)
-                    try {
-                        await waitForFirebase();
-                        const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${userData.id}`));
-                        if (userSnapshot.exists()) {
-                            const firebaseUser = userSnapshot.val();
-                            currentUser.isSocialMod = firebaseUser.isSocialMod || false;
-                            currentUser.socialBanUntil = firebaseUser.socialBanUntil || null;
-                            console.log('🔄 Firebase\'den güncellendi - isSocialMod:', currentUser.isSocialMod);
+                if (window.firebaseAuth && window.firebaseOnAuthStateChanged) {
+                    window.firebaseOnAuthStateChanged(window.firebaseAuth, async (authUser) => {
+                        if (authUser) {
+                            console.log('✅ Firebase Auth kullanıcısı bulundu:', authUser.email);
+                            // Firebase users koleksiyonundan kullanıcı bilgilerini çek
+                            try {
+                                const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${authUser.uid}`));
+                                if (userSnapshot.exists()) {
+                                    const firebaseUserData = userSnapshot.val();
+                                    currentUser = {
+                                        id: authUser.uid,
+                                        username: firebaseUserData.username || authUser.displayName || authUser.email.split('@')[0],
+                                        email: authUser.email,
+                                        avatar: firebaseUserData.avatar || authUser.photoURL,
+                                        isSocialMod: firebaseUserData.isSocialMod || false,
+                                        socialBanUntil: firebaseUserData.socialBanUntil || null
+                                    };
+                                    // localStorage'a da kaydet (diğer sayfalar için)
+                                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                                    console.log('✅ Firebase Auth ile giriş yapıldı:', currentUser.username);
+                                    showPostForm();
+                                } else {
+                                    console.log('❌ Kullanıcı Firebase DB\'de bulunamadı');
+                                    showLoginRequired();
+                                }
+                            } catch (e) {
+                                console.error('Firebase kullanıcı bilgisi hatası:', e);
+                                showLoginRequired();
+                            }
+                        } else {
+                            console.log('❌ Firebase Auth kullanıcısı yok');
+                            showLoginRequired();
                         }
-                    } catch (e) {
-                        console.log('⚠️ Firebase güncelleme atlandı:', e.message);
-                    }
-
-                    console.log('✅ Kullanıcı bulundu:', currentUser.username, '| Moderatör:', currentUser.isSocialMod);
-                    showPostForm();
+                    });
                 } else {
-                    console.log('❌ Kullanıcı verisi eksik');
+                    console.log('❌ Firebase Auth yüklenmedi');
                     showLoginRequired();
                 }
             } catch (e) {
                 console.error('❌ Auth kontrol hatası:', e);
                 showLoginRequired();
+            }
+        }
+
+        async function updateUserFromFirebase(userId) {
+            try {
+                await waitForFirebase();
+                const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${userId}`));
+                if (userSnapshot.exists()) {
+                    const firebaseUser = userSnapshot.val();
+                    currentUser.isSocialMod = firebaseUser.isSocialMod || false;
+                    currentUser.socialBanUntil = firebaseUser.socialBanUntil || null;
+                    currentUser.avatar = firebaseUser.avatar || currentUser.avatar;
+                    console.log('🔄 Firebase\'den güncellendi - isSocialMod:', currentUser.isSocialMod);
+                }
+            } catch (e) {
+                console.log('⚠️ Firebase güncelleme atlandı:', e.message);
             }
         }
 
@@ -1602,7 +1654,7 @@
             // Avatar - takım postuysa logo, değilse harf
             let avatarHTML;
             if (isTeamPost && post.teamName && window.TribeData?.teams?.[post.teamName]?.logo) {
-                avatarHTML = `<div class="user-avatar team-avatar" onclick="filterByTeam('${post.teamName}')"><img src="${window.TribeData.teams[post.teamName].logo}" alt="${post.teamName}"></div>`;
+                avatarHTML = `<div class="user-avatar team-avatar" style="width:45px;height:45px;min-width:45px;max-width:45px;padding:3px;border:2px solid #1da1f2;background:var(--bg-card);" onclick="filterByTeam('${post.teamName}')"><img src="${window.TribeData.teams[post.teamName].logo}" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" alt="${post.teamName}"></div>`;
             } else {
                 const avatar = post.username?.charAt(0).toUpperCase() || '?';
                 avatarHTML = `<div class="user-avatar" onclick="openProfile('${post.userId}', '${post.username}')">${avatar}</div>`;
@@ -1665,6 +1717,9 @@
                         </button>
                         <button class="stat-btn" onclick="toggleComments('${id}')">
                             <i class="fas fa-comment"></i> ${commentCount}
+                        </button>
+                        <button class="stat-btn ${post.reposts && post.reposts[currentUser?.id] ? 'reposted' : ''}" onclick="toggleRepost('${id}')">
+                            <i class="fas fa-retweet"></i> ${post.reposts ? Object.keys(post.reposts).length : 0}
                         </button>
                         <button class="stat-btn" onclick="sharePost('${id}')">
                             <i class="fas fa-share"></i>
@@ -1746,7 +1801,7 @@
                 return;
             }
 
-            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts / ${postId} /likes/${currentUser.id} `);
+            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/likes/${currentUser.id}`);
             const snapshot = await window.firebaseGet(likeRef);
 
             if (snapshot.exists()) {
@@ -1757,14 +1812,14 @@
         }
 
         function toggleComments(postId) {
-            const section = document.getElementById(`comments - ${postId} `);
-            section.classList.toggle('active');
+            const section = document.getElementById(`comments-${postId}`);
+            if (section) section.classList.toggle('active');
         }
 
         async function submitComment(postId) {
             if (!currentUser) return;
 
-            const input = document.getElementById(`comment - input - ${postId} `);
+            const input = document.getElementById(`comment-input-${postId}`);
             const content = input.value.trim();
             if (!content) return;
 
@@ -1776,7 +1831,7 @@
                     timestamp: Date.now()
                 };
 
-                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts / ${postId}/comments`), comment);
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/comments`), comment);
                 input.value = '';
             } catch (e) {
                 alert('Yorum eklenemedi: ' + e.message);
@@ -1786,8 +1841,34 @@
         function sharePost(postId) {
             const url = window.location.href.split('?')[0] + `?post=${postId}`;
             navigator.clipboard.writeText(url).then(() => {
-                alert('🔗 Link kopyalandı!');
+                showToast('🔗 Link kopyalandı!', 'success');
             });
+        }
+
+        async function toggleRepost(postId) {
+            if (!currentUser) {
+                showToast('Repost için giriş yapın!', 'error');
+                return;
+            }
+
+            try {
+                const repostRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/reposts/${currentUser.id}`);
+                const snapshot = await window.firebaseGet(repostRef);
+
+                if (snapshot.exists()) {
+                    await window.firebaseRemove(repostRef);
+                    showToast('Repost geri alındı', 'success');
+                } else {
+                    await window.firebaseSet(repostRef, {
+                        userId: currentUser.id,
+                        username: currentUser.username,
+                        timestamp: Date.now()
+                    });
+                    showToast('🔄 Repost yapıldı!', 'success');
+                }
+            } catch (e) {
+                showToast('Repost hatası: ' + e.message, 'error');
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -2211,12 +2292,32 @@
         let isTeamMode = false;
         let connectedTeamAccount = null;
 
-        function checkTeamAccount() {
+        async function checkTeamAccount() {
+            // Önce localStorage'a bak (şifre ile giriş yapılmış)
             const savedTeam = localStorage.getItem('tribeTeamAccount');
             if (savedTeam) {
                 connectedTeamAccount = JSON.parse(savedTeam);
                 document.getElementById('accountSwitcher').style.display = 'flex';
                 updateAccountSwitcherUI();
+                return;
+            }
+
+            // Firebase'den linkedTeamAccount kontrol et (admin tarafından atanmış)
+            if (currentUser && window.firebaseDb) {
+                try {
+                    const userRef = window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`);
+                    const snapshot = await window.firebaseGet(userRef);
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        if (userData.linkedTeamAccount) {
+                            connectedTeamAccount = { teamName: userData.linkedTeamAccount };
+                            document.getElementById('accountSwitcher').style.display = 'flex';
+                            updateAccountSwitcherUI();
+                        }
+                    }
+                } catch (e) {
+                    console.log('Takım hesabı kontrolü:', e.message);
+                }
             }
         }
 

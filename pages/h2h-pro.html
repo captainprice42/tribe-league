@@ -740,8 +740,9 @@
                     .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ı/g, 'i')
                     .replace(/ü/g, 'u').replace(/ /g, '');
 
-                // Form son 5 maçtan
-                const form = team.form.slice(-5).map(f => {
+                // Form son 5 maçtan (undefined kontrolü)
+                const rawForm = team.form || [];
+                const form = rawForm.slice(-5).map(f => {
                     if (f === 'G') return 'W';
                     if (f === 'B') return 'D';
                     return 'L';

@@ -5077,7 +5077,152 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
 
         // Sayfa yüklenince admin IP kontrolü
         setTimeout(checkAdminAccess, 2000);
+
+        // ═══════════════════════════════════════════════════════════════
+        // 👥 KULLANICI YÖNETİMİ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // 16 takım listesi
+        const teamList = [
+            'Konyaspor', 'Beşiktaş', 'Galatasaray', 'Fenerbahçe', 'Trabzonspor',
+            'Başakşehir', 'Kasımpaşa', 'Antalyaspor', 'Sivasspor', 'Alanyaspor',
+            'Gaziantep FK', 'Çaykur Rizespor', 'Kayserispor', 'Hatayspor', 'Samsunspor', 'Göztepe'
+        ];
+
+        // Tüm kullanıcıları yükle
+        async function loadAllUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            const countEl = document.getElementById('usersCount');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
+
+            try {
+                const usersRef = window.firebaseRef(window.firebaseDb, 'users');
+                const snapshot = await window.firebaseGet(usersRef);
+
+                if (!snapshot.exists()) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Hiç kullanıcı bulunamadı</td></tr>';
+                    countEl.textContent = '(0 kullanıcı)';
+                    return;
+                }
+
+                const users = snapshot.val();
+                const userArray = Object.entries(users);
+                countEl.textContent = `(${userArray.length} kullanıcı)`;
+
+                tbody.innerHTML = userArray.map(([uid, user]) => {
+                    const linkedTeam = user.linkedTeamAccount || '';
+                    const teamOptions = teamList.map(t =>
+                        `<option value="${t}" ${linkedTeam === t ? 'selected' : ''}>${t}</option>`
+                    ).join('');
+
+                    return `
+                        <tr>
+                            <td style="text-align:left;">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:35px; height:35px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#000; font-weight:600;">
+                                        ${user.username?.charAt(0).toUpperCase() || '?'}
+                                    </div>
+                                    <span>${user.username || 'İsimsiz'}</span>
+                                </div>
+                            </td>
+                            <td style="text-align:left; color:var(--text-muted);">${user.email || '-'}</td>
+                            <td>
+                                <select onchange="assignTeamAccount('${uid}', this.value)" style="padding:8px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:#fff; cursor:pointer;">
+                                    <option value="">Takım Yok</option>
+                                    ${teamOptions}
+                                </select>
+                            </td>
+                            <td>
+                                <label class="toggle-switch" style="margin:0 auto;">
+                                    <input type="checkbox" ${user.isSocialMod ? 'checked' : ''} onchange="toggleSocialMod('${uid}', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </td>
+                            <td>
+                                ${user.socialBanUntil && user.socialBanUntil > Date.now()
+                            ? `<span style="color:var(--danger);">Banlı (${Math.ceil((user.socialBanUntil - Date.now()) / 60000)} dk)</span>`
+                            : '<span style="color:var(--success);">Aktif</span>'
+                        }
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" style="padding:5px 10px; font-size:0.8rem;" onclick="banUser('${uid}')">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Kullanıcılar yüklenemedi:', e);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger);">Yükleme hatası</td></tr>';
+            }
+        }
+
+        // Kullanıcıya takım hesabı ata
+        async function assignTeamAccount(uid, teamName) {
+            try {
+                const userRef = window.firebaseRef(window.firebaseDb, `users/${uid}`);
+
+                if (teamName) {
+                    await window.firebaseUpdate(userRef, { linkedTeamAccount: teamName });
+                    showToast(`✅ ${teamName} takım hesabı atandı!`, 'success');
+                } else {
+                    await window.firebaseUpdate(userRef, { linkedTeamAccount: null });
+                    showToast('Takım hesabı kaldırıldı', 'success');
+                }
+            } catch (e) {
+                console.error('Takım atama hatası:', e);
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Sosyal medya moderatörü toggle
+        async function toggleSocialMod(uid, isEnabled) {
+            try {
+                const userRef = window.firebaseRef(window.firebaseDb, `users/${uid}`);
+                await window.firebaseUpdate(userRef, { isSocialMod: isEnabled });
+                showToast(isEnabled ? '✅ Sosyal medya yetkisi verildi' : 'Yetki kaldırıldı', 'success');
+            } catch (e) {
+                console.error('Moderatör toggle hatası:', e);
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Kullanıcıyı banla (1 saat)
+        async function banUser(uid) {
+            if (!confirm('Bu kullanıcıya 1 saatlik sosyal medya ban\'ı uygulamak istediğinize emin misiniz?')) return;
+
+            try {
+                const banUntil = Date.now() + (60 * 60 * 1000); // 1 saat
+                const userRef = window.firebaseRef(window.firebaseDb, `users/${uid}`);
+                await window.firebaseUpdate(userRef, { socialBanUntil: banUntil });
+                showToast('🚫 1 saatlik ban uygulandı!', 'success');
+                loadAllUsers(); // Tabloyu yenile
+            } catch (e) {
+                console.error('Ban hatası:', e);
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Alt sekme göster
+        function showUserSubtab(tabName) {
+            document.querySelectorAll('.user-subtab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.user-subtab').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`usersSubtab-${tabName}`).style.display = 'block';
+            event.target.closest('.btn').classList.add('active');
+
+            if (tabName === 'normal') {
+                loadAllUsers();
+            } else if (tabName === 'team') {
+                loadTeamAccounts();
+            }
+        }
     </script>
+
+    <!-- Firebase Config -->
+    <script src="../firebase-config.js"></script>
 
     <!-- Theme Switcher -->
     <script src="../theme-switcher.js"></script>

@@ -1244,29 +1244,66 @@
                 return;
             }
 
-            container.innerHTML = `
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">
-                        ⚽ ${currentUser.team}
+            // TribeData'dan takım istatistiklerini al
+            let stats = null;
+            let logo = null;
+
+            if (typeof TribeData !== 'undefined' && TribeData.calculateStandings) {
+                const standings = TribeData.calculateStandings();
+                stats = standings.find(t => t.name === currentUser.team);
+                logo = TribeData.getTeamLogo ? TribeData.getTeamLogo(currentUser.team) : null;
+            }
+
+            if (stats) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        ${logo ? `<img src="${logo}" alt="${currentUser.team}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;">` : ''}
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 5px;">
+                            ${currentUser.team}
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Puan Durumu: ${stats.rank || '-'}. sıra</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--primary); font-weight: 700;">${stats.points}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Puan</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--success); font-weight: 700;">${stats.won}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Galibiyet</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--accent); font-weight: 700;">${stats.draw}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Beraberlik</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--danger); font-weight: 700;">${stats.lost}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Mağlubiyet</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.1rem; color: var(--primary); font-weight: 600;">${stats.gf} - ${stats.ga}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">AG - YG (Av: ${stats.gf - stats.ga >= 0 ? '+' : ''}${stats.gf - stats.ga})</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.1rem; color: var(--accent); font-weight: 600;">${stats.played}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Oynanan Maç</div>
+                            </div>
+                        </div>
                     </div>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Favori Takımın</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
-                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
-                            <div style="font-size: 1.5rem; color: var(--primary); font-weight: 700;">⚽</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Taraftar</div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">
+                            ⚽ ${currentUser.team}
                         </div>
-                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
-                            <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700;">🏆</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Şampiyon</div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
-                            <div style="font-size: 1.5rem; color: var(--success); font-weight: 700;">💚</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Destekçi</div>
-                        </div>
+                        <p style="color: var(--text-muted);">Takım istatistikleri yüklenemedi</p>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         // Kullanıcı adı güncelle
