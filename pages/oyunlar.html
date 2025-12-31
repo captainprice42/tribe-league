@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Oyunlar - Tribe League</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --accent: #00d4ff;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --text-main: #fff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .game-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Game Container */
+        .game-container {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .game-container.active {
+            display: block;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-header h2 {
+            font-family: 'Teko', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .btn-close {
+            background: var(--danger);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Penalty Game */
+        #penaltyCanvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        .score-display {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-display span {
+            color: var(--primary);
+        }
+
+        /* Head Ball Game */
+        #headballCanvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .game-btn {
+            background: linear-gradient(135deg, var(--primary), #a8e000);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .game-mode-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-mode-btn.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gamepad"></i> MİNİ OYUNLAR</h1>
+        </div>
+
+        <!-- Games Grid -->
+        <div class="games-grid" id="gamesGrid">
+            <div class="game-card" onclick="openGame('penalty')">
+                <div class="game-icon">⚽</div>
+                <div class="game-title">Penaltı Atışı</div>
+                <div class="game-desc">Kaleciye karşı penaltı at, en yüksek skoru yap!</div>
+            </div>
+
+            <div class="game-card" onclick="openGame('headball')">
+                <div class="game-icon">🧠</div>
+                <div class="game-title">Kafa Topu</div>
+                <div class="game-desc">CPU veya arkadaşına karşı kafa topu oyna!</div>
+            </div>
+        </div>
+
+        <!-- Penalty Game -->
+        <div class="game-container" id="penaltyGame">
+            <div class="game-header">
+                <h2><i class="fas fa-futbol"></i> Penaltı Atışı</h2>
+                <button class="btn-close" onclick="closeGame()"><i class="fas fa-times"></i> Kapat</button>
+            </div>
+
+            <div class="instructions">
+                🎯 Kaleye tıklayarak şut at! 5 hakkın var. Kaleci rastgele atlayacak.
+            </div>
+
+            <div class="score-display">
+                Gol: <span id="penaltyScore">0</span> / 5
+            </div>
+
+            <canvas id="penaltyCanvas" width="600" height="400"></canvas>
+
+            <div class="game-controls">
+                <button class="game-btn" onclick="startPenalty()"><i class="fas fa-redo"></i> Yeniden Başla</button>
+            </div>
+        </div>
+
+        <!-- Head Ball Game -->
+        <div class="game-container" id="headballGame">
+            <div class="game-header">
+                <h2><i class="fas fa-head-side"></i> Kafa Topu</h2>
+                <button class="btn-close" onclick="closeGame()"><i class="fas fa-times"></i> Kapat</button>
+            </div>
+
+            <div class="instructions">
+                ⌨️ Hareket: A/D veya ←/→ | Zıpla: W veya ↑ | İlk 5 golü atan kazanır!
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                <button class="game-mode-btn active" onclick="setHeadballMode('cpu')">🤖 CPU'ya Karşı</button>
+                <button class="game-mode-btn" onclick="setHeadballMode('2player')">👥 2 Oyuncu</button>
+            </div>
+
+            <div class="score-display">
+                <span id="p1Score">0</span> - <span id="p2Score">0</span>
+            </div>
+
+            <canvas id="headballCanvas" width="800" height="400"></canvas>
+
+            <div class="game-controls">
+                <button class="game-btn" onclick="startHeadball()"><i class="fas fa-play"></i> Başlat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // GAME MANAGER
+        // ═══════════════════════════════════════════════════════════════
+
+        function openGame(game) {
+            document.getElementById('gamesGrid').style.display = 'none';
+            document.querySelectorAll('.game-container').forEach(g => g.classList.remove('active'));
+            document.getElementById(game + 'Game').classList.add('active');
+
+            if (game === 'penalty') startPenalty();
+            if (game === 'headball') initHeadball();
+        }
+
+        function closeGame() {
+            document.getElementById('gamesGrid').style.display = 'grid';
+            document.querySelectorAll('.game-container').forEach(g => g.classList.remove('active'));
+            if (headballLoop) cancelAnimationFrame(headballLoop);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // PENALTY GAME
+        // ═══════════════════════════════════════════════════════════════
+
+        let penaltyCanvas, penaltyCtx;
+        let penaltyScore = 0;
+        let penaltyAttempts = 0;
+        let canShoot = true;
+
+        function startPenalty() {
+            penaltyCanvas = document.getElementById('penaltyCanvas');
+            penaltyCtx = penaltyCanvas.getContext('2d');
+            penaltyScore = 0;
+            penaltyAttempts = 0;
+            canShoot = true;
+            document.getElementById('penaltyScore').textContent = '0';
+            drawGoal();
+
+            penaltyCanvas.onclick = shootPenalty;
+        }
+
+        function drawGoal(keeperPos = 'center', ballPos = null, result = null) {
+            const ctx = penaltyCtx;
+            const w = penaltyCanvas.width;
+            const h = penaltyCanvas.height;
+
+            // Zemin
+            ctx.fillStyle = '#2d5a27';
+            ctx.fillRect(0, 0, w, h);
+
+            // Çim çizgileri
+            ctx.strokeStyle = '#4a8a3f';
+            for (let i = 0; i < w; i += 30) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, h);
+                ctx.stroke();
+            }
+
+            // Kale
+            const goalW = 350;
+            const goalH = 200;
+            const goalX = (w - goalW) / 2;
+            const goalY = 50;
+
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(goalX, goalY, goalW, goalH);
+
+            // Ağ
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 1;
+            for (let i = goalX; i < goalX + goalW; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(i, goalY);
+                ctx.lineTo(i, goalY + goalH);
+                ctx.stroke();
+            }
+            for (let i = goalY; i < goalY + goalH; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(goalX, i);
+                ctx.lineTo(goalX + goalW, i);
+                ctx.stroke();
+            }
+
+            // Kaleci
+            ctx.fillStyle = '#ff6b6b';
+            let keeperX = w / 2;
+            if (keeperPos === 'left') keeperX = goalX + 60;
+            if (keeperPos === 'right') keeperX = goalX + goalW - 60;
+
+            ctx.beginPath();
+            ctx.arc(keeperX, goalY + goalH - 40, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(keeperX - 20, goalY + goalH - 70, 40, 60);
+
+            // Top
+            if (ballPos) {
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(ballPos.x, ballPos.y, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            } else {
+                // Başlangıç topu
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(w / 2, h - 50, 15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Sonuç
+            if (result) {
+                ctx.font = 'bold 48px Teko';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = result === 'GOL!' ? '#c4ff0e' : '#ff4757';
+                ctx.fillText(result, w / 2, h / 2);
+            }
+        }
+
+        function shootPenalty(e) {
+            if (!canShoot || penaltyAttempts >= 5) return;
+
+            canShoot = false;
+            penaltyAttempts++;
+
+            const rect = penaltyCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+
+            const goalX = (penaltyCanvas.width - 350) / 2;
+            const goalW = 350;
+
+            // Şut yönü
+            let shootDir = 'center';
+            if (x < goalX + goalW / 3) shootDir = 'left';
+            else if (x > goalX + goalW * 2 / 3) shootDir = 'right';
+
+            // Kaleci rastgele
+            const keeperDirs = ['left', 'center', 'right'];
+            const keeperDir = keeperDirs[Math.floor(Math.random() * 3)];
+
+            // Gol mu?
+            const isGoal = shootDir !== keeperDir;
+
+            // Animasyon
+            const ballTarget = { x: x, y: 150 };
+            drawGoal(keeperDir, ballTarget, isGoal ? 'GOL!' : 'KURTARIŞ!');
+
+            if (isGoal) {
+                penaltyScore++;
+                document.getElementById('penaltyScore').textContent = penaltyScore;
+            }
+
+            setTimeout(() => {
+                if (penaltyAttempts < 5) {
+                    canShoot = true;
+                    drawGoal();
+                } else {
+                    // Oyun bitti
+                    penaltyCtx.font = 'bold 36px Teko';
+                    penaltyCtx.textAlign = 'center';
+                    penaltyCtx.fillStyle = '#c4ff0e';
+                    penaltyCtx.fillText(`Oyun Bitti! Skor: ${penaltyScore}/5`, penaltyCanvas.width / 2, penaltyCanvas.height / 2 + 50);
+                }
+            }, 1500);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // HEADBALL GAME
+        // ═══════════════════════════════════════════════════════════════
+
+        let headballCanvas, headballCtx;
+        let headballLoop;
+        let headballMode = 'cpu';
+        let p1, p2, ball;
+        let p1Score = 0, p2Score = 0;
+        let keys = {};
+
+        function setHeadballMode(mode) {
+            headballMode = mode;
+            document.querySelectorAll('.game-mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function initHeadball() {
+            headballCanvas = document.getElementById('headballCanvas');
+            headballCtx = headballCanvas.getContext('2d');
+
+            document.addEventListener('keydown', e => keys[e.key] = true);
+            document.addEventListener('keyup', e => keys[e.key] = false);
+        }
+
+        function startHeadball() {
+            p1Score = 0;
+            p2Score = 0;
+            document.getElementById('p1Score').textContent = '0';
+            document.getElementById('p2Score').textContent = '0';
+
+            resetHeadball();
+            if (headballLoop) cancelAnimationFrame(headballLoop);
+            gameLoopHeadball();
+        }
+
+        function resetHeadball() {
+            const w = headballCanvas.width;
+            const h = headballCanvas.height;
+
+            p1 = { x: 100, y: h - 60, vx: 0, vy: 0, size: 30, color: '#1e90ff' };
+            p2 = { x: w - 100, y: h - 60, vx: 0, vy: 0, size: 30, color: '#ff4757' };
+            ball = { x: w / 2, y: h / 2, vx: 0, vy: 0, size: 20 };
+        }
+
+        function gameLoopHeadball() {
+            updateHeadball();
+            drawHeadball();
+            headballLoop = requestAnimationFrame(gameLoopHeadball);
+        }
+
+        function updateHeadball() {
+            const w = headballCanvas.width;
+            const h = headballCanvas.height;
+            const gravity = 0.5;
+            const friction = 0.98;
+
+            // Player 1 controls (A/D/W)
+            if (keys['a'] || keys['A'] || keys['ArrowLeft']) p1.vx = -5;
+            else if (keys['d'] || keys['D'] || keys['ArrowRight']) p1.vx = 5;
+            else p1.vx *= 0.85;
+
+            if ((keys['w'] || keys['W'] || keys['ArrowUp']) && p1.y >= h - 60) p1.vy = -12;
+
+            // Player 2 / CPU
+            if (headballMode === '2player') {
+                if (keys['j'] || keys['J']) p2.vx = -5;
+                else if (keys['l'] || keys['L']) p2.vx = 5;
+                else p2.vx *= 0.85;
+                if (keys['i'] || keys['I'] && p2.y >= h - 60) p2.vy = -12;
+            } else {
+                // CPU AI
+                if (ball.x > p2.x + 20) p2.vx = 3;
+                else if (ball.x < p2.x - 20) p2.vx = -3;
+                else p2.vx *= 0.85;
+                if (ball.y < h / 2 && ball.x > w / 2 && p2.y >= h - 60) p2.vy = -10;
+            }
+
+            // Physics
+            [p1, p2].forEach(p => {
+                p.vy += gravity;
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.y > h - 60) { p.y = h - 60; p.vy = 0; }
+                if (p.x < p.size) p.x = p.size;
+                if (p.x > w - p.size) p.x = w - p.size;
+            });
+
+            // Ball physics
+            ball.vy += gravity * 0.7;
+            ball.vx *= friction;
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            // Ball walls
+            if (ball.x < ball.size || ball.x > w - ball.size) ball.vx *= -0.8;
+            if (ball.y < ball.size) ball.vy *= -0.8;
+            if (ball.y > h - ball.size) { ball.y = h - ball.size; ball.vy *= -0.6; }
+
+            // Ball-player collision
+            [p1, p2].forEach(p => {
+                const dx = ball.x - p.x;
+                const dy = ball.y - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < ball.size + p.size) {
+                    const angle = Math.atan2(dy, dx);
+                    ball.vx = Math.cos(angle) * 10;
+                    ball.vy = Math.sin(angle) * 10 - 5;
+                }
+            });
+
+            // Goal check
+            if (ball.y > h - 30) {
+                if (ball.x < 100) {
+                    p2Score++;
+                    document.getElementById('p2Score').textContent = p2Score;
+                    resetHeadball();
+                } else if (ball.x > w - 100) {
+                    p1Score++;
+                    document.getElementById('p1Score').textContent = p1Score;
+                    resetHeadball();
+                }
+            }
+
+            // Win check
+            if (p1Score >= 5 || p2Score >= 5) {
+                cancelAnimationFrame(headballLoop);
+                alert((p1Score >= 5 ? 'Mavi Oyuncu' : 'Kırmızı Oyuncu') + ' Kazandı!');
+            }
+        }
+
+        function drawHeadball() {
+            const ctx = headballCtx;
+            const w = headballCanvas.width;
+            const h = headballCanvas.height;
+
+            // Background
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, w, h / 2);
+            ctx.fillStyle = '#90EE90';
+            ctx.fillRect(0, h / 2, w, h / 2);
+
+            // Goals
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.fillRect(0, h - 80, 100, 80);
+            ctx.fillRect(w - 100, h - 80, 100, 80);
+
+            // Players
+            [p1, p2].forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eyes
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(p.x - 8, p.y - 5, 8, 0, Math.PI * 2);
+                ctx.arc(p.x + 8, p.y - 5, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(p.x - 6, p.y - 5, 4, 0, Math.PI * 2);
+                ctx.arc(p.x + 10, p.y - 5, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Ball
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

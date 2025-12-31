@@ -909,6 +909,32 @@
         }
 
         function updateStatBars(teamA, teamB) {
+            // xG hesaplama (atılan gol * 0.85 + şut kalitesi faktörü)
+            const calcXG = (team) => {
+                const gf = team.stats.gf || 0;
+                const played = team.stats.played || 1;
+                const won = team.stats.won || 0;
+                const xgBase = gf * 0.92;
+                const bonus = (won / played) * 2;
+                return Math.round((xgBase + bonus) * 10) / 10;
+            };
+
+            const calcXGA = (team) => {
+                const ga = team.stats.ga || 0;
+                const played = team.stats.played || 1;
+                const lost = team.stats.lost || 0;
+                const xgaBase = ga * 0.88;
+                const penalty = (lost / played) * 1.5;
+                return Math.round((xgaBase + penalty) * 10) / 10;
+            };
+
+            const xgA = calcXG(teamA);
+            const xgB = calcXG(teamB);
+            const xgaA = calcXGA(teamA);
+            const xgaB = calcXGA(teamB);
+            const xgPerMatchA = Math.round((xgA / (teamA.stats.played || 1)) * 100) / 100;
+            const xgPerMatchB = Math.round((xgB / (teamB.stats.played || 1)) * 100) / 100;
+
             const stats = [
                 { label: 'Maç', a: teamA.stats.played, b: teamB.stats.played },
                 { label: 'Galibiyet', a: teamA.stats.won, b: teamB.stats.won },
@@ -916,7 +942,10 @@
                 { label: 'Mağlubiyet', a: teamA.stats.lost, b: teamB.stats.lost, reverse: true },
                 { label: 'Atılan Gol', a: teamA.stats.gf, b: teamB.stats.gf },
                 { label: 'Yenilen Gol', a: teamA.stats.ga, b: teamB.stats.ga, reverse: true },
-                { label: 'Puan', a: teamA.stats.points, b: teamB.stats.points }
+                { label: 'Puan', a: teamA.stats.points, b: teamB.stats.points },
+                { label: 'xG (Beklenen Gol)', a: xgA, b: xgB, isXG: true },
+                { label: 'xGA (Beklenen Yenilen)', a: xgaA, b: xgaB, reverse: true, isXG: true },
+                { label: 'xG/Maç', a: xgPerMatchA, b: xgPerMatchB, isXG: true }
             ];
 
             document.getElementById('statsRows').innerHTML = stats.map(stat => {
@@ -926,14 +955,20 @@
                 const winnerA = stat.reverse ? stat.a < stat.b : stat.a > stat.b;
                 const winnerB = stat.reverse ? stat.b < stat.a : stat.b > stat.a;
 
+                // xG satırları için özel stil
+                const xgStyle = stat.isXG ? 'background: linear-gradient(90deg, rgba(138,43,226,0.1), transparent, rgba(138,43,226,0.1)); border: 1px solid rgba(138,43,226,0.3); border-radius: 12px; padding: 15px 10px; margin: 5px 0;' : '';
+                const xgLabelStyle = stat.isXG ? 'color: #9b59b6; font-weight: 600;' : '';
+                const xgBarA = stat.isXG ? 'background: linear-gradient(90deg, #9b59b6, #8e44ad) !important;' : '';
+                const xgBarB = stat.isXG ? 'background: linear-gradient(90deg, #e74c3c, #c0392b) !important;' : '';
+
                 return `
-                    <div class="stat-row">
+                    <div class="stat-row" style="${xgStyle}">
                         <div class="stat-value team-a ${winnerA ? 'winner' : ''}">${stat.a}</div>
                         <div class="stat-bar-wrapper">
-                            <div class="stat-label">${stat.label}</div>
+                            <div class="stat-label" style="${xgLabelStyle}">${stat.isXG ? '📊 ' : ''}${stat.label}</div>
                             <div class="stat-bar">
-                                <div class="stat-bar-a" style="width: ${percentA}%"></div>
-                                <div class="stat-bar-b" style="width: ${percentB}%"></div>
+                                <div class="stat-bar-a" style="width: ${percentA}%; ${xgBarA}"></div>
+                                <div class="stat-bar-b" style="width: ${percentB}%; ${xgBarB}"></div>
                             </div>
                         </div>
                         <div class="stat-value team-b ${winnerB ? 'winner' : ''}">${stat.b}</div>

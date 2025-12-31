@@ -544,6 +544,20 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Şampiyonluk Oranları -->
+        <div id="championshipOdds"
+            style="margin-top: 30px; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(196,255,14,0.05)); border: 1px solid rgba(255,215,0,0.3); border-radius: 16px; padding: 25px;">
+            <h3
+                style="font-family: var(--font-head); font-size: 1.8rem; color: #ffd700; margin: 0 0 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-chart-pie"></i> ŞAMPİYONLUK ORANLARI
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Kalan maçlara göre hesaplanan
+                tahmini şampiyonluk olasılıkları</p>
+            <div id="oddsContainer" style="display: grid; gap: 12px;">
+                <!-- JS tarafından doldurulacak -->
+            </div>
+        </div>
     </div>
 
     <script src="../data.js"></script>
@@ -649,6 +663,82 @@
             });
 
             tbody.innerHTML = html;
+
+            // Şampiyonluk oranlarını hesapla ve göster
+            renderChampionshipOdds(standings, data);
+        }
+
+        function renderChampionshipOdds(standings, data) {
+            const container = document.getElementById('oddsContainer');
+            if (!container || standings.length < 2) {
+                if (container) container.innerHTML = '<p style="color: var(--text-muted);">Yeterli veri yok</p>';
+                return;
+            }
+
+            // Kalan maç sayısı hesapla (14 takım ligi varsayımı: 26 maç)
+            const totalMatches = 26;
+            const playedMatches = data?.matches?.length || 0;
+            const remainingRounds = Math.max(0, totalMatches - (standings[0]?.played || 0));
+            const maxPossiblePoints = remainingRounds * 3;
+
+            // Her takım için şampiyonluk olasılığı hesapla
+            const leader = standings[0];
+            const leaderMaxPoints = leader.points + maxPossiblePoints;
+
+            const oddsData = standings.slice(0, 6).map((team, index) => {
+                const teamMaxPoints = team.points + maxPossiblePoints;
+                const pointDiff = leader.points - team.points;
+
+                // Basit olasılık modeli
+                let probability = 0;
+
+                if (index === 0) {
+                    // Lider için başlangıç avantajı
+                    probability = Math.min(95, 50 + (pointDiff === 0 ? 30 : 0) + (team.gf - team.ga) * 0.5);
+                } else if (teamMaxPoints >= leader.points) {
+                    // Matematiksel şansı var
+                    probability = Math.max(1, 40 - (pointDiff * 5) + (team.won * 2) - (team.lost * 2));
+                } else {
+                    // Matematiksel şansı yok
+                    probability = 0;
+                }
+
+                // Normalize et
+                probability = Math.max(0, Math.min(100, probability));
+
+                return { ...team, probability, canWin: teamMaxPoints >= leader.points };
+            });
+
+            // Olasılıkları 100'e normalize et
+            const totalProb = oddsData.reduce((sum, t) => sum + t.probability, 0);
+            if (totalProb > 0) {
+                oddsData.forEach(t => t.probability = Math.round((t.probability / totalProb) * 100));
+            }
+
+            container.innerHTML = oddsData.map((team, i) => {
+                const barColor = i === 0 ? '#ffd700' : (team.canWin ? '#c4ff0e' : '#555');
+                const textColor = team.canWin ? '#fff' : '#666';
+
+                return `
+                    <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 15px; align-items: center; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-family: var(--font-head); font-size: 1.2rem; color: ${i < 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][i] : 'var(--text-muted)'};">${i + 1}.</span>
+                            <img src="${getLogoUrl(team.name)}" alt="${team.name}" style="width: 28px; height: 28px; object-fit: contain;">
+                            <span style="font-weight: 600; color: ${textColor};">${team.name}</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="font-family: var(--font-head); font-size: 1.5rem; color: ${barColor};">${team.probability}%</span>
+                        </div>
+                        <div style="position: relative; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden;">
+                            <div style="height: 100%; width: ${team.probability}%; background: ${barColor}; border-radius: 6px; transition: width 0.5s ease;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('') + `
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 15px;">
+                    <i class="fas fa-info-circle"></i> Kalan ${remainingRounds} maça göre hesaplandı
+                </p>
+            `;
         }
 
         // Sadece Firebase'den veri y�kle

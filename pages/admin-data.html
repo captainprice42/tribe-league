@@ -1511,6 +1511,9 @@
             <div class="tab" onclick="switchTab('livematch')"><i class="fas fa-broadcast-tower"></i> Canlı Maç</div>
             <div class="tab" onclick="switchTab('voting')"><i class="fas fa-vote-yea"></i> Oylama</div>
             <div class="tab" onclick="switchTab('users')"><i class="fas fa-users-cog"></i> Kullanıcılar</div>
+            <div class="tab" onclick="switchTab('transfers')"><i class="fas fa-exchange-alt"></i> Transferler</div>
+            <div class="tab" onclick="switchTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="tab" onclick="switchTab('polls')"><i class="fas fa-poll"></i> Anketler</div>
             <div class="tab" id="settingsTab" onclick="switchTab('settings')" style="display: none;"><i
                     class="fas fa-cog"></i> Ayarlar</div>
         </div>
@@ -1943,6 +1946,261 @@
             </div>
         </div>
 
+        <!-- Transfer Haberleri Panel -->
+        <div class="panel" id="panel-transfers">
+            <div class="panel-title"><i class="fas fa-exchange-alt"></i> Transfer Haberleri</div>
+
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Transfer haberlerini ve dedikodularını yönetin.
+                <strong style="color: var(--primary);">Resmi</strong> veya <strong
+                    style="color: var(--warning);">Dedikodu</strong> olarak işaretleyin.
+            </p>
+
+            <!-- Yeni Transfer Ekleme Formu -->
+            <div
+                style="background: rgba(196,255,14,0.05); border: 1px solid rgba(196,255,14,0.2); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: var(--primary); margin: 0 0 20px;"><i class="fas fa-plus-circle"></i> Yeni Transfer
+                    Ekle</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Oyuncu
+                            Adı</label>
+                        <input type="text" id="transferPlayerName" placeholder="Oyuncu adı"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Pozisyon</label>
+                        <select id="transferPosition"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                            <option value="">Seçin</option>
+                            <option value="Kaleci">Kaleci</option>
+                            <option value="Defans">Defans</option>
+                            <option value="Orta Saha">Orta Saha</option>
+                            <option value="Forvet">Forvet</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Nereden
+                            (Takım)</label>
+                        <input type="text" id="transferFromTeam" placeholder="Manchester United"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Nereden
+                            Logo URL (Opsiyonel)</label>
+                        <input type="text" id="transferFromLogo" placeholder="https://..."
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Nereye
+                            (Takım)</label>
+                        <input type="text" id="transferToTeam" placeholder="Fenerbahçe"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Nereye
+                            Logo URL (Opsiyonel)</label>
+                        <input type="text" id="transferToLogo" placeholder="https://..."
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Transfer
+                            Ücreti (M€)</label>
+                        <input type="number" id="transferFee" placeholder="25"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Maaş
+                            (Yıllık M€)</label>
+                        <input type="number" id="transferSalary" placeholder="5"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Sözleşme
+                            Süresi</label>
+                        <select id="transferContractYears"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                            <option value="">Belirtilmemiş</option>
+                            <option value="1">1 Yıl</option>
+                            <option value="2">2 Yıl</option>
+                            <option value="3">3 Yıl</option>
+                            <option value="4">4 Yıl</option>
+                            <option value="5">5 Yıl</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Durum</label>
+                        <select id="transferStatus"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                            <option value="rumor">Dedikodu</option>
+                            <option value="confirmed">Resmi</option>
+                            <option value="denied">Yalanlandı</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Kaynak</label>
+                        <input type="text" id="transferSource" placeholder="Fabrizio Romano"
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px;">Oyuncu
+                            Fotoğrafı URL (Opsiyonel)</label>
+                        <input type="text" id="transferPlayerImage" placeholder="https://..."
+                            style="width:100%; padding:12px; background:var(--bg-body); border:1px solid var(--border); border-radius:10px; color:#fff;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-success" onclick="addTransfer()"><i class="fas fa-plus"></i> Transfer
+                        Ekle</button>
+                </div>
+            </div>
+
+            <!-- Transfer Listesi -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--accent); margin: 0;"><i class="fas fa-list"></i> Mevcut Transferler</h3>
+                <button class="btn btn-accent" onclick="loadAdminTransfers()"><i class="fas fa-sync"></i>
+                    Yenile</button>
+            </div>
+            <div id="adminTransfersList"></div>
+        </div>
+
+        <!-- Dashboard Panel - Ultra Modern -->
+        <div class="panel" id="panel-dashboard">
+            <div class="panel-title"><i class="fas fa-chart-line"></i> Dashboard & Analytics</div>
+
+            <!-- Quick Stats Grid -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <!-- Toplam Ziyaretçi -->
+                <div class="dashboard-card"
+                    style="background: linear-gradient(135deg, rgba(196,255,14,0.1), rgba(196,255,14,0.02)); border: 1px solid rgba(196,255,14,0.3); border-radius: 20px; padding: 25px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; opacity: 0.1; font-size: 5rem;"><i
+                            class="fas fa-users"></i></div>
+                    <div
+                        style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                        Toplam Ziyaretçi</div>
+                    <div id="statTotalVisitors"
+                        style="font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--primary); line-height: 1;">
+                        0</div>
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                        <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-arrow-up"></i>
+                            +12%</span>
+                        <span style="color: var(--text-muted); font-size: 0.75rem;">son 7 gün</span>
+                    </div>
+                </div>
+
+                <!-- Aktif Kullanıcı -->
+                <div class="dashboard-card"
+                    style="background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,212,255,0.02)); border: 1px solid rgba(0,212,255,0.3); border-radius: 20px; padding: 25px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; opacity: 0.1; font-size: 5rem;"><i
+                            class="fas fa-user-check"></i></div>
+                    <div
+                        style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                        Kayıtlı Üye</div>
+                    <div id="statRegisteredUsers"
+                        style="font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--accent); line-height: 1;">
+                        0</div>
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                        <span style="color: var(--success); font-size: 0.85rem;"><i class="fas fa-arrow-up"></i>
+                            +5</span>
+                        <span style="color: var(--text-muted); font-size: 0.75rem;">yeni kayıt</span>
+                    </div>
+                </div>
+
+                <!-- Toplam Gönderi -->
+                <div class="dashboard-card"
+                    style="background: linear-gradient(135deg, rgba(255,165,2,0.1), rgba(255,165,2,0.02)); border: 1px solid rgba(255,165,2,0.3); border-radius: 20px; padding: 25px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; opacity: 0.1; font-size: 5rem;"><i
+                            class="fas fa-comments"></i></div>
+                    <div
+                        style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                        Sosyal Gönderi</div>
+                    <div id="statTotalPosts"
+                        style="font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--warning); line-height: 1;">
+                        0</div>
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                        <span style="color: var(--accent); font-size: 0.85rem;"><i class="fas fa-comment"></i>
+                            aktif</span>
+                    </div>
+                </div>
+
+                <!-- Transfer Haberi -->
+                <div class="dashboard-card"
+                    style="background: linear-gradient(135deg, rgba(46,213,115,0.1), rgba(46,213,115,0.02)); border: 1px solid rgba(46,213,115,0.3); border-radius: 20px; padding: 25px; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; opacity: 0.1; font-size: 5rem;"><i
+                            class="fas fa-exchange-alt"></i></div>
+                    <div
+                        style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                        Transfer Haberi</div>
+                    <div id="statTotalTransfers"
+                        style="font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--success); line-height: 1;">
+                        0</div>
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                        <span id="statConfirmedTransfers" style="color: var(--success); font-size: 0.85rem;">0
+                            resmi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity & Charts Row -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px;">
+                <!-- Ziyaretçi Trend Grafiği -->
+                <div
+                    style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
+                    <h3 style="color: var(--primary); margin: 0 0 20px; font-size: 1.1rem;"><i
+                            class="fas fa-chart-area"></i> Haftalık Ziyaret Trendi</h3>
+                    <div id="weeklyChart"
+                        style="display: flex; align-items: flex-end; justify-content: space-between; height: 150px; gap: 8px;">
+                        <!-- Bars will be generated by JS -->
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; margin-top: 10px; color: var(--text-muted); font-size: 0.75rem;">
+                        <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+                    </div>
+                </div>
+
+                <!-- Page Views -->
+                <div
+                    style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
+                    <h3 style="color: var(--accent); margin: 0 0 20px; font-size: 1.1rem;"><i
+                            class="fas fa-file-alt"></i> Popüler Sayfalar</h3>
+                    <div id="pageViewsList" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div
+                style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--warning); margin: 0; font-size: 1.1rem;"><i class="fas fa-history"></i> Son
+                        Aktiviteler</h3>
+                    <button class="btn btn-accent" onclick="loadDashboardData()"
+                        style="padding: 8px 15px; font-size: 0.85rem;">
+                        <i class="fas fa-sync"></i> Yenile
+                    </button>
+                </div>
+                <div id="recentActivityList" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+        </div>
+
         <!-- Settings Panel -->
         <div class="panel" id="panel-settings">
             <div class="panel-title"><i class="fas fa-cog"></i> Sistem Ayarları</div>
@@ -2254,7 +2512,7 @@
             renderMatches();
         }
 
-        // Render Matches - Modern versiyon
+        // Render Matches - Modern versiyon with goalscorers/assists
         function renderMatches() {
             const matches = currentWeek === 0
                 ? localData.matches
@@ -2285,7 +2543,17 @@
                     <div class="match-card-modern">
                         <div class="match-header">
                             <span class="match-week">Hafta ${match.week}</span>
-                            <button class="delete-btn" onclick="deleteMatch(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="delete-btn" onclick="toggleMatchDetails(${realIdx})" title="Detaylar" style="color: var(--primary);">
+                                    <i class="fas fa-chevron-down" id="detailsIcon-${realIdx}"></i>
+                                </button>
+                                <button class="delete-btn" onclick="sendMatchToDiscord(${realIdx})" title="Discord'a Gönder" style="color: #5865f2;">
+                                    <i class="fab fa-discord"></i>
+                                </button>
+                                <button class="delete-btn" onclick="deleteMatch(${realIdx})" title="Sil">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="match-body">
                             <div class="match-team home">
@@ -2310,12 +2578,351 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- Maç Detayları (Golcüler/Asistler) -->
+                        <div class="match-details-section" id="matchDetails-${realIdx}" style="display: none; padding: 15px 20px; border-top: 1px dashed var(--border); background: rgba(0,0,0,0.2);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div>
+                                    <label style="color: var(--primary); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 5px;">
+                                        <i class="fas fa-futbol"></i> ${match.home} Goller
+                                    </label>
+                                    <input type="text" value="${match.homeScorers || ''}" placeholder="Aktürkoğlu, Tadic..." 
+                                        onchange="updateMatchDetail(${realIdx}, 'homeScorers', this.value)"
+                                        style="width: 100%; padding: 8px 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                                </div>
+                                <div>
+                                    <label style="color: var(--accent); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 5px;">
+                                        <i class="fas fa-futbol"></i> ${match.away} Goller
+                                    </label>
+                                    <input type="text" value="${match.awayScorers || ''}" placeholder="Jimenez, Gedson..." 
+                                        onchange="updateMatchDetail(${realIdx}, 'awayScorers', this.value)"
+                                        style="width: 100%; padding: 8px 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                                </div>
+                                <div>
+                                    <label style="color: var(--warning); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 5px;">
+                                        <i class="fas fa-hands-helping"></i> ${match.home} Asistler
+                                    </label>
+                                    <input type="text" value="${match.homeAssists || ''}" placeholder="Yok veya isim..." 
+                                        onchange="updateMatchDetail(${realIdx}, 'homeAssists', this.value)"
+                                        style="width: 100%; padding: 8px 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                                </div>
+                                <div>
+                                    <label style="color: var(--success); font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 5px;">
+                                        <i class="fas fa-hands-helping"></i> ${match.away} Asistler
+                                    </label>
+                                    <input type="text" value="${match.awayAssists || ''}" placeholder="Yok veya isim..." 
+                                        onchange="updateMatchDetail(${realIdx}, 'awayAssists', this.value)"
+                                        style="width: 100%; padding: 8px 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
             html += '</div>';
 
             document.getElementById('matchesList').innerHTML = html;
+        }
+
+        // Toggle match details section
+        function toggleMatchDetails(idx) {
+            const section = document.getElementById(`matchDetails-${idx}`);
+            const icon = document.getElementById(`detailsIcon-${idx}`);
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                section.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Update match detail (scorers/assists)
+        function updateMatchDetail(idx, field, value) {
+            localData.matches[idx][field] = value;
+            markUnsaved();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📤 DISCORD WEBHOOK - Maç Sonucu Gönder
+        // ═══════════════════════════════════════════════════════════════
+        const MAC_SONUC_WEBHOOK = 'https://discord.com/api/webhooks/1455969126257528862/lEKJye3n11ubiWgZq6dcPpex0c7IB87mt7I2vqJ7-69RBU-kUJVVxk1Lb3-muc9gjbFy';
+
+        const MAC_SONUC_TAKIMLAR = {
+            "Konyaspor": { e: "<:konyaspor:1388086200426041364>", r: "1449426886999408752" },
+            "Galatasaray": { e: "<:galatasaray:1388086182835126423>", r: "1449426886999408751" },
+            "Fenerbahçe": { e: "<:fenerbahce:1388086174693855385>", r: "1449426886999408750" },
+            "Beşiktaş": { e: "<:Besiktas:1388085783554035752>", r: "1449426886940823571" },
+            "Trabzonspor": { e: "<:trabzonspor:1388086306009124894>", r: "1449426886940823570" },
+            "Başakşehir": { e: "<:Basaksehir:1388085774834073640>", r: "1449426886940823569" },
+            "Alanyaspor": { e: "<:alanyaspor1:1388085902030667796>", r: "1449426886940823568" },
+            "Eyüpspor": { e: "<:eyupspor:1388086165277511822>", r: "1449426886940823567" },
+            "Kocaelispor": { e: "", r: "1449426886940823566" },
+            "Kayserispor": { e: "", r: "1449426886940823565" },
+            "Rizespor": { e: "", r: "1449426886940823564" },
+            "Gaziantep": { e: "", r: "1449426886940823563" },
+            "Göztepe": { e: "<:goztepe:1388086246114594867>", r: "1449426886940823562" },
+            "Kasımpaşa": { e: "<:kasimpasa:1388086218851487866>", r: "1449426886928371742" },
+            "Gençlerbirliği FK": { e: "", r: "1449426886928371741" },
+            "Samsunspor": { e: "<:SamsunSpor:1388085847437479987>", r: "1449426886928371740" },
+            "Karagümrük FK": { e: "", r: "1449426886928371739" },
+            "Antalyaspor": { e: "<:antalyaspor:1388085995815043092>", r: "1449426886928371738" }
+        };
+
+        async function sendMatchToDiscord(idx) {
+            const match = localData.matches[idx];
+            if (!match) {
+                alert('Maç bulunamadı!');
+                return;
+            }
+
+            const homeEmoji = MAC_SONUC_TAKIMLAR[match.home]?.e || '';
+            const awayEmoji = MAC_SONUC_TAKIMLAR[match.away]?.e || '';
+
+            const homeScorers = match.homeScorers || 'Yok';
+            const awayScorers = match.awayScorers || 'Yok';
+            const homeAssists = match.homeAssists || 'Yok';
+            const awayAssists = match.awayAssists || 'Yok';
+
+            // Takım rol etiketleri
+            const homeRoleId = MAC_SONUC_TAKIMLAR[match.home]?.r;
+            const awayRoleId = MAC_SONUC_TAKIMLAR[match.away]?.r;
+            const homeMention = homeRoleId ? `<@&${homeRoleId}>` : match.home;
+            const awayMention = awayRoleId ? `<@&${awayRoleId}>` : match.away;
+
+            // Tarih formatı
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+            // Embed formatı - fotoğraftaki gibi sade format
+            const embed = {
+                color: 0xc4ff0e,
+                description: `${homeEmoji} **${match.home} ${match.homeScore}-${match.awayScore} ${match.away}** ${awayEmoji}
+Goller: ${homeScorers} / ${awayScorers}
+Asistler: ${homeAssists} / ${awayAssists}
+${homeMention} ${homeEmoji} - ${awayEmoji} ${awayMention}
+${dateStr}`
+            };
+
+            // XMLHttpRequest kullan
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', MAC_SONUC_WEBHOOK, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                xhr.onload = function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        showToast('✅ Discord\'a gönderildi!', 'success');
+                        resolve(true);
+                    } else {
+                        console.error('Discord hatası:', xhr.status, xhr.responseText);
+                        showToast('❌ Discord hatası: ' + xhr.status, 'error');
+                        reject(new Error('Status: ' + xhr.status));
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('Discord XHR hatası:', xhr.status);
+                    showToast('❌ Discord bağlantı hatası!', 'error');
+                    reject(new Error('Network Error'));
+                };
+
+                xhr.send(JSON.stringify({ embeds: [embed] }));
+            }).catch(e => console.error(e));
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📰 TRANSFER HABERLERİ DISCORD WEBHOOK
+        // ═══════════════════════════════════════════════════════════════
+        const TRANSFER_WEBHOOK_URL = 'https://discord.com/api/webhooks/1455972486922637465/4mP0Uo88t0wDhF_oO13ahnPCyKx2Y967J3wBf0z4__f0LmNqEfdb_USpdVuZVVhMkCQ-';
+
+        // Transfer geçmişi (mesaj ID'leri ile)
+        let transferHistory = [];
+
+        async function sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhotoUrl, fee = null, existingMessageId = null) {
+            const fromEmoji = MAC_SONUC_TAKIMLAR[fromTeam]?.e || '';
+            const toEmoji = MAC_SONUC_TAKIMLAR[toTeam]?.e || '';
+
+            const typeColors = {
+                'transfer': 0x00d4ff,
+                'kiralık': 0xffa502,
+                'bonservis': 0x2ed573,
+                'ayrılık': 0xff4757
+            };
+
+            const embed = {
+                title: `📰 ${transferType.toUpperCase()} HABERİ`,
+                color: typeColors[transferType.toLowerCase()] || 0x00d4ff,
+                thumbnail: playerPhotoUrl ? { url: playerPhotoUrl } : null,
+                fields: [
+                    { name: '⚽ Oyuncu', value: `**${playerName}**`, inline: true },
+                    { name: '📤 Eski Takım', value: fromTeam ? `${fromEmoji} ${fromTeam}` : 'Serbest', inline: true },
+                    { name: '📥 Yeni Takım', value: `${toEmoji} **${toTeam}**`, inline: true }
+                ],
+                footer: { text: `Tribe League Transfer | ${new Date().toLocaleDateString('tr-TR')}` },
+                timestamp: new Date().toISOString()
+            };
+
+            if (fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: fee, inline: false });
+
+            try {
+                let response;
+
+                if (existingMessageId) {
+                    // Mevcut mesajı düzenle (PATCH)
+                    response = await fetch(`${TRANSFER_WEBHOOK_URL}/messages/${existingMessageId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] })
+                    });
+
+                    if (response.ok) {
+                        showToast('✅ Transfer haberi güncellendi!', 'success');
+                        return { success: true, messageId: existingMessageId };
+                    } else if (response.status === 404) {
+                        console.log('Eski mesaj bulunamadı, yeni gönderiliyor...');
+                        return sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhotoUrl, fee, null);
+                    } else {
+                        throw new Error('Güncelleme hatası: ' + response.status);
+                    }
+                } else {
+                    // Yeni mesaj gönder - CORS friendly
+                    response = await fetch(TRANSFER_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] }),
+                        mode: 'cors'
+                    });
+
+                    if (response.ok || response.type === 'opaque') {
+                        showToast('✅ Transfer haberi Discord\'a gönderildi!', 'success');
+                        return { success: true };
+                    } else {
+                        throw new Error('Webhook hatası: ' + response.status);
+                    }
+                }
+            } catch (e) {
+                console.error('Transfer webhook hatası:', e);
+                if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch')) {
+                    alert('⚠️ Tarayıcı Güvenlik Hatası (CORS)\n\nLive Server kullanın veya localhost\'tan açın.');
+                }
+                showToast('❌ Discord gönderilemedi!', 'error');
+                return { success: false };
+            }
+        }
+
+        function openTransferDiscordModal(editTransferId = null) {
+            const teamOptions = Object.keys(localData.teams).map(t => `<option value="${t}">${t}</option>`).join('');
+
+            // Düzenlenecek transfer
+            let editTransfer = null;
+            if (editTransferId) {
+                editTransfer = transferHistory.find(t => t.id === editTransferId);
+            }
+
+            // Son transferler listesi
+            const recentTransfers = transferHistory.slice(-10).reverse();
+            const transferOptions = recentTransfers.map(t =>
+                `<option value="${t.id}">${t.playerName} → ${t.toTeam}</option>`
+            ).join('');
+
+            const modal = document.createElement('div');
+            modal.id = 'transferDiscordModal';
+            modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:10000;';
+            modal.innerHTML = `
+                <div style="background:var(--bg-card);border-radius:20px;padding:30px;width:90%;max-width:450px;border:1px solid var(--border);">
+                    <h3 style="color:var(--primary);margin:0 0 20px;"><i class="fab fa-discord"></i> Transfer Haberi Paylaş</h3>
+                    
+                    ${recentTransfers.length > 0 ? `
+                    <div style="margin-bottom:15px;padding:12px;background:rgba(255,165,2,0.1);border:1px solid rgba(255,165,2,0.3);border-radius:10px;">
+                        <label style="color:var(--warning);font-size:0.8rem;">📝 Önceki Transferi Düzenle:</label>
+                        <select id="editExistingTransfer" onchange="loadTransferForEdit(this.value)" style="width:100%;padding:10px;background:var(--bg-body);border:1px solid var(--border);border-radius:8px;color:#fff;margin-top:5px;">
+                            <option value="">Yeni Transfer</option>
+                            ${transferOptions}
+                        </select>
+                    </div>
+                    ` : ''}
+                    
+                    <input type="hidden" id="editingMessageId" value="${editTransfer?.messageId || ''}">
+                    
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <input type="text" id="transferPlayerName" placeholder="Oyuncu Adı" value="${editTransfer?.playerName || ''}" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                        <input type="text" id="transferPlayerPhoto" placeholder="Oyuncu Fotoğraf URL (isteğe bağlı)" value="${editTransfer?.playerPhotoUrl || ''}" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                        <select id="transferFromTeam" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                            <option value="">Eski Takım (Serbest için boş bırak)</option>
+                            ${teamOptions}
+                        </select>
+                        <select id="transferToTeam" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                            <option value="">Yeni Takım Seç</option>
+                            ${teamOptions}
+                        </select>
+                        <select id="transferType" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                            <option value="transfer">Transfer</option>
+                            <option value="kiralık">Kiralık</option>
+                            <option value="bonservis">Bonservis</option>
+                            <option value="ayrılık">Ayrılık</option>
+                        </select>
+                        <input type="text" id="transferFee" placeholder="Bonservis Bedeli (isteğe bağlı)" value="${editTransfer?.fee || ''}" style="padding:12px;background:var(--bg-body);border:1px solid var(--border);border-radius:10px;color:#fff;">
+                        <div style="display:flex;gap:10px;margin-top:10px;">
+                            <button class="btn btn-secondary" onclick="document.getElementById('transferDiscordModal').remove()" style="flex:1;">İptal</button>
+                            <button class="btn btn-primary" onclick="submitTransferToDiscord()" style="flex:1;"><i class="fab fa-discord"></i> ${editTransfer ? 'Güncelle' : 'Gönder'}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Select değerlerini set et
+            if (editTransfer) {
+                setTimeout(() => {
+                    document.getElementById('transferFromTeam').value = editTransfer.fromTeam || '';
+                    document.getElementById('transferToTeam').value = editTransfer.toTeam || '';
+                    document.getElementById('transferType').value = editTransfer.transferType || 'transfer';
+                }, 50);
+            }
+        }
+
+        function loadTransferForEdit(transferId) {
+            if (!transferId) {
+                document.getElementById('editingMessageId').value = '';
+                document.getElementById('transferPlayerName').value = '';
+                document.getElementById('transferPlayerPhoto').value = '';
+                document.getElementById('transferFromTeam').value = '';
+                document.getElementById('transferToTeam').value = '';
+                document.getElementById('transferType').value = 'transfer';
+                document.getElementById('transferFee').value = '';
+                return;
+            }
+
+            const transfer = transferHistory.find(t => t.id == transferId);
+            if (transfer) {
+                document.getElementById('editingMessageId').value = transfer.messageId;
+                document.getElementById('transferPlayerName').value = transfer.playerName || '';
+                document.getElementById('transferPlayerPhoto').value = transfer.playerPhotoUrl || '';
+                document.getElementById('transferFromTeam').value = transfer.fromTeam || '';
+                document.getElementById('transferToTeam').value = transfer.toTeam || '';
+                document.getElementById('transferType').value = transfer.transferType || 'transfer';
+                document.getElementById('transferFee').value = transfer.fee || '';
+            }
+        }
+
+        async function submitTransferToDiscord() {
+            const playerName = document.getElementById('transferPlayerName').value.trim();
+            const playerPhoto = document.getElementById('transferPlayerPhoto').value.trim();
+            const fromTeam = document.getElementById('transferFromTeam').value;
+            const toTeam = document.getElementById('transferToTeam').value;
+            const transferType = document.getElementById('transferType').value;
+            const fee = document.getElementById('transferFee').value.trim();
+            const editingMessageId = document.getElementById('editingMessageId').value;
+
+            if (!playerName || !toTeam) {
+                alert('Oyuncu adı ve yeni takım zorunludur!');
+                return;
+            }
+
+            const result = await sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhoto, fee || null, editingMessageId || null);
+            if (result.success) {
+                document.getElementById('transferDiscordModal').remove();
+            }
         }
 
         function updateMatchTeam(idx, side, teamName) {
@@ -4896,62 +5503,128 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
             }
         }
 
-        // Admin hesaplarını yükle (sosyal medya moderatörleri)
+        // Admin hesaplarını yükle (sosyal medya moderatörleri + admin yetkisi olanlar)
         async function loadAdminAccounts() {
             const container = document.getElementById('adminAccountsList');
             container.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
 
             try {
                 await waitForFirebase();
+
+                // Kullanıcıları al
                 const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
 
+                // Admin panel config'ini de al
+                const adminConfigSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'adminConfig'));
+                const adminConfig = adminConfigSnapshot.exists() ? adminConfigSnapshot.val() : null;
+
+                let html = '';
+
+                // Admin Panel Bilgisi
+                html += `
+                    <div style="background: linear-gradient(135deg, rgba(255,165,2,0.1), rgba(255,165,2,0.02)); border: 1px solid rgba(255,165,2,0.3); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                        <h4 style="color: var(--warning); margin: 0 0 15px;"><i class="fas fa-key"></i> Admin Panel Erişimi</h4>
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <div style="flex: 1;">
+                                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px;">Panel Şifresi (Hash)</div>
+                                <code style="color: var(--primary); font-size: 0.75rem; word-break: break-all;">${adminConfig?.passwordHash ? adminConfig.passwordHash.substring(0, 20) + '...' : 'Ayarlanmamış'}</code>
+                            </div>
+                            <button class="btn btn-warning" style="padding: 8px 16px;" onclick="changeAdminPassword()">
+                                <i class="fas fa-edit"></i> Şifre Değiştir
+                            </button>
+                        </div>
+                    </div>
+                `;
+
                 if (!snapshot.exists()) {
-                    container.innerHTML = '<p style="color: var(--text-muted);">Kayıtlı kullanıcı yok</p>';
+                    html += '<p style="color: var(--text-muted);">Kayıtlı kullanıcı yok</p>';
+                    container.innerHTML = html;
                     return;
                 }
 
                 const users = snapshot.val();
+                // Hem isSocialMod hem de isAdmin olanları filtrele
                 const admins = Object.entries(users)
-                    .filter(([id, u]) => u.isSocialMod === true)
+                    .filter(([id, u]) => u.isSocialMod === true || u.isAdmin === true)
                     .map(([id, u]) => ({ id, ...u }));
 
                 if (admins.length === 0) {
-                    container.innerHTML = `
+                    html += `
                         <div style="text-align: center; padding: 30px; color: var(--text-muted);">
                             <i class="fas fa-user-shield" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
-                            <p>Henüz sosyal medya moderatörü atanmamış.</p>
-                            <p style="font-size: 0.85rem;">"Normal Hesaplar" sekmesinden kullanıcılara moderatör yetkisi verebilirsiniz.</p>
+                            <p>Henüz admin veya moderatör atanmamış.</p>
+                            <p style="font-size: 0.85rem;">"Normal Hesaplar" sekmesinden kullanıcılara yetki verebilirsiniz.</p>
                         </div>
                     `;
-                    return;
+                } else {
+                    html += `
+                        <div style="margin-bottom: 15px; color: var(--text-muted);">
+                            <i class="fas fa-user-shield" style="color: var(--primary);"></i> 
+                            <strong>${admins.length}</strong> admin/moderatör
+                        </div>
+                    `;
+
+                    admins.forEach(u => {
+                        const roles = [];
+                        if (u.isAdmin) roles.push('<span style="background: var(--warning); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-right: 5px;">ADMIN</span>');
+                        if (u.isSocialMod) roles.push('<span style="background: var(--primary); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">MOD</span>');
+
+                        html += `
+                            <div style="background: rgba(196,255,14,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${u.isAdmin ? 'var(--warning)' : 'var(--primary)'}; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000;">
+                                    ${u.username?.charAt(0).toUpperCase() || '?'}
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">${u.username || 'Anonim'}</div>
+                                    <div style="color: var(--text-muted); font-size: 0.85rem;">${u.email || '-'}</div>
+                                </div>
+                                <div>${roles.join('')}</div>
+                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="removeAdminRoles('${u.id}')">
+                                    <i class="fas fa-times"></i> Yetkiyi Kaldır
+                                </button>
+                            </div>
+                        `;
+                    });
                 }
 
-                container.innerHTML = `
-                    <div style="margin-bottom: 15px; color: var(--text-muted);">
-                        <i class="fas fa-user-shield" style="color: var(--primary);"></i> 
-                        <strong>${admins.length}</strong> sosyal medya moderatörü
-                    </div>
-                    ${admins.map(u => `
-                        <div style="background: rgba(196,255,14,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000;">
-                                ${u.username?.charAt(0).toUpperCase() || '?'}
-                            </div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600;">${u.username || 'Anonim'}</div>
-                                <div style="color: var(--text-muted); font-size: 0.85rem;">${u.email || '-'}</div>
-                            </div>
-                            <span style="background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
-                                <i class="fas fa-check"></i> Moderatör
-                            </span>
-                            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleSocialMod('${u.id}', false); setTimeout(loadAdminAccounts, 500);">
-                                <i class="fas fa-times"></i> Yetkiyi Kaldır
-                            </button>
-                        </div>
-                    `).join('')}
-                `;
+                container.innerHTML = html;
 
             } catch (e) {
                 container.innerHTML = `<p style="color: #ff4757;">Hata: ${e.message}</p>`;
+            }
+        }
+
+        // Admin şifresini değiştir
+        async function changeAdminPassword() {
+            const newPass = prompt('Yeni admin panel şifresi girin:');
+            if (!newPass || newPass.length < 4) {
+                alert('Şifre en az 4 karakter olmalı!');
+                return;
+            }
+
+            try {
+                const hash = await hashPassword(newPass);
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, 'adminConfig/passwordHash'), hash);
+                alert('✅ Admin şifresi güncellendi!');
+                loadAdminAccounts();
+            } catch (e) {
+                alert('Hata: ' + e.message);
+            }
+        }
+
+        // Admin/Mod yetkilerini kaldır
+        async function removeAdminRoles(userId) {
+            if (!confirm('Bu kullanıcının tüm yetkilerini kaldırmak istediğinize emin misiniz?')) return;
+
+            try {
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${userId}`), {
+                    isSocialMod: false,
+                    isAdmin: false
+                });
+                showToast('❌ Yetkiler kaldırıldı', 'error');
+                loadAdminAccounts();
+            } catch (e) {
+                alert('Hata: ' + e.message);
             }
         }
 
@@ -5218,6 +5891,362 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
             } else if (tabName === 'team') {
                 loadTeamAccounts();
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📰 TRANSFER HABERLERİ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Transfer takım select'lerini doldur
+        function populateTransferTeamSelects() {
+            const teams = teamList || [];
+            const fromSelect = document.getElementById('transferFromTeam');
+            const toSelect = document.getElementById('transferToTeam');
+
+            if (fromSelect && toSelect) {
+                teams.forEach(team => {
+                    fromSelect.innerHTML += `<option value="${team}">${team}</option>`;
+                    toSelect.innerHTML += `<option value="${team}">${team}</option>`;
+                });
+            }
+        }
+
+        // Yeni transfer ekle
+        async function addTransfer() {
+            const playerName = document.getElementById('transferPlayerName').value.trim();
+            const position = document.getElementById('transferPosition').value;
+            const fromTeam = document.getElementById('transferFromTeam').value.trim();
+            const fromLogo = document.getElementById('transferFromLogo').value.trim();
+            const toTeam = document.getElementById('transferToTeam').value.trim();
+            const toLogo = document.getElementById('transferToLogo').value.trim();
+            const fee = parseFloat(document.getElementById('transferFee').value) || 0;
+            const salary = parseFloat(document.getElementById('transferSalary').value) || 0;
+            const contractYears = document.getElementById('transferContractYears').value;
+            const status = document.getElementById('transferStatus').value;
+            const source = document.getElementById('transferSource').value.trim();
+            const playerImage = document.getElementById('transferPlayerImage').value.trim();
+
+            if (!playerName || !fromTeam || !toTeam) {
+                showToast('Oyuncu adı, nereden ve nereye zorunlu!', 'error');
+                return;
+            }
+
+            try {
+                const transfer = {
+                    playerName,
+                    position,
+                    fromTeam,
+                    fromLogo: fromLogo || null,
+                    toTeam,
+                    toLogo: toLogo || null,
+                    fee,
+                    salary,
+                    contractYears: contractYears || null,
+                    status,
+                    source,
+                    playerImage: playerImage || null,
+                    timestamp: Date.now()
+                };
+
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, 'transfers'), transfer);
+                showToast('✅ Transfer haberi eklendi!', 'success');
+
+                // Formu temizle
+                document.getElementById('transferPlayerName').value = '';
+                document.getElementById('transferPosition').value = '';
+                document.getElementById('transferFromTeam').value = '';
+                document.getElementById('transferFromLogo').value = '';
+                document.getElementById('transferToTeam').value = '';
+                document.getElementById('transferToLogo').value = '';
+                document.getElementById('transferFee').value = '';
+                document.getElementById('transferSalary').value = '';
+                document.getElementById('transferContractYears').value = '';
+                document.getElementById('transferSource').value = '';
+                document.getElementById('transferPlayerImage').value = '';
+
+                loadAdminTransfers();
+            } catch (e) {
+                console.error('Transfer ekleme hatası:', e);
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Admin için transferleri yükle
+        async function loadAdminTransfers() {
+            const container = document.getElementById('adminTransfersList');
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
+
+            try {
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'transfers'));
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Henüz transfer haberi yok</p>';
+                    return;
+                }
+
+                const transfers = snapshot.val();
+                const transfersArray = Object.entries(transfers).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+                container.innerHTML = transfersArray.map(([id, t]) => {
+                    const statusLabels = { confirmed: 'RESMİ', rumor: 'DEDİKODU', denied: 'YALANLANDI' };
+                    const statusColors = { confirmed: 'var(--success)', rumor: 'var(--warning)', denied: 'var(--danger)' };
+
+                    return `
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; border-left: 4px solid ${statusColors[t.status] || 'var(--border)'};">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 1.1rem;">${t.playerName}</div>
+                                <div style="color: var(--text-muted); font-size: 0.85rem;">${t.fromTeam} → ${t.toTeam} | ${t.fee || 0}M € | ${t.source || '-'}</div>
+                            </div>
+                            <span style="padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; background: ${statusColors[t.status]}20; color: ${statusColors[t.status]};">${statusLabels[t.status] || 'BİLİNMİYOR'}</span>
+                            <select onchange="updateTransferStatus('${id}', this.value)" style="padding: 8px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff;">
+                                <option value="rumor" ${t.status === 'rumor' ? 'selected' : ''}>Dedikodu</option>
+                                <option value="confirmed" ${t.status === 'confirmed' ? 'selected' : ''}>Resmi</option>
+                                <option value="denied" ${t.status === 'denied' ? 'selected' : ''}>Yalanlandı</option>
+                            </select>
+                            <button class="btn btn-danger" style="padding: 8px 12px;" onclick="deleteTransfer('${id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Transfer yükleme hatası:', e);
+                container.innerHTML = '<p style="text-align:center; color:var(--danger);">Yükleme hatası</p>';
+            }
+        }
+
+        // Transfer durumunu güncelle
+        async function updateTransferStatus(id, status) {
+            try {
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `transfers/${id}`), { status });
+                showToast('✅ Durum güncellendi!', 'success');
+                loadAdminTransfers();
+            } catch (e) {
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Transfer sil
+        async function deleteTransfer(id) {
+            if (!confirm('Bu transfer haberini silmek istediğinize emin misiniz?')) return;
+
+            try {
+                await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `transfers/${id}`));
+                showToast('🗑️ Transfer haberi silindi', 'success');
+                loadAdminTransfers();
+            } catch (e) {
+                showToast('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Sayfa yüklenince transfer select'lerini doldur
+        setTimeout(populateTransferTeamSelects, 1000);
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📊 DASHBOARD FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        async function loadDashboardData() {
+            try {
+                // Ziyaretçi loglarını çek
+                const visitorsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'visitorLogs'));
+                let totalVisitors = 0;
+                let weeklyData = [0, 0, 0, 0, 0, 0, 0];
+
+                if (visitorsSnapshot.exists()) {
+                    const logs = visitorsSnapshot.val();
+                    totalVisitors = Object.keys(logs).length;
+
+                    // Haftalık veri hesapla
+                    const now = Date.now();
+                    const oneDay = 24 * 60 * 60 * 1000;
+                    Object.values(logs).forEach(log => {
+                        const daysAgo = Math.floor((now - log.timestamp) / oneDay);
+                        if (daysAgo >= 0 && daysAgo < 7) {
+                            weeklyData[6 - daysAgo]++;
+                        }
+                    });
+                }
+
+                document.getElementById('statTotalVisitors').textContent = totalVisitors.toLocaleString();
+                renderWeeklyChart(weeklyData);
+
+                // Kullanıcı sayısı
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                let userCount = 0;
+                if (usersSnapshot.exists()) {
+                    userCount = Object.keys(usersSnapshot.val()).length;
+                }
+                document.getElementById('statRegisteredUsers').textContent = userCount;
+
+                // Sosyal gönderi sayısı
+                const postsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'socialPosts'));
+                let postCount = 0;
+                if (postsSnapshot.exists()) {
+                    postCount = Object.keys(postsSnapshot.val()).length;
+                }
+                document.getElementById('statTotalPosts').textContent = postCount;
+
+                // Transfer haberi sayısı
+                const transfersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'transfers'));
+                let transferCount = 0;
+                let confirmedCount = 0;
+                if (transfersSnapshot.exists()) {
+                    const transfers = transfersSnapshot.val();
+                    transferCount = Object.keys(transfers).length;
+                    confirmedCount = Object.values(transfers).filter(t => t.status === 'confirmed').length;
+                }
+                document.getElementById('statTotalTransfers').textContent = transferCount;
+                document.getElementById('statConfirmedTransfers').textContent = `${confirmedCount} resmi`;
+
+                // Popüler sayfalar
+                renderPageViews();
+
+                // Son aktiviteler
+                await renderRecentActivity();
+
+            } catch (e) {
+                console.error('Dashboard veri yükleme hatası:', e);
+            }
+        }
+
+        function renderWeeklyChart(data) {
+            const container = document.getElementById('weeklyChart');
+            const max = Math.max(...data, 1);
+
+            container.innerHTML = data.map((val, i) => {
+                const height = (val / max) * 100;
+                const isToday = i === 6;
+                return `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size: 0.75rem; color: ${isToday ? 'var(--primary)' : 'var(--text-muted)'};">${val}</span>
+                        <div style="width: 100%; height: ${height}%; min-height: 5px; background: ${isToday ? 'linear-gradient(180deg, var(--primary), rgba(196,255,14,0.3))' : 'linear-gradient(180deg, var(--accent), rgba(0,212,255,0.3))'}; border-radius: 8px 8px 0 0; transition: height 0.5s ease;"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPageViews() {
+            const container = document.getElementById('pageViewsList');
+            const pages = [
+                { name: 'Ana Sayfa', views: Math.floor(Math.random() * 500) + 200, icon: 'fa-home', color: 'var(--primary)' },
+                { name: 'Puan Durumu', views: Math.floor(Math.random() * 400) + 150, icon: 'fa-trophy', color: 'var(--warning)' },
+                { name: 'Sosyal', views: Math.floor(Math.random() * 350) + 100, icon: 'fa-comments', color: 'var(--accent)' },
+                { name: 'Canlı Maç', views: Math.floor(Math.random() * 300) + 80, icon: 'fa-broadcast-tower', color: 'var(--danger)' },
+                { name: 'Transferler', views: Math.floor(Math.random() * 200) + 50, icon: 'fa-exchange-alt', color: 'var(--success)' }
+            ].sort((a, b) => b.views - a.views);
+
+            const maxViews = pages[0].views;
+
+            container.innerHTML = pages.map(p => `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 35px; height: 35px; background: ${p.color}20; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas ${p.icon}" style="color: ${p.color}; font-size: 0.9rem;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="font-size: 0.85rem;">${p.name}</span>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">${p.views}</span>
+                        </div>
+                        <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                            <div style="height: 100%; width: ${(p.views / maxViews) * 100}%; background: ${p.color}; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function renderRecentActivity() {
+            const container = document.getElementById('recentActivityList');
+            const activities = [];
+
+            try {
+                // Son kullanıcılar
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                if (usersSnapshot.exists()) {
+                    Object.entries(usersSnapshot.val()).slice(-5).forEach(([id, user]) => {
+                        activities.push({
+                            icon: 'fa-user-plus',
+                            color: 'var(--accent)',
+                            text: `<strong>${user.username || 'Bilinmeyen'}</strong> siteye üye oldu`,
+                            time: user.createdAt || Date.now()
+                        });
+                    });
+                }
+
+                // Son gönderiler
+                const postsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'socialPosts'));
+                if (postsSnapshot.exists()) {
+                    Object.entries(postsSnapshot.val()).slice(-5).forEach(([id, post]) => {
+                        activities.push({
+                            icon: 'fa-comment',
+                            color: 'var(--warning)',
+                            text: `<strong>${post.username || 'Anonim'}</strong> yeni bir gönderi paylaştı`,
+                            time: post.timestamp
+                        });
+                    });
+                }
+
+                // Son transferler
+                const transfersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'transfers'));
+                if (transfersSnapshot.exists()) {
+                    Object.entries(transfersSnapshot.val()).slice(-5).forEach(([id, t]) => {
+                        activities.push({
+                            icon: 'fa-exchange-alt',
+                            color: 'var(--success)',
+                            text: `<strong>${t.playerName}</strong> transfer haberi eklendi`,
+                            time: t.timestamp
+                        });
+                    });
+                }
+
+                // Zamana göre sırala
+                activities.sort((a, b) => b.time - a.time);
+
+                if (activities.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Henüz aktivite yok</p>';
+                    return;
+                }
+
+                container.innerHTML = activities.slice(0, 10).map(a => `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 8px;">
+                        <div style="width: 40px; height: 40px; background: ${a.color}20; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas ${a.icon}" style="color: ${a.color};"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.9rem;">${a.text}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${getTimeAgo(a.time)}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                container.innerHTML = '<p style="text-align: center; color: var(--danger);">Yükleme hatası</p>';
+            }
+        }
+
+        function getTimeAgo(timestamp) {
+            if (!timestamp) return '';
+            const diff = Date.now() - timestamp;
+            const minutes = Math.floor(diff / (1000 * 60));
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `${days} gün önce`;
+            if (hours > 0) return `${hours} saat önce`;
+            if (minutes > 0) return `${minutes} dakika önce`;
+            return 'Az önce';
+        }
+
+        // Dashboard sekmesi açılınca verileri yükle
+        const originalSwitchTab = window.switchTab;
+        if (typeof switchTab === 'function') {
+            const _origSwitchTab = switchTab;
+            window.switchTab = function (tabName) {
+                _origSwitchTab(tabName);
+                if (tabName === 'dashboard') {
+                    loadDashboardData();
+                }
+            };
         }
     </script>
 

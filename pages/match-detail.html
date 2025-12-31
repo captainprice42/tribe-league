@@ -389,6 +389,35 @@
                     </div>
                 </div>
 
+                ${(match.homeScorers || match.awayScorers || match.homeAssists || match.awayAssists) ? `
+                <div style="background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <div style="color: var(--primary); font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px;">
+                                <i class="fas fa-futbol"></i> GOLLER
+                            </div>
+                            <div style="color: var(--text-main);">
+                                <span style="color: var(--primary);">${match.home}:</span> ${match.homeScorers || 'Yok'}
+                            </div>
+                            <div style="color: var(--text-main); margin-top: 5px;">
+                                <span style="color: var(--accent);">${match.away}:</span> ${match.awayScorers || 'Yok'}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="color: var(--accent); font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px;">
+                                <i class="fas fa-hands-helping"></i> ASİSTLER
+                            </div>
+                            <div style="color: var(--text-main);">
+                                <span style="color: var(--primary);">${match.home}:</span> ${match.homeAssists || 'Yok'}
+                            </div>
+                            <div style="color: var(--text-main); margin-top: 5px;">
+                                <span style="color: var(--accent);">${match.away}:</span> ${match.awayAssists || 'Yok'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
                 ${eventsHtml}
 
                 <div class="action-buttons">
