@@ -2686,21 +2686,35 @@
             // Takım rol etiketleri
             const homeRoleId = MAC_SONUC_TAKIMLAR[match.home]?.r;
             const awayRoleId = MAC_SONUC_TAKIMLAR[match.away]?.r;
-            const homeMention = homeRoleId ? `<@&${homeRoleId}>` : match.home;
-            const awayMention = awayRoleId ? `<@&${awayRoleId}>` : match.away;
+            const homeMention = homeRoleId ? `<@&${homeRoleId}>` : '';
+            const awayMention = awayRoleId ? `<@&${awayRoleId}>` : '';
 
             // Tarih formatı
             const now = new Date();
             const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
-            // Embed formatı - fotoğraftaki gibi sade format
+            // Embed formatı
             const embed = {
                 color: 0xc4ff0e,
-                description: `${homeEmoji} **${match.home} ${match.homeScore}-${match.awayScore} ${match.away}** ${awayEmoji}
-Goller: ${homeScorers} / ${awayScorers}
-Asistler: ${homeAssists} / ${awayAssists}
-${homeMention} ${homeEmoji} - ${awayEmoji} ${awayMention}
-${dateStr}`
+                title: '⚽ Maç Sonucu',
+                description: `${homeEmoji} **${match.home} ${match.homeScore}-${match.awayScore} ${match.away}** ${awayEmoji}`,
+                fields: [
+                    { name: '⚽ Goller', value: `${homeScorers} / ${awayScorers}`, inline: false },
+                    { name: '🅰️ Asistler', value: `${homeAssists} / ${awayAssists}`, inline: false }
+                ],
+                footer: { text: dateStr }
+            };
+
+            // Rol mention'ları content içine koy (bildirim için gerekli!)
+            const mentionContent = [homeMention, awayMention].filter(m => m).join(' ');
+
+            // Webhook payload - allowed_mentions ile rolleri aktif et
+            const payload = {
+                content: mentionContent || undefined,
+                embeds: [embed],
+                allowed_mentions: {
+                    parse: ['roles']
+                }
             };
 
             try {
@@ -2712,7 +2726,7 @@ ${dateStr}`
                     response = await fetch(`${MAC_SONUC_WEBHOOK}/messages/${existingMessageId}`, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ embeds: [embed] })
+                        body: JSON.stringify(payload)
                     });
 
                     if (response.ok) {
@@ -2731,7 +2745,7 @@ ${dateStr}`
                     response = await fetch(MAC_SONUC_WEBHOOK + '?wait=true', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ embeds: [embed] })
+                        body: JSON.stringify(payload)
                     });
 
                     if (response.ok) {
