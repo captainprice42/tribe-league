@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Haberleri - Tribe League</title>
+    <meta name="description" content="Tribe League Transfer Haberleri ve Dedikoduları">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.95);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --text-main: #fff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(196, 255, 14, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .filter-btn.confirmed {
+            border-color: var(--success);
+        }
+
+        .filter-btn.confirmed.active {
+            background: var(--success);
+        }
+
+        .filter-btn.rumor {
+            border-color: var(--warning);
+        }
+
+        .filter-btn.rumor.active {
+            background: var(--warning);
+        }
+
+        .team-filter {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Transfer Cards */
+        .transfers-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .transfer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 25px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transfer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .transfer-card.confirmed {
+            border-left: 4px solid var(--success);
+        }
+
+        .transfer-card.rumor {
+            border-left: 4px solid var(--warning);
+        }
+
+        .transfer-card.denied {
+            border-left: 4px solid var(--danger);
+            opacity: 0.7;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            color: #000;
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .player-name {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .player-position {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .transfer-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .transfer-route {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .team-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-badge img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+
+        .team-badge span {
+            font-weight: 600;
+        }
+
+        .transfer-arrow {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .transfer-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .meta-item i {
+            color: var(--accent);
+        }
+
+        .transfer-fee {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: right;
+        }
+
+        .transfer-fee small {
+            display: block;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.confirmed {
+            background: rgba(46, 213, 115, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.rumor {
+            background: rgba(255, 165, 2, 0.2);
+            color: var(--warning);
+        }
+
+        .status-badge.denied {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .transfer-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .player-info {
+                justify-content: center;
+            }
+
+            .transfer-route {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .transfer-fee {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-exchange-alt"></i> TRANSFER HABERLERİ</h1>
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterTransfers('all')">
+                <i class="fas fa-list"></i> Tümü
+            </button>
+            <button class="filter-btn confirmed" onclick="filterTransfers('confirmed')">
+                <i class="fas fa-check-circle"></i> Resmi
+            </button>
+            <button class="filter-btn rumor" onclick="filterTransfers('rumor')">
+                <i class="fas fa-question-circle"></i> Dedikodu
+            </button>
+            <select class="team-filter" id="teamFilter" onchange="filterByTeam(this.value)">
+                <option value="">Tüm Takımlar</option>
+            </select>
+        </div>
+
+        <!-- Transfers List -->
+        <div class="transfers-grid" id="transfersGrid">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Transfer haberleri yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        let allTransfers = [];
+        let currentFilter = 'all';
+        let currentTeamFilter = '';
+
+        // Firebase hazır olana kadar bekle
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 50) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            return window.firebaseDb !== undefined;
+        }
+
+        // Transferleri yükle
+        async function loadTransfers() {
+            const grid = document.getElementById('transfersGrid');
+
+            try {
+                await waitForFirebase();
+
+                const transfersRef = window.firebaseRef(window.firebaseDb, 'transfers');
+                window.firebaseOnValue(transfersRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        allTransfers = Object.entries(data).map(([id, t]) => ({ id, ...t }));
+                        allTransfers.sort((a, b) => b.timestamp - a.timestamp);
+                        renderTransfers();
+                    } else {
+                        grid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exchange-alt"></i>
+                                <p>Henüz transfer haberi yok</p>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (e) {
+                console.error('Transfer yükleme hatası:', e);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Yükleme hatası</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Transferleri render et
+        function renderTransfers() {
+            const grid = document.getElementById('transfersGrid');
+
+            let filtered = allTransfers;
+
+            // Status filtresi
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(t => t.status === currentFilter);
+            }
+
+            // Takım filtresi
+            if (currentTeamFilter) {
+                filtered = filtered.filter(t =>
+                    t.fromTeam === currentTeamFilter || t.toTeam === currentTeamFilter
+                );
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-filter"></i>
+                        <p>Bu kriterlere uygun transfer haberi bulunamadı</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(transfer => createTransferCard(transfer)).join('');
+        }
+
+        // Transfer kartı oluştur
+        function createTransferCard(t) {
+            const statusLabels = {
+                confirmed: 'RESMİ',
+                rumor: 'DEDİKODU',
+                denied: 'YALANLANDI'
+            };
+
+            // Önce kayıtlı logo'ya bak, yoksa TribeData'dan al
+            const fromLogo = t.fromLogo || window.TribeData?.getTeamLogo?.(t.fromTeam) || '';
+            const toLogo = t.toLogo || window.TribeData?.getTeamLogo?.(t.toTeam) || '';
+
+            const timeAgo = getTimeAgo(t.timestamp);
+            const feeDisplay = t.fee ? `${t.fee}M €` : 'Bedelsiz';
+            const salaryDisplay = t.salary ? `${t.salary}M €/yıl` : '';
+            const contractDisplay = t.contractYears ? `${t.contractYears} yıl` : '';
+
+            return `
+                <div class="transfer-card ${t.status}">
+                    <span class="status-badge ${t.status}">${statusLabels[t.status] || 'BİLİNMİYOR'}</span>
+                    
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            ${t.playerImage ? `<img src="${t.playerImage}" alt="${t.playerName}">` : t.playerName?.charAt(0) || '?'}
+                        </div>
+                        <div>
+                            <div class="player-name">${t.playerName || 'Bilinmiyor'}</div>
+                            <div class="player-position">${t.position || ''}</div>
+                        </div>
+                    </div>
+
+                    <div class="transfer-details">
+                        <div class="transfer-route">
+                            <div class="team-badge">
+                                ${fromLogo ? `<img src="${fromLogo}" alt="${t.fromTeam}">` : ''}
+                                <span>${t.fromTeam || '?'}</span>
+                            </div>
+                            <i class="fas fa-arrow-right transfer-arrow"></i>
+                            <div class="team-badge">
+                                ${toLogo ? `<img src="${toLogo}" alt="${t.toTeam}">` : ''}
+                                <span>${t.toTeam || '?'}</span>
+                            </div>
+                        </div>
+                        <div class="transfer-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i> ${timeAgo}
+                            </div>
+                            ${t.source ? `<div class="meta-item"><i class="fas fa-newspaper"></i> ${t.source}</div>` : ''}
+                            ${salaryDisplay ? `<div class="meta-item"><i class="fas fa-money-bill"></i> ${salaryDisplay}</div>` : ''}
+                            ${contractDisplay ? `<div class="meta-item"><i class="fas fa-file-contract"></i> ${contractDisplay}</div>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="transfer-fee">
+                        ${feeDisplay}
+                        <small>Transfer Ücreti</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Zaman hesapla
+        function getTimeAgo(timestamp) {
+            if (!timestamp) return '';
+            const diff = Date.now() - timestamp;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `${days} gün önce`;
+            if (hours > 0) return `${hours} saat önce`;
+            return 'Az önce';
+        }
+
+        // Filtre fonksiyonları
+        function filterTransfers(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTransfers();
+        }
+
+        function filterByTeam(team) {
+            currentTeamFilter = team;
+            renderTransfers();
+        }
+
+        // Takım listesini doldur
+        function populateTeamFilter() {
+            const select = document.getElementById('teamFilter');
+
+            // Hardcoded takım listesi (TribeData yüklenemezse diye)
+            const defaultTeams = [
+                'Konyaspor', 'Beşiktaş', 'Galatasaray', 'Fenerbahçe', 'Trabzonspor',
+                'Başakşehir', 'Kasımpaşa', 'Antalyaspor', 'Sivasspor', 'Alanyaspor',
+                'Gaziantep FK', 'Çaykur Rizespor', 'Kayserispor', 'Hatayspor', 'Samsunspor', 'Göztepe'
+            ];
+
+            // TribeData varsa ondan al, yoksa default listeden
+            const teams = window.TribeData?.teams ? Object.keys(window.TribeData.teams) : defaultTeams;
+
+            teams.forEach(team => {
+                select.innerHTML += `<option value="${team}">${team}</option>`;
+            });
+        }
+
+        // Sayfa yüklenince
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                populateTeamFilter();
+                loadTransfers();
+            }, 500);
+        });
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Süper Kupa - Tribe League</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-card-alt: #1a1a22;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --green: #2ecc71;
+            --red: #dc3545;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Global Logo Fix */
+        img[src*="logo"],
+        img[src*="Logo"],
+        img[src*="wiki"],
+        img[src*="placeholder"],
+        .team-logo,
+        .bracket-logo {
+            object-fit: contain !important;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(196, 255, 14, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        /* Trophy Banner */
+        .header-banner {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 40px var(--gold-glow), inset 0 0 60px rgba(255, 215, 0, 0.05);
+        }
+
+        .header-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-50%);
+            }
+
+            100% {
+                transform: translateX(50%);
+            }
+        }
+
+        .trophy-icon {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px var(--gold-glow));
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 20px var(--gold-glow));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 40px var(--gold));
+            }
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff8dc 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 10px;
+            letter-spacing: 4px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Bracket / Fixtures */
+        .bracket-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .semi-finals {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .match-card {
+            background: linear-gradient(135deg, var(--bg-card-alt) 0%, var(--bg-card) 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .match-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 5px 25px rgba(255, 215, 0, 0.15);
+        }
+
+        .match-label {
+            display: block;
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-logo-sm {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .team-score {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Final Match */
+        .final-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .final-match {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%, rgba(255, 215, 0, 0.1) 100%);
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        .final-match .match-label {
+            font-size: 1.3rem;
+            color: var(--gold);
+            text-align: center;
+        }
+
+        /* Bracket Lines */
+        .bracket-lines {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            height: 200px;
+            position: relative;
+        }
+
+        .bracket-line-top,
+        .bracket-line-bottom {
+            width: 2px;
+            height: 50px;
+            background: var(--gold);
+        }
+
+        .bracket-horizontal {
+            width: 60px;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        /* Standings Table */
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .standings-table th {
+            text-align: center;
+            padding: 15px 10px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .standings-table th:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .standings-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        .standings-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .rank-cell {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--gold);
+        }
+
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .points-box {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffed4a 100%);
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+        }
+
+        .form-box {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+
+        .form-G {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .form-B {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .form-M {
+            background: var(--red);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .bracket-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .bracket-lines {
+                display: none;
+            }
+
+            .header-banner h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="special-container">
+        <div class="header-banner">
+            <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
+            <h1>SÜPER KUPA</h1>
+            <div class="header-subtitle">TRIBE LEAGUE</div>
+        </div>
+
+        <!-- FIXTURES / BRACKET -->
+        <h2 class="section-title"><i class="fas fa-sitemap"></i> FİKSTÜR</h2>
+
+        <div class="bracket-container">
+            <div class="semi-finals" id="semiFinalsLeft"></div>
+            <div class="bracket-lines">
+                <div class="bracket-line-top"></div>
+                <div class="bracket-horizontal"></div>
+                <div class="bracket-line-bottom"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data -->
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        // TribeData'dan veri yükle
+        function init() {
+            renderMatches();
+
+            // 🔥 Firebase real-time listener
+            listenSuperKupa((data) => {
+                console.log('🔥 Süper Kupa güncellemesi alındı!');
+                TribeData.superKupa = data;
+                renderMatches();
+            });
+        }
+
+        function getLogoUrl(name) {
+            if (!name) return "https://via.placeholder.com/32?text=?";
+            return TribeData?.teams[name]?.logo || "https://via.placeholder.com/32?text=" + name.charAt(0);
+        }
+
+        function renderMatches() {
+            const matches = TribeData?.superKupa?.matches || [];
+            const container = document.getElementById('semiFinalsLeft');
+            const finalContainer = document.getElementById('finalSection');
+
+            if (matches.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Henüz maç eklenmedi</p>';
+                return;
+            }
+
+            let semiHtml = '';
+            let finalHtml = '';
+
+            matches.forEach((match, idx) => {
+                const homeScore = match.homeScore !== null ? match.homeScore : '-';
+                const awayScore = match.awayScore !== null ? match.awayScore : '-';
+                const homeName = match.home || 'TBD';
+                const awayName = match.away || 'TBD';
+                const label = match.label || 'Maç ' + (idx + 1);
+
+                const isFinal = label.toLowerCase().includes('final') && !label.toLowerCase().includes('yarı');
+                const cardClass = isFinal ? 'match-card final-match' : 'match-card';
+
+                const html = `
+                    <div class="${cardClass}">
+                        <span class="match-label">${isFinal ? '<i class="fas fa-crown"></i> ' : ''}${label.toUpperCase()}</span>
+                        <div class="match-teams">
+                            <div class="team-row">
+                                <div class="team-info">
+                                    <img class="team-logo-sm" src="${getLogoUrl(match.home)}">
+                                    <span class="team-name">${homeName}</span>
+                                </div>
+                                <span class="team-score">${homeScore}</span>
+                            </div>
+                            <div class="team-row">
+                                <div class="team-info">
+                                    <img class="team-logo-sm" src="${getLogoUrl(match.away)}">
+                                    <span class="team-name">${awayName}</span>
+                                </div>
+                                <span class="team-score">${awayScore}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if (isFinal) {
+                    finalHtml += html;
+                } else {
+                    semiHtml += html;
+                }
+            });
+
+            container.innerHTML = semiHtml;
+            finalContainer.innerHTML = finalHtml;
+        }
+
+        // Sayfa yüklendikten sonra başlat
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+
+</body>
+
+</html>

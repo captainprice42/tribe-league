@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tribe League - Tarih ve Müze</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Outfit:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* --- CORE THEME --- */
+        :root {
+            --bg: #0a0a0e;
+            --panel: #141419;
+            --primary: #c4ff0e;
+            /* Classic Neon */
+            --gold: #ffd700;
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --silver: #c0c0c0;
+            --silver-gradient: linear-gradient(135deg, #e0e0e0, #ffffff, #a0a0a0);
+            --text: #ffffff;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+        }
+
+        /* --- HERO SECTION --- */
+        .museum-hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(circle at center, rgba(196, 255, 14, 0.05) 0%, transparent 70%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: 5rem;
+            margin: 0;
+            line-height: 1;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            max-width: 800px;
+            margin: 20px auto 0;
+            line-height: 1.6;
+        }
+
+        .hero-quote {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 40px auto;
+            max-width: 700px;
+            text-align: left;
+            font-style: italic;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* --- TROPHY SECTIONS --- */
+        .section-header {
+            text-align: center;
+            margin: 80px 0 40px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            display: inline-block;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        .trophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- TROPHY CARD --- */
+        .trophy-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trophy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .trophy-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .trophy-gold .trophy-icon {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+        }
+
+        .trophy-silver .trophy-icon {
+            background: var(--silver-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .trophy-name {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .winner-team {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .winner-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0;
+            text-align: left;
+        }
+
+        .winner-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1.1rem;
+        }
+
+        .winner-item:last-child {
+            border-bottom: none;
+        }
+
+        .winner-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        /* --- FOOTER --- */
+        .museum-footer {
+            text-align: center;
+            padding: 50px;
+            margin-top: 100px;
+            border-top: 1px solid var(--border);
+            color: #666;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <section class="museum-hero">
+        <h1 class="hero-title">TRIBE LEAGUE<br><span style="color:var(--gold); font-size:3rem;">ONUR MÜZESİ</span></h1>
+
+        <div class="hero-quote">
+            <strong>@everyone</strong><br><br>
+            "Gerçek başlangıcımız <strong>Haziran 2022</strong>... O günden bu yana nice sunucu değişiklikleri yaşadık,
+            sistemler değişti, isimler değişti.<br>
+            Ama <strong>değişmeyen tek şey</strong> bu aileye olan sadakatiniz oldu. Bugün hâlâ aramızda olan, en
+            başından beri bizimle olan herkese <strong>sonsuz teşekkürler</strong>."
+        </div>
+    </section>
+
+    <!-- SECTION 1: LEAGUE CHAMPIONS -->
+    <section>
+        <div class="section-header">
+            <div class="section-title"><i class="fas fa-trophy"></i> LİG ŞAMPİYONLUKLARI</div>
+        </div>
+        <div class="trophy-grid">
+
+            <!-- Akif Lig -->
+            <div class="trophy-card trophy-gold">
+                <i class="fas fa-crown trophy-icon"></i>
+                <div class="trophy-name">AKİF LİG</div>
+                <ul class="winner-list">
+                    <li class="winner-item"><span class="winner-team">Trabzonspor</span> <span>1x</span></li>
+                    <li class="winner-item"><span class="winner-team">Beşiktaş</span> <span>1x</span></li>
+                </ul>
+            </div>
+
+            <!-- Can Trendyol -->
+            <div class="trophy-card trophy-gold">
+                <i class="fas fa-medal trophy-icon"></i>
+                <div class="trophy-name">CAN TRENDYOL SÜPER LİG</div>
+                <ul class="winner-list">
+                    <li class="winner-item"><span class="winner-team">Beşiktaş</span> <span>1x</span></li>
+                    <li class="winner-item"><span class="winner-team">Galatasaray</span> <span>1x</span></li>
+                </ul>
+            </div>
+
+            <!-- Others -->
+            <div class="trophy-card trophy-gold">
+                <i class="fas fa-star trophy-icon"></i>
+                <div class="trophy-name">SÜPER LİG EFSANELERİ</div>
+                <ul class="winner-list">
+                    <li class="winner-item"><span class="winner-badge">M1het Lig</span> <span
+                            class="winner-team">Fenerbahçe</span></li>
+                    <li class="winner-item"><span class="winner-badge">UM1D Lig</span> <span
+                            class="winner-team">Galatasaray</span></li>
+                    <li class="winner-item"><span class="winner-badge">Selim Can Lig</span> <span
+                            class="winner-team">Beşiktaş</span></li>
+                    <li class="winner-item"><span class="winner-badge">Berk,Nihat Lig</span> <span
+                            class="winner-team">Galatasaray</span></li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 2: CUPS & EUROPE -->
+    <section>
+        <div class="section-header">
+            <div class="section-title" style="color:var(--silver); border-color:var(--silver);"><i
+                    class="fas fa-shield-alt"></i> KUPALAR VE AVRUPA</div>
+        </div>
+        <div class="trophy-grid">
+
+            <!-- Super Cup -->
+            <div class="trophy-card trophy-silver">
+                <i class="fas fa-bolt trophy-icon"></i>
+                <div class="trophy-name">SÜPER KUPA</div>
+                <ul class="winner-list">
+                    <li class="winner-item"><span class="winner-badge">M1het Süper Kupa</span> <span
+                            class="winner-team">Fenerbahçe</span></li>
+                    <li class="winner-item"><span class="winner-badge">CHIVAS Süper Kupa</span> <span
+                            class="winner-team">Beşiktaş</span></li>
+                </ul>
+            </div>
+
+            <!-- ZTK -->
+            <div class="trophy-card trophy-silver">
+                <i class="fas fa-wine-glass trophy-icon"></i> <!-- Cup shape -->
+                <div class="trophy-name">ZİRAAT TÜRKİYE KUPASI</div>
+                <ul class="winner-list">
+                    <li class="winner-item"><span class="winner-badge">UM1D</span> <span
+                            class="winner-team">Galatasaray</span></li>
+                    <li class="winner-item"><span class="winner-badge">CHIVAS</span> <span
+                            class="winner-team">Galatasaray</span></li>
+                    <li class="winner-item"><span class="winner-badge">Berk,Nihat</span> <span
+                            class="winner-team">Galatasaray</span></li>
+                    <li class="winner-item"><span class="winner-badge">Ersan</span> <span
+                            class="winner-team">Başakşehir</span></li>
+                    <li class="winner-item"><span class="winner-badge">RONS</span> <span
+                            class="winner-team">Fenerbahçe</span></li>
+                </ul>
+            </div>
+
+            <!-- Europe -->
+            <div class="trophy-card trophy-gold" style="border: 2px solid var(--primary);">
+                <i class="fas fa-globe-europe trophy-icon" style="color:#c4ff0e;"></i>
+                <div class="trophy-name">AVRUPA ARENASI</div>
+                <div style="margin-top:20px;">
+                    <div style="font-size:0.9rem; color:#888;">M1HET KONFERANS LİGİ ŞAMPİYONU</div>
+                    <div style="font-family:var(--font-head); font-size:2.5rem; color:var(--primary); margin-top:5px;">
+                        FENERBAHÇE</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 3: INDIVIDUAL -->
+    <section>
+        <div class="section-header">
+            <div class="section-title" style="font-size:2rem;"><i class="fas fa-user-tie"></i> BİREYSEL ÖDÜLLER</div>
+        </div>
+        <div class="trophy-grid" style="max-width:800px;">
+
+            <div class="trophy-card">
+                <i class="fas fa-graduation-cap trophy-icon" style="font-size:3rem; color:#fff;"></i>
+                <div class="trophy-name">YILIN TEKNİK DİREKTÖRÜ</div>
+                <ul class="winner-list">
+                    <li class="winner-item">
+                        <span class="winner-badge" style="background:var(--primary); color:#000;">JOSEPH</span>
+                        <span class="winner-team" style="color:#fff;">Karagümrük</span>
+                    </li>
+                    <li class="winner-item">
+                        <span class="winner-badge" style="background:var(--primary); color:#000;">JUOIT</span>
+                        <span class="winner-team" style="color:#fff;">Adana Demirspor</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="museum-footer">
+        <p>VE BU DAHA SADECE BİR BAŞLANGIÇ...</p>
+        <img src="https://via.placeholder.com/100x50?text=TRIBE" style="opacity:0.5; margin-top:20px;">
+    </footer>
+
+    <script src="../theme-switcher.js"></script>
+
+</body>
+
+</html>

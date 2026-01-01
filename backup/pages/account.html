@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş / Kayıt - Tribe League</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.95);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 30% 30%, rgba(196, 255, 14, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 70%, rgba(0, 212, 255, 0.06) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Navigasyon her zaman en üstte */
+        #tribeNavigation {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+        }
+
+        .auth-container {
+            margin: 100px auto 30px auto;
+            /* Nav için üst boşluk */
+        }
+
+        .auth-container {
+            background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 14, 0.95));
+            border: 1px solid rgba(196, 255, 14, 0.2);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 95%;
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(196, 255, 14, 0.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .auth-logo {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .auth-tab.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .auth-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 18px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #a8d900);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px var(--primary-glow);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--text-muted);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 0.85rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-social:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-social.google:hover {
+            border-color: #ea4335;
+            color: #ea4335;
+        }
+
+        .btn-social.discord:hover {
+            border-color: #5865f2;
+            color: #5865f2;
+        }
+
+        .auth-message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-message.error {
+            display: flex;
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+
+        .auth-message.success {
+            display: flex;
+            background: rgba(46, 213, 115, 0.15);
+            border: 1px solid rgba(46, 213, 115, 0.3);
+            color: #2ed573;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        /* User Profile - Giriş yapınca gösterilecek */
+        .user-profile {
+            display: none;
+            text-align: center;
+        }
+
+        .user-profile.active {
+            display: block;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+        }
+
+        .user-name {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Yeni Profil Menü Stilleri */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-team {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            background: rgba(196, 255, 14, 0.05);
+            border-color: rgba(196, 255, 14, 0.3);
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #a8d900);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #000;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .menu-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .menu-item>.fa-chevron-right {
+            color: var(--text-muted);
+        }
+
+        /* Alt Bölümler */
+        .profile-section {
+            display: none;
+        }
+
+        .profile-section.active {
+            display: block;
+        }
+
+        .profile-section h2 {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Aktiviteler */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .activity-item i {
+            font-size: 1.2rem;
+        }
+
+        .activity-item span {
+            flex: 1;
+        }
+
+        .activity-item small {
+            color: var(--text-muted);
+        }
+
+        /* Rozetler */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .badge-item.earned {
+            opacity: 1;
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.05);
+        }
+
+        .badge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .badge-name {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .badge-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Ayarlar */
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .settings-row .form-input {
+            flex: 1;
+        }
+
+        .btn-save {
+            padding: 12px 20px;
+            background: var(--primary);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #a8d900;
+        }
+
+        .settings-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .settings-message.success {
+            display: block;
+            background: rgba(46, 213, 115, 0.15);
+            color: #2ed573;
+        }
+
+        .settings-message.error {
+            display: block;
+            background: rgba(255, 71, 87, 0.15);
+            color: #ff4757;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 12px;
+            color: #ff4757;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 71, 87, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <!-- Auth Header -->
+        <div class="auth-header">
+            <div class="auth-logo">⚽ TRIBE LEAGUE</div>
+            <p style="color: var(--text-muted);">Hesabınıza giriş yapın veya yeni hesap oluşturun</p>
+        </div>
+
+        <!-- Auth Forms -->
+        <div id="authForms">
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </div>
+                <div class="auth-tab" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i> Kayıt Ol
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div class="auth-message" id="authMessage"></div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">E-posta veya Kullanıcı Adı</label>
+                    <input type="text" class="form-input" id="loginEmail" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <div class="password-container">
+                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Kullanıcı Adı</label>
+                    <input type="text" class="form-input" id="regUsername" placeholder="kullanici_adi" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="ornek@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre (en az 6 karakter)</label>
+                    <div class="password-container">
+                        <input type="password" class="form-input" id="regPassword" placeholder="••••••••" required
+                            minlength="6">
+                        <button type="button" class="password-toggle" onclick="togglePassword('regPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Favori Takım</label>
+                    <select class="form-input" id="regTeam">
+                        <option value="">Takım seçin (opsiyonel)</option>
+                        <option value="Galatasaray">Galatasaray</option>
+                        <option value="Fenerbahçe">Fenerbahçe</option>
+                        <option value="Beşiktaş">Beşiktaş</option>
+                        <option value="Trabzonspor">Trabzonspor</option>
+                        <option value="Başakşehir">Başakşehir</option>
+                        <option value="Adana Demirspor">Adana Demirspor</option>
+                        <option value="Antalyaspor">Antalyaspor</option>
+                        <option value="Konyaspor">Konyaspor</option>
+                        <option value="Sivasspor">Sivasspor</option>
+                        <option value="Alanyaspor">Alanyaspor</option>
+                        <option value="Kayserispor">Kayserispor</option>
+                        <option value="Samsunspor">Samsunspor</option>
+                        <option value="Gaziantep FK">Gaziantep FK</option>
+                        <option value="Kasımpaşa">Kasımpaşa</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" id="registerBtn">
+                    <i class="fas fa-user-plus"></i> Kayıt Ol
+                </button>
+            </form>
+
+            <div class="divider"><span>veya</span></div>
+
+            <div class="social-login">
+                <button class="btn-social google" onclick="googleSignIn()"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                    <i class="fab fa-google"></i>
+                    <span style="font-size: 1rem;">Google ile Giriş Yap</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- User Profile (Giriş yapınca görünür) -->
+        <div class="user-profile" id="userProfile">
+            <!-- Profil Başlık -->
+            <div class="profile-header">
+                <div class="user-avatar" id="userAvatar">👤</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Kullanıcı Adı</div>
+                    <div class="user-email" id="userEmail">email@example.com</div>
+                    <div class="user-team" id="userTeam"><i class="fas fa-futbol"></i> Favori takım seçilmedi</div>
+                </div>
+            </div>
+
+            <!-- Ana Menü -->
+            <div class="profile-menu" id="profileMenu">
+                <div class="menu-item" onclick="showSection('team')">
+                    <div class="menu-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Takım Durumu</div>
+                        <div class="menu-desc">Favori takımın istatistikleri</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="menu-item" onclick="showSection('activity')">
+                    <div class="menu-icon" style="background: linear-gradient(135deg, #00d4ff, #0099cc);"><i
+                            class="fas fa-chart-line"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Aktiviteler</div>
+                        <div class="menu-desc">Son hareketlerin ve kayıtların</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="menu-item" onclick="showSection('badges')">
+                    <div class="menu-icon" style="background: linear-gradient(135deg, #ffd700, #ffaa00);"><i
+                            class="fas fa-medal"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Rozetler</div>
+                        <div class="menu-desc">Kazandığın başarılar</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="menu-item" onclick="showSection('settings')">
+                    <div class="menu-icon" style="background: linear-gradient(135deg, #8b8b96, #666);"><i
+                            class="fas fa-cog"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Ayarlar</div>
+                        <div class="menu-desc">Hesap bilgilerini düzenle</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="menu-item" onclick="showSection('teamAccount')" id="teamAccountMenuItem">
+                    <div class="menu-icon" style="background: linear-gradient(135deg, #00d4ff, #0099cc);"><i
+                            class="fas fa-shield-alt"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Takım Hesabı</div>
+                        <div class="menu-desc" id="teamAccountStatus">Takımına giriş yap</div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <!-- Alt Bölümler -->
+            <!-- Takım Durumu -->
+            <div class="profile-section" id="section-team">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-trophy"></i> Takım Durumu</h2>
+                <div id="teamStatsContent">
+                    <p style="color: var(--text-muted);">Favori takım bilgisi yüklenecek...</p>
+                </div>
+            </div>
+
+            <!-- Aktiviteler -->
+            <div class="profile-section" id="section-activity">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-chart-line"></i> Aktiviteler</h2>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <i class="fas fa-user-plus" style="color: var(--success);"></i>
+                        <span>Hesap oluşturuldu</span>
+                        <small id="accountCreatedDate"></small>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-sign-in-alt" style="color: var(--accent);"></i>
+                        <span>Son giriş</span>
+                        <small id="lastLoginDate"></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rozetler -->
+            <div class="profile-section" id="section-badges">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-medal"></i> Rozetler</h2>
+                <div class="badges-grid">
+                    <div class="badge-item earned">
+                        <div class="badge-icon">🏆</div>
+                        <div class="badge-name">İlk Adım</div>
+                        <div class="badge-desc">Hesap oluşturuldu</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">⚽</div>
+                        <div class="badge-name">Taraftar</div>
+                        <div class="badge-desc">Favori takım seç</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">🔥</div>
+                        <div class="badge-name">Aktif Üye</div>
+                        <div class="badge-desc">7 gün üst üste giriş yap</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">⭐</div>
+                        <div class="badge-name">VIP</div>
+                        <div class="badge-desc">1 ay boyunca üye ol</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ayarlar -->
+            <div class="profile-section" id="section-settings">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-cog"></i> Hesap Ayarları</h2>
+
+                <div class="settings-group">
+                    <label>Profil Fotoğrafı</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div id="settingsAvatarPreview"
+                            style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; overflow: hidden;">
+                            <span id="avatarInitial">?</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="avatarFileInput" accept="image/*" style="display: none;"
+                                onchange="handleAvatarUpload(event)">
+                            <button class="btn-save" onclick="document.getElementById('avatarFileInput').click()"
+                                style="width: 100%;">
+                                <i class="fas fa-camera"></i> Fotoğraf Yükle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>Kullanıcı Adı</label>
+                    <div class="settings-row">
+                        <input type="text" class="form-input" id="settingsUsername" placeholder="Kullanıcı adı">
+                        <button class="btn-save" onclick="updateUsername()">Kaydet</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>E-posta</label>
+                    <div class="settings-row">
+                        <input type="email" class="form-input" id="settingsEmail" placeholder="E-posta adresi">
+                        <button class="btn-save" onclick="updateEmail()">Kaydet</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>Şifre Değiştir</label>
+                    <input type="password" class="form-input" id="settingsOldPassword" placeholder="Mevcut şifre"
+                        style="margin-bottom: 10px;">
+                    <input type="password" class="form-input" id="settingsNewPassword" placeholder="Yeni şifre"
+                        style="margin-bottom: 10px;">
+                    <button class="btn-save" onclick="updatePassword()" style="width: 100%;">Şifreyi Güncelle</button>
+                </div>
+
+                <div class="settings-group">
+                    <label>Favori Takım</label>
+                    <select class="form-input" id="settingsTeam" onchange="updateTeam()">
+                        <option value="">Takım seçin</option>
+                        <option value="Galatasaray">Galatasaray</option>
+                        <option value="Fenerbahçe">Fenerbahçe</option>
+                        <option value="Beşiktaş">Beşiktaş</option>
+                        <option value="Trabzonspor">Trabzonspor</option>
+                        <option value="Başakşehir">Başakşehir</option>
+                        <option value="Adana Demirspor">Adana Demirspor</option>
+                        <option value="Antalyaspor">Antalyaspor</option>
+                        <option value="Konyaspor">Konyaspor</option>
+                        <option value="Sivasspor">Sivasspor</option>
+                        <option value="Alanyaspor">Alanyaspor</option>
+                        <option value="Kayserispor">Kayserispor</option>
+                        <option value="Samsunspor">Samsunspor</option>
+                        <option value="Gaziantep FK">Gaziantep FK</option>
+                        <option value="Kasımpaşa">Kasımpaşa</option>
+                    </select>
+                </div>
+
+                <div id="settingsMessage" class="settings-message"></div>
+            </div>
+
+            <!-- Takım Hesabı Girişi -->
+            <div class="profile-section" id="section-teamAccount">
+                <button class="back-btn" onclick="showSection('menu')"><i class="fas fa-arrow-left"></i> Geri</button>
+                <h2><i class="fas fa-shield-alt"></i> Takım Hesabı</h2>
+
+                <div id="teamAccountContent">
+                    <!-- Giriş yapılmamışsa -->
+                    <div id="teamLoginForm" style="text-align: center;">
+                        <div
+                            style="background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px;">
+                            <i class="fas fa-info-circle"
+                                style="font-size: 2rem; color: var(--accent); margin-bottom: 10px;"></i>
+                            <p style="color: var(--text-muted); margin-bottom: 15px;">Takım hesabına giriş yaparak takım
+                                adına gönderi paylaşabilirsiniz.</p>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Şifre takımınız tarafından
+                                verilmiştir.</p>
+                        </div>
+
+                        <div class="settings-group">
+                            <label style="text-align: left;">Takım Şifresi</label>
+                            <div class="password-container">
+                                <input type="password" class="form-input" id="teamPasswordInput"
+                                    placeholder="Takım şifresini girin">
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePassword('teamPasswordInput')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="btn-submit" onclick="loginToTeamAccount()" style="margin-top: 10px;">
+                            <i class="fas fa-sign-in-alt"></i> Takıma Giriş Yap
+                        </button>
+
+                        <div id="teamLoginMessage" class="settings-message" style="margin-top: 15px;"></div>
+                    </div>
+
+                    <!-- Giriş yapılmışsa -->
+                    <div id="teamLoggedIn" style="display: none; text-align: center;">
+                        <div
+                            style="background: rgba(196,255,14,0.1); border: 1px solid rgba(196,255,14,0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px;">
+                            <img id="teamLogo" src="" alt="Takım"
+                                style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; object-fit: contain; background: rgba(0,0,0,0.3); padding: 10px;">
+                            <h3 style="color: var(--primary); font-family: var(--font-head); font-size: 1.8rem;"
+                                id="teamNameDisplay">Takım Adı</h3>
+                            <p style="color: var(--success);"><i class="fas fa-check-circle"></i> Bağlı</p>
+                        </div>
+
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Sosyal medyada takım hesabından
+                            gönderi paylaşabilirsiniz.</p>
+
+                        <button class="btn-logout" onclick="logoutFromTeamAccount()">
+                            <i class="fas fa-sign-out-alt"></i> Takım Hesabından Çık
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-logout" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
+        </div>
+
+        <a href="../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+        </a>
+    </div>
+
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        // Kullanıcı oturumu kontrol
+        let currentUser = null;
+
+        // LocalStorage'dan kullanıcı kontrolü
+        function checkSession() {
+            const savedUser = localStorage.getItem('tribeUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserProfile();
+            }
+        }
+
+        // Tab değiştirme
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+
+            hideMessage();
+        }
+
+        // Şifre göster/gizle
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Mesaj gösterme
+        function showMessage(text, type) {
+            const msg = document.getElementById('authMessage');
+            msg.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> ${text}`;
+            msg.className = `auth-message ${type}`;
+        }
+
+        function hideMessage() {
+            document.getElementById('authMessage').className = 'auth-message';
+        }
+
+        // Kayıt işlemi
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
+
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const team = document.getElementById('regTeam').value;
+
+            try {
+                // Firebase'de kullanıcı adı kontrolü
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                if (usersSnapshot.exists()) {
+                    const users = usersSnapshot.val();
+                    const exists = Object.values(users).some(u => u.username === username || u.email === email);
+                    if (exists) {
+                        throw new Error('Bu kullanıcı adı veya e-posta zaten kullanılıyor');
+                    }
+                }
+
+                // Yeni kullanıcı oluştur
+                const userId = 'user_' + Date.now();
+                const userData = {
+                    id: userId,
+                    username: username,
+                    email: email,
+                    password: btoa(password), // Base64 encode (gerçek projede hash kullanılmalı)
+                    team: team,
+                    createdAt: new Date().toISOString(),
+                    stats: {
+                        predictions: 0,
+                        correct: 0,
+                        points: 0
+                    }
+                };
+
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, `users/${userId}`), userData);
+
+                showMessage('Kayıt başarılı! Şimdi giriş yapabilirsiniz.', 'success');
+                setTimeout(() => switchAuthTab('login'), 2000);
+
+            } catch (error) {
+                showMessage(error.message || 'Kayıt sırasında hata oluştu', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Kayıt Ol';
+        }
+
+        // Giriş işlemi
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor...';
+
+            const emailOrUsername = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                if (!usersSnapshot.exists()) {
+                    throw new Error('Kullanıcı bulunamadı');
+                }
+
+                const users = usersSnapshot.val();
+                const user = Object.values(users).find(u =>
+                    (u.email === emailOrUsername || u.username === emailOrUsername) &&
+                    atob(u.password) === password
+                );
+
+                if (!user) {
+                    throw new Error('E-posta/kullanıcı adı veya şifre hatalı');
+                }
+
+                // Oturumu kaydet
+                currentUser = user;
+                localStorage.setItem('tribeUser', JSON.stringify(user));
+
+                showMessage('Giriş başarılı!', 'success');
+                setTimeout(showUserProfile, 1000);
+
+            } catch (error) {
+                showMessage(error.message || 'Giriş sırasında hata oluştu', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Giriş Yap';
+        }
+
+        // Kullanıcı profilini göster
+        function showUserProfile() {
+            document.getElementById('authForms').style.display = 'none';
+            document.getElementById('userProfile').classList.add('active');
+
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').textContent = currentUser.username?.charAt(0).toUpperCase() || '👤';
+            document.getElementById('userTeam').innerHTML = currentUser.team
+                ? `<i class="fas fa-futbol"></i> ${currentUser.team}`
+                : '<i class="fas fa-futbol"></i> Favori takım seçilmedi';
+
+            // Favori takım select'ini güncelle
+            if (currentUser.team) {
+                document.getElementById('settingsTeam').value = currentUser.team;
+            }
+
+            // Menüyü göster, bölümleri gizle
+            document.getElementById('profileMenu').style.display = 'flex';
+            document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+
+            document.querySelector('.auth-header p').textContent = 'Hoş geldin, ' + currentUser.username + '!';
+
+            // Rozetleri güncelle
+            setTimeout(() => updateBadges(), 100);
+        }
+
+        // Çıkış
+        function handleLogout() {
+            localStorage.removeItem('tribeUser');
+            currentUser = null;
+            document.getElementById('authForms').style.display = 'block';
+            document.getElementById('userProfile').classList.remove('active');
+            document.querySelector('.auth-header p').textContent = 'Hesabınıza giriş yapın veya yeni hesap oluşturun';
+            hideMessage();
+        }
+
+        // Google ile Giriş
+        async function googleSignIn() {
+            try {
+                showMessage('Google\'a yönlendiriliyorsunuz...', 'success');
+
+                // Firebase Auth modular SDK kontrolü
+                if (typeof window.firebaseSignInWithPopup === 'function' && window.firebaseAuth) {
+                    const result = await window.firebaseSignInWithPopup(window.firebaseAuth, window.firebaseGoogleProvider);
+                    const user = result.user;
+
+                    // Kullanıcıyı kaydet
+                    const userData = {
+                        id: user.uid,
+                        username: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        provider: 'google',
+                        createdAt: new Date().toISOString(),
+                        stats: { predictions: 0, correct: 0, points: 0 }
+                    };
+
+                    // Firebase'e kaydet
+                    await window.firebaseSet(window.firebaseRef(window.firebaseDb, `users/${user.uid}`), userData);
+
+                    currentUser = userData;
+                    localStorage.setItem('tribeUser', JSON.stringify(userData));
+
+                    showMessage('Google ile giriş başarılı!', 'success');
+                    setTimeout(showUserProfile, 1000);
+                } else {
+                    // Firebase Auth yüklenmemişse hata
+                    showMessage('Google girişi için Firebase Auth kurulumu gerekli. Lütfen normal kayıt/giriş kullanın.', 'error');
+                }
+            } catch (error) {
+                console.error('Google giriş hatası:', error);
+                if (error.code === 'auth/popup-closed-by-user') {
+                    showMessage('Giriş iptal edildi', 'error');
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    showMessage('Bu domain Google girişi için yetkilendirilmemiş. Firebase Console\'dan ekleyin.', 'error');
+                } else {
+                    showMessage('Google girişi başarısız: ' + (error.message || 'Bilinmeyen hata'), 'error');
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // PROFIL MENÜ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Bölüm göster
+        function showSection(section) {
+            // Tüm bölümleri gizle
+            document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+
+            if (section === 'menu') {
+                document.getElementById('profileMenu').style.display = 'flex';
+            } else {
+                document.getElementById('profileMenu').style.display = 'none';
+                document.getElementById('section-' + section).classList.add('active');
+
+                // Ayarlar açılınca mevcut değerleri doldur
+                if (section === 'settings' && currentUser) {
+                    document.getElementById('settingsUsername').value = currentUser.username || '';
+                    document.getElementById('settingsEmail').value = currentUser.email || '';
+                    if (currentUser.team) {
+                        document.getElementById('settingsTeam').value = currentUser.team;
+                    }
+                }
+
+                // Takım durumu açılınca stat yükle
+                if (section === 'team') {
+                    loadTeamStats();
+                }
+
+                // Aktiviteler açılınca tarih göster
+                if (section === 'activity') {
+                    document.getElementById('accountCreatedDate').textContent =
+                        currentUser?.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('tr-TR') : 'Bilinmiyor';
+                    document.getElementById('lastLoginDate').textContent = new Date().toLocaleDateString('tr-TR');
+                }
+
+                // Takım durumu açılınca favori takım bilgisini göster
+                if (section === 'team') {
+                    loadTeamStats();
+                }
+
+                // Rozetler açılınca güncelle
+                if (section === 'badges') {
+                    updateBadges();
+                }
+            }
+        }
+
+        // Takım durumu yükle
+        async function loadTeamStats() {
+            const container = document.getElementById('teamStatsContent');
+
+            if (!currentUser?.team) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-futbol" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                        <p style="color: var(--text-muted);">Favori takım seçilmedi</p>
+                        <button class="btn-save" onclick="showSection('settings')" style="margin-top: 15px;">
+                            <i class="fas fa-cog"></i> Ayarlardan Takım Seç
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // TribeData'dan takım istatistiklerini al
+            let stats = null;
+            let logo = null;
+
+            if (typeof TribeData !== 'undefined' && TribeData.calculateStandings) {
+                const standings = TribeData.calculateStandings();
+                stats = standings.find(t => t.name === currentUser.team);
+                logo = TribeData.getTeamLogo ? TribeData.getTeamLogo(currentUser.team) : null;
+            }
+
+            if (stats) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        ${logo ? `<img src="${logo}" alt="${currentUser.team}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;">` : ''}
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 5px;">
+                            ${currentUser.team}
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Puan Durumu: ${stats.rank || '-'}. sıra</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--primary); font-weight: 700;">${stats.points}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Puan</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--success); font-weight: 700;">${stats.won}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Galibiyet</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--accent); font-weight: 700;">${stats.draw}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Beraberlik</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.3rem; color: var(--danger); font-weight: 700;">${stats.lost}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Mağlubiyet</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.1rem; color: var(--primary); font-weight: 600;">${stats.gf} - ${stats.ga}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">AG - YG (Av: ${stats.gf - stats.ga >= 0 ? '+' : ''}${stats.gf - stats.ga})</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="font-size: 1.1rem; color: var(--accent); font-weight: 600;">${stats.played}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Oynanan Maç</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">
+                            ⚽ ${currentUser.team}
+                        </div>
+                        <p style="color: var(--text-muted);">Takım istatistikleri yüklenemedi</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Kullanıcı adı güncelle
+        async function updateUsername() {
+            const newUsername = document.getElementById('settingsUsername').value.trim();
+            if (!newUsername) {
+                showSettingsMessage('Kullanıcı adı boş olamaz', 'error');
+                return;
+            }
+
+            if (newUsername.length < 3) {
+                showSettingsMessage('Kullanıcı adı en az 3 karakter olmalı', 'error');
+                return;
+            }
+
+            try {
+                // Kullanıcı adı benzersizlik kontrolü
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                if (usersSnapshot.exists()) {
+                    const users = usersSnapshot.val();
+                    for (const [uid, user] of Object.entries(users)) {
+                        if (uid !== currentUser.id && user.username && user.username.toLowerCase() === newUsername.toLowerCase()) {
+                            showSettingsMessage('Bu kullanıcı adı zaten kullanılıyor!', 'error');
+                            return;
+                        }
+                    }
+                }
+
+                currentUser.username = newUsername;
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), { username: newUsername });
+                localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                document.getElementById('userName').textContent = newUsername;
+                showSettingsMessage('Kullanıcı adı güncellendi!', 'success');
+            } catch (e) {
+                showSettingsMessage('Güncelleme hatası', 'error');
+            }
+        }
+
+        // Email güncelle
+        async function updateEmail() {
+            const newEmail = document.getElementById('settingsEmail').value.trim();
+            if (!newEmail || !newEmail.includes('@')) {
+                showSettingsMessage('Geçerli bir e-posta girin', 'error');
+                return;
+            }
+
+            try {
+                currentUser.email = newEmail;
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), { email: newEmail });
+                localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                document.getElementById('userEmail').textContent = newEmail;
+                showSettingsMessage('E-posta güncellendi!', 'success');
+            } catch (e) {
+                showSettingsMessage('Güncelleme hatası', 'error');
+            }
+        }
+
+        // Şifre güncelle
+        async function updatePassword() {
+            const oldPass = document.getElementById('settingsOldPassword').value;
+            const newPass = document.getElementById('settingsNewPassword').value;
+
+            if (!oldPass || !newPass) {
+                showSettingsMessage('Tüm alanları doldurun', 'error');
+                return;
+            }
+
+            if (newPass.length < 6) {
+                showSettingsMessage('Yeni şifre en az 6 karakter olmalı', 'error');
+                return;
+            }
+
+            // Mevcut şifre kontrolü
+            if (atob(currentUser.password) !== oldPass) {
+                showSettingsMessage('Mevcut şifre yanlış', 'error');
+                return;
+            }
+
+            try {
+                currentUser.password = btoa(newPass);
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), { password: btoa(newPass) });
+                localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                document.getElementById('settingsOldPassword').value = '';
+                document.getElementById('settingsNewPassword').value = '';
+                showSettingsMessage('Şifre güncellendi!', 'success');
+            } catch (e) {
+                showSettingsMessage('Güncelleme hatası', 'error');
+            }
+        }
+
+        // Takım güncelle
+        async function updateTeam() {
+            const team = document.getElementById('settingsTeam').value;
+
+            try {
+                currentUser.team = team;
+                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), { team: team });
+                localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                document.getElementById('userTeam').innerHTML = team
+                    ? `<i class="fas fa-futbol"></i> ${team}`
+                    : '<i class="fas fa-futbol"></i> Favori takım seçilmedi';
+
+                // Rozet güncelle - Taraftar rozeti
+                updateBadges();
+
+                showSettingsMessage('Favori takım güncellendi!', 'success');
+            } catch (e) {
+                showSettingsMessage('Güncelleme hatası', 'error');
+            }
+        }
+
+        // Rozetleri güncelle
+        function updateBadges() {
+            const badges = document.querySelectorAll('.badge-item');
+            badges.forEach(badge => {
+                const badgeName = badge.querySelector('.badge-name')?.textContent;
+
+                // İlk Adım rozeti - her zaman aktif
+                if (badgeName === 'İlk Adım') {
+                    badge.classList.add('earned');
+                }
+
+                // Taraftar rozeti - favori takım seçildiyse aktif
+                if (badgeName === 'Taraftar' && currentUser?.team) {
+                    badge.classList.add('earned');
+                }
+            });
+        }
+
+        // Ayarlar mesajı göster
+        function showSettingsMessage(text, type) {
+            const msg = document.getElementById('settingsMessage');
+            msg.textContent = text;
+            msg.className = 'settings-message ' + type;
+            setTimeout(() => msg.className = 'settings-message', 3000);
+        }
+
+        // Takım istatistiklerini yükle
+        async function loadTeamStats() {
+            const container = document.getElementById('teamStatsContent');
+
+            if (!currentUser?.team) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Favori takım seçmek için Ayarlar\'a git.</p>';
+                return;
+            }
+
+            container.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</p>';
+
+            // Firebase'den takım verilerini çek
+            try {
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'TribeData'));
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const team = data.teams?.[currentUser.team];
+
+                    if (team) {
+                        container.innerHTML = `
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <img src="${team.logo || ''}" alt="${currentUser.team}" style="width: 80px; height: 80px; object-fit: contain;">
+                                <h3 style="color: var(--primary); margin-top: 10px;">${currentUser.team}</h3>
+                            </div>
+                            <div class="badges-grid">
+                                <div class="badge-item earned">
+                                    <div class="badge-icon" style="font-size: 1.5rem;">${team.played || 0}</div>
+                                    <div class="badge-name">Maç</div>
+                                </div>
+                                <div class="badge-item earned">
+                                    <div class="badge-icon" style="font-size: 1.5rem;">${team.won || 0}</div>
+                                    <div class="badge-name">Galibiyet</div>
+                                </div>
+                                <div class="badge-item earned">
+                                    <div class="badge-icon" style="font-size: 1.5rem;">${team.draw || 0}</div>
+                                    <div class="badge-name">Beraberlik</div>
+                                </div>
+                                <div class="badge-item earned">
+                                    <div class="badge-icon" style="font-size: 1.5rem;">${team.points || 0}</div>
+                                    <div class="badge-name">Puan</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = '<p style="color: var(--text-muted);">Takım bilgisi bulunamadı.</p>';
+                    }
+                }
+            } catch (e) {
+                container.innerHTML = '<p style="color: #ff4757;">Veri yüklenemedi.</p>';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🏟️ TAKIM HESABI FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Firebase bekleme
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                attempts++;
+            }
+        }
+
+        // Takım hesabına giriş yap
+        async function loginToTeamAccount() {
+            const password = document.getElementById('teamPasswordInput').value.trim();
+            const msgEl = document.getElementById('teamLoginMessage');
+
+            if (!password) {
+                msgEl.textContent = 'Şifre girin!';
+                msgEl.className = 'settings-message error';
+                return;
+            }
+
+            msgEl.textContent = 'Kontrol ediliyor...';
+            msgEl.className = 'settings-message';
+
+            try {
+                await waitForFirebase();
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'teamAccounts'));
+
+                if (!snapshot.exists()) {
+                    msgEl.textContent = 'Takım hesapları bulunamadı!';
+                    msgEl.className = 'settings-message error';
+                    return;
+                }
+
+                const accounts = snapshot.val();
+                let foundTeam = null;
+
+                // Şifreyi tüm takımlarda ara
+                for (const [key, account] of Object.entries(accounts)) {
+                    if (account.password === password) {
+                        foundTeam = { key, ...account };
+                        break;
+                    }
+                }
+
+                if (!foundTeam) {
+                    msgEl.textContent = 'Geçersiz şifre!';
+                    msgEl.className = 'settings-message error';
+                    return;
+                }
+
+                // Takım hesabını localStorage'a kaydet
+                const teamAccountData = {
+                    teamKey: foundTeam.key,
+                    teamName: foundTeam.name,
+                    loggedInAt: Date.now()
+                };
+                localStorage.setItem('tribeTeamAccount', JSON.stringify(teamAccountData));
+
+                // UI güncelle
+                showTeamLoggedIn(foundTeam.name);
+                msgEl.textContent = '';
+                msgEl.className = 'settings-message';
+
+            } catch (e) {
+                msgEl.textContent = 'Hata: ' + e.message;
+                msgEl.className = 'settings-message error';
+            }
+        }
+
+        // Takım hesabından çıkış
+        function logoutFromTeamAccount() {
+            localStorage.removeItem('tribeTeamAccount');
+            document.getElementById('teamLoginForm').style.display = 'block';
+            document.getElementById('teamLoggedIn').style.display = 'none';
+            document.getElementById('teamAccountStatus').textContent = 'Takımına giriş yap';
+            document.getElementById('teamPasswordInput').value = '';
+        }
+
+        // Takım giriş durumunu göster
+        function showTeamLoggedIn(teamName) {
+            document.getElementById('teamLoginForm').style.display = 'none';
+            document.getElementById('teamLoggedIn').style.display = 'block';
+            document.getElementById('teamNameDisplay').textContent = teamName;
+            document.getElementById('teamAccountStatus').textContent = teamName + ' bağlı ✓';
+
+            // Logo yükle
+            if (window.TribeData?.teams?.[teamName]?.logo) {
+                document.getElementById('teamLogo').src = window.TribeData.teams[teamName].logo;
+            } else {
+                document.getElementById('teamLogo').src = 'https://via.placeholder.com/80?text=' + teamName.charAt(0);
+            }
+        }
+
+        // Takım hesabı durumunu kontrol et
+        function checkTeamAccountStatus() {
+            const savedTeam = localStorage.getItem('tribeTeamAccount');
+            if (savedTeam) {
+                const teamData = JSON.parse(savedTeam);
+                showTeamLoggedIn(teamData.teamName);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📷 PROFİL FOTOĞRAFI FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Profil fotoğrafı yükle
+        async function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Boyut kontrolü (max 500KB)
+            if (file.size > 500 * 1024) {
+                showSettingsMessage('Dosya çok büyük! Max 500KB', 'error');
+                return;
+            }
+
+            // Base64'e çevir
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const base64 = e.target.result;
+
+                try {
+                    await waitForFirebase();
+
+                    // Firebase'e kaydet
+                    await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), {
+                        avatar: base64
+                    });
+
+                    // localStorage güncelle
+                    currentUser.avatar = base64;
+                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+
+                    // UI güncelle
+                    updateAvatarDisplay(base64);
+                    showSettingsMessage('Profil fotoğrafı güncellendi!', 'success');
+
+                } catch (e) {
+                    showSettingsMessage('Yükleme hatası', 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Avatar görüntüsünü güncelle
+        function updateAvatarDisplay(avatarData) {
+            const avatarEl = document.getElementById('userAvatar');
+            const previewEl = document.getElementById('settingsAvatarPreview');
+            const initialEl = document.getElementById('avatarInitial');
+
+            if (avatarData && avatarData.startsWith('data:image')) {
+                // Fotoğraf var
+                avatarEl.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                previewEl.innerHTML = `<img src="${avatarData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                // Varsayılan harf
+                const initial = currentUser?.username?.charAt(0).toUpperCase() || '?';
+                avatarEl.innerHTML = initial;
+                initialEl.textContent = initial;
+            }
+        }
+
+        // Sayfa yüklenince oturum kontrol
+        checkSession();
+
+        // Takım hesabı durumunu da kontrol et
+        setTimeout(checkTeamAccountStatus, 500);
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

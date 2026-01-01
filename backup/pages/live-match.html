@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Maç - Tribe League</title>
+    <meta name="description" content="Tribe League Canlı Maç Takibi">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.9);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --gold: #ffd700;
+            --red: #ff4757;
+            --green: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(196, 255, 14, 0.08) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            position: relative;
+        }
+
+        /* Live Badge */
+        .live-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--red);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+        }
+
+        .live-badge.halftime {
+            background: var(--gold);
+            color: #000;
+            animation: none;
+        }
+
+        .live-badge.ended {
+            background: #555;
+            animation: none;
+        }
+
+        .live-badge.waiting {
+            background: #666;
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Scoreboard */
+        .scoreboard {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(196, 255, 14, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .scoreboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--gold));
+        }
+
+        .teams-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .team-box {
+            text-align: center;
+        }
+
+        .team-logo-big {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s;
+        }
+
+        .team-logo-big:hover {
+            transform: scale(1.1);
+        }
+
+        .team-name-big {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-num {
+            font-family: var(--font-head);
+            font-size: 6rem;
+            line-height: 1;
+            color: var(--primary);
+            text-shadow: 0 0 40px var(--primary-glow);
+            min-width: 80px;
+        }
+
+        .score-separator {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            color: var(--text-muted);
+        }
+
+        .minute-display {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .minute-num {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .minute-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .match-progress {
+            margin-top: 20px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .match-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            transition: width 1s linear;
+        }
+
+        /* Events Timeline */
+        .events-section {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .events-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .event-item.goal {
+            border-left-color: var(--green);
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .event-item.yellow {
+            border-left-color: var(--gold);
+        }
+
+        .event-item.red {
+            border-left-color: var(--red);
+        }
+
+        .event-minute {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 50px;
+        }
+
+        .event-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .event-icon.goal {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .event-icon.yellow {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .event-icon.red {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-player {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .event-team {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-card-mini {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .match-card-mini:hover {
+            border-color: var(--primary);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .match-card-mini.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(196, 255, 14, 0.1), var(--bg-card));
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .mini-status {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .mini-status.live {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .mini-status.halftime {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .mini-status.ended {
+            background: #555;
+            color: #fff;
+        }
+
+        .mini-status.waiting {
+            background: #444;
+            color: #aaa;
+        }
+
+        .mini-teams {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-team {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mini-team:last-child {
+            flex-direction: row-reverse;
+        }
+
+        .mini-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .mini-name {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mini-score {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .mini-minute {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .no-matches {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .no-matches i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-muted);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* ⚽ PENALTI OVERLAY */
+        .penalty-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .penalty-overlay.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .penalty-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .penalty-field {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(to bottom, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .penalty-goal {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 100px;
+            border: 8px solid #fff;
+            border-bottom: none;
+            background: rgba(0, 0, 0, 0.3);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .goal-zone {
+            border-right: 2px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .goal-zone:last-child {
+            border-right: none;
+        }
+
+        .penalty-net {
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 284px;
+            height: 85px;
+            background: repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.1) 10px,
+                    rgba(255, 255, 255, 0.1) 12px),
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.1) 10px,
+                    rgba(255, 255, 255, 0.1) 12px);
+        }
+
+        .penalty-ball {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #fff 0%, #ccc 50%, #999 100%);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .penalty-ball.shooting {
+            animation: shootBall 0.5s ease-out forwards;
+        }
+
+        .penalty-ball.shoot-left {
+            --end-x: -80px;
+            --end-y: -200px;
+        }
+
+        .penalty-ball.shoot-center {
+            --end-x: 0px;
+            --end-y: -220px;
+        }
+
+        .penalty-ball.shoot-right {
+            --end-x: 80px;
+            --end-y: -200px;
+        }
+
+        @keyframes shootBall {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(calc(-50% + var(--end-x) / 2)) translateY(var(--end-y) / 2) scale(0.8);
+            }
+
+            100% {
+                transform: translateX(calc(-50% + var(--end-x))) translateY(var(--end-y)) scale(0.5);
+            }
+        }
+
+        .penalty-goalkeeper {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(to bottom, #f39c12 0%, #e67e22 100%);
+            border-radius: 10px 10px 5px 5px;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .penalty-goalkeeper::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 25px;
+            background: #ffeaa7;
+            border-radius: 50%;
+        }
+
+        .penalty-goalkeeper.dive-left {
+            animation: diveLeft 0.5s ease-out forwards;
+        }
+
+        .penalty-goalkeeper.dive-center {
+            animation: diveCenter 0.5s ease-out forwards;
+        }
+
+        .penalty-goalkeeper.dive-right {
+            animation: diveRight 0.5s ease-out forwards;
+        }
+
+        @keyframes diveLeft {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(-120px) rotate(-45deg);
+            }
+        }
+
+        @keyframes diveCenter {
+            0% {
+                transform: translateX(-50%) scaleY(1);
+            }
+
+            100% {
+                transform: translateX(-50%) scaleY(0.5) scaleX(1.5);
+            }
+        }
+
+        @keyframes diveRight {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(70px) rotate(45deg);
+            }
+        }
+
+        .penalty-countdown {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Teko', sans-serif;
+            font-size: 6rem;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            z-index: 20;
+        }
+
+        .penalty-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Teko', sans-serif;
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            z-index: 30;
+            padding: 20px 40px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .penalty-result.goal {
+            display: block;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+            border: 3px solid #2ecc71;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.saved {
+            display: block;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+            border: 3px solid #e74c3c;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.post {
+            display: block;
+            color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+            border: 3px solid #f39c12;
+            animation: resultPop 0.5s ease;
+        }
+
+        .penalty-result.out {
+            display: block;
+            color: #9b59b6;
+            background: rgba(155, 89, 182, 0.2);
+            border: 3px solid #9b59b6;
+            animation: resultPop 0.5s ease;
+        }
+
+        @keyframes resultPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .penalty-info {
+            margin-top: 20px;
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .penalty-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .penalty-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ⚽ PENALTI OVERLAY -->
+    <div class="penalty-overlay" id="penaltyOverlay">
+        <button class="penalty-close" onclick="closePenalty()">×</button>
+        <div class="penalty-title" id="penaltyTitle">⚽ PENALTI!</div>
+        <div class="penalty-field">
+            <div class="penalty-goal">
+                <div class="goal-zone">SOL</div>
+                <div class="goal-zone">ORTA</div>
+                <div class="goal-zone">SAĞ</div>
+            </div>
+            <div class="penalty-net"></div>
+            <div class="penalty-goalkeeper" id="penaltyGoalkeeper"></div>
+            <div class="penalty-ball" id="penaltyBall"></div>
+            <div class="penalty-countdown" id="penaltyCountdown"></div>
+            <div class="penalty-result" id="penaltyResult"></div>
+        </div>
+        <div class="penalty-info" id="penaltyInfo">Penaltı atışı için hazırlanın...</div>
+    </div>
+
+    <div class="layout">
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-broadcast-tower"></i>
+                <h2>Canlı Maç Yok</h2>
+                <p>Şu anda aktif canlı maç bulunmuyor.</p>
+            </div>
+
+            <div id="matchDisplay" style="display: none;">
+                <!-- Live Badge -->
+                <div class="live-badge" id="liveBadge">
+                    <span class="live-dot"></span>
+                    <span id="matchStatus">CANLI</span>
+                </div>
+
+                <!-- Scoreboard -->
+                <div class="scoreboard">
+                    <div class="teams-row">
+                        <div class="team-box">
+                            <img id="homeTeamLogo" src="" class="team-logo-big">
+                            <div class="team-name-big" id="homeTeamName">-</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-num" id="homeScore">0</div>
+                            <div class="score-separator">:</div>
+                            <div class="score-num" id="awayScore">0</div>
+                        </div>
+                        <div class="team-box">
+                            <img id="awayTeamLogo" src="" class="team-logo-big">
+                            <div class="team-name-big" id="awayTeamName">-</div>
+                        </div>
+                    </div>
+
+                    <div class="minute-display">
+                        <span class="minute-num" id="matchMinute">0'</span>
+                        <span class="minute-label">DAKİKA</span>
+                    </div>
+
+                    <div class="match-progress">
+                        <div class="match-progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Events Timeline -->
+                <div class="events-section">
+                    <h3 class="section-title"><i class="fas fa-stream"></i> Maç Olayları</h3>
+                    <div class="events-list" id="eventsList">
+                        <p style="text-align: center; color: var(--text-muted); padding: 20px;">Henüz olay yok</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <i class="fas fa-broadcast-tower"></i> Canlı Maçlar
+            </div>
+            <div id="matchesList"></div>
+        </div>
+    </div>
+
+    <!-- Data -->
+    <script src="../data.js"></script>
+    <script src="../live-match.js"></script>
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        let currentMatchId = null;
+        let minuteInterval = null;
+        let previousScores = {}; // Önceki skorları sakla
+
+        // 🔔 BİLDİRİM SİSTEMİ
+        let notificationsEnabled = false;
+
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    notificationsEnabled = permission === 'granted';
+                    if (notificationsEnabled) {
+                        showToast('🔔 Bildirimler açıldı! Gol olduğunda bildirim alacaksınız.');
+                    }
+                });
+            }
+        }
+
+        function sendGoalNotification(team, scorer, homeTeam, homeScore, awayTeam, awayScore) {
+            if (!notificationsEnabled) return;
+
+            const notification = new Notification('⚽ GOL!', {
+                body: `${scorer} (${team})\n${homeTeam} ${homeScore} - ${awayScore} ${awayTeam}`,
+                icon: 'https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/tr.svg',
+                tag: 'goal-notification',
+                requireInteraction: false
+            });
+
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+
+            // 5 saniye sonra kapat
+            setTimeout(() => notification.close(), 5000);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #c4ff0e, #a8d900);
+                color: #000;
+                padding: 15px 30px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideUp 0.3s ease;
+                box-shadow: 0 10px 40px rgba(196, 255, 14, 0.4);
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Sayfa yüklendiğinde izin iste
+        if ('Notification' in window && Notification.permission === 'granted') {
+            notificationsEnabled = true;
+        } else if ('Notification' in window && Notification.permission !== 'denied') {
+            // 2 saniye sonra izin iste
+            setTimeout(requestNotificationPermission, 2000);
+        }
+
+        // Takım logolarını TribeData'dan al
+        function getTeamLogo(teamName) {
+            return TribeData?.teams[teamName]?.logo || 'https://via.placeholder.com/100?text=' + teamName.charAt(0);
+        }
+
+        // Sidebar'daki maç listesini render et
+        function renderMatchesSidebar() {
+            const container = document.getElementById('matchesList');
+            const matches = LiveMatchData.matches;
+
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="no-matches">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Henüz canlı maç eklenmedi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const statusNames = {
+                'waiting': 'Bekliyor',
+                'firstHalf': '1. Yarı',
+                'halftime': 'Devre Arası',
+                'secondHalf': '2. Yarı',
+                'ended': 'Bitti'
+            };
+
+            let html = '';
+            matches.forEach(match => {
+                const minute = LiveMatchData.calculateMinute(match);
+                const isActive = match.id === currentMatchId;
+                const statusClass = match.status === 'firstHalf' || match.status === 'secondHalf' ? 'live' : match.status;
+
+                html += `
+                    <div class="match-card-mini ${isActive ? 'active' : ''}" onclick="selectMatch(${match.id})">
+                        <span class="mini-status ${statusClass}">${statusNames[match.status]}</span>
+                        <div class="mini-teams">
+                            <div class="mini-team">
+                                <img src="${getTeamLogo(match.homeTeam)}" class="mini-logo">
+                                <span class="mini-name">${match.homeTeam}</span>
+                            </div>
+                            <div class="mini-score">${match.homeScore} - ${match.awayScore}</div>
+                            <div class="mini-team">
+                                <img src="${getTeamLogo(match.awayTeam)}" class="mini-logo">
+                                <span class="mini-name">${match.awayTeam}</span>
+                            </div>
+                        </div>
+                        ${match.status !== 'waiting' && match.status !== 'ended' ? `<div class="mini-minute">${minute}'</div>` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Maç seç
+        function selectMatch(matchId) {
+            currentMatchId = matchId;
+            renderMatchesSidebar();
+            renderSelectedMatch();
+        }
+
+        // Seçilen maçı göster
+        function renderSelectedMatch() {
+            const match = LiveMatchData.matches.find(m => m.id === currentMatchId);
+
+            if (!match) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('matchDisplay').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('matchDisplay').style.display = 'block';
+
+            // Takımlar
+            document.getElementById('homeTeamName').textContent = match.homeTeam;
+            document.getElementById('awayTeamName').textContent = match.awayTeam;
+            document.getElementById('homeTeamLogo').src = getTeamLogo(match.homeTeam);
+            document.getElementById('awayTeamLogo').src = getTeamLogo(match.awayTeam);
+
+            // Skor
+            document.getElementById('homeScore').textContent = match.homeScore;
+            document.getElementById('awayScore').textContent = match.awayScore;
+
+            // Status badge
+            const badge = document.getElementById('liveBadge');
+            const statusText = document.getElementById('matchStatus');
+            badge.className = 'live-badge';
+
+            const statusNames = {
+                'waiting': 'BEKLİYOR',
+                'firstHalf': 'CANLI',
+                'halftime': 'DEVRE ARASI',
+                'secondHalf': 'CANLI',
+                'ended': 'BİTTİ'
+            };
+
+            if (match.status === 'halftime') badge.classList.add('halftime');
+            else if (match.status === 'ended') badge.classList.add('ended');
+            else if (match.status === 'waiting') badge.classList.add('waiting');
+
+            statusText.textContent = statusNames[match.status];
+
+            // Dakika güncelle
+            updateMinute();
+
+            // Olaylar
+            renderEvents(match);
+        }
+
+        // Dakikayı güncelle
+        function updateMinute() {
+            const match = LiveMatchData.matches.find(m => m.id === currentMatchId);
+            if (!match) return;
+
+            const minute = LiveMatchData.calculateMinute(match);
+            document.getElementById('matchMinute').textContent = minute + "'";
+            document.getElementById('progressBar').style.width = (minute / 90 * 100) + '%';
+        }
+
+        // Olayları render et
+        function renderEvents(match) {
+            const container = document.getElementById('eventsList');
+
+            if (!match.events || match.events.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Henüz olay yok</p>';
+                return;
+            }
+
+            const sorted = [...match.events].sort((a, b) => b.minute - a.minute);
+
+            let html = '';
+            sorted.forEach(event => {
+                const teamName = event.team === 'home' ? match.homeTeam : match.awayTeam;
+                let iconClass = 'fas fa-info-circle';
+                let eventClass = '';
+
+                if (event.type === 'goal') { iconClass = 'fas fa-futbol'; eventClass = 'goal'; }
+                else if (event.type === 'yellow') { iconClass = 'fas fa-square'; eventClass = 'yellow'; }
+                else if (event.type === 'red') { iconClass = 'fas fa-square'; eventClass = 'red'; }
+                else if (event.type === 'var') { iconClass = 'fas fa-tv'; eventClass = 'var'; }
+
+                html += `
+                    <div class="event-item ${eventClass}">
+                        <span class="event-minute">${event.minute}'</span>
+                        <div class="event-icon ${eventClass}">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-player">${event.player}</div>
+                            <div class="event-team">${teamName}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Initialize
+        // Veritabanından gelen veriyi işle
+        function handleFirebaseData(data) {
+            const newMatches = data?.matches || [];
+
+            // 🔔 Skor değişikliği kontrolü ve bildirim
+            newMatches.forEach(match => {
+                const prevKey = `match_${match.id}`;
+                const prev = previousScores[prevKey];
+
+                if (prev) {
+                    // Ev sahibi gol attı
+                    if (match.homeScore > prev.homeScore) {
+                        const lastEvent = match.events?.filter(e => e.type === 'goal' && e.team === match.home).pop();
+                        sendGoalNotification(match.home, lastEvent?.player || 'Bilinmiyor', match.home, match.homeScore, match.away, match.awayScore);
+                        showToast(`⚽ GOL! ${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`);
+                    }
+                    // Deplasman gol attı
+                    if (match.awayScore > prev.awayScore) {
+                        const lastEvent = match.events?.filter(e => e.type === 'goal' && e.team === match.away).pop();
+                        sendGoalNotification(match.away, lastEvent?.player || 'Bilinmiyor', match.home, match.homeScore, match.away, match.awayScore);
+                        showToast(`⚽ GOL! ${match.home} ${match.homeScore} - ${match.awayScore} ${match.away}`);
+                    }
+                }
+
+                // Mevcut skoru kaydet
+                previousScores[prevKey] = { homeScore: match.homeScore, awayScore: match.awayScore };
+            });
+
+            // LiveMatchData'yı güncelle
+            LiveMatchData.activeMatchId = data?.activeMatchId || 0;
+            LiveMatchData.matches = newMatches;
+
+            // Penaltı durumunu kontrol et
+            checkPenaltyState(newMatches);
+
+            renderMatchesSidebar();
+
+            // Mevcut seçili maçı güncelle veya ilk canlı maçı seç
+            if (LiveMatchData.matches.length > 0) {
+                const currentMatch = LiveMatchData.matches.find(m => m.id === currentMatchId);
+                if (!currentMatch) {
+                    const liveMatch = LiveMatchData.matches.find(m =>
+                        m.status === 'firstHalf' || m.status === 'secondHalf' || m.status === 'halftime'
+                    );
+                    currentMatchId = liveMatch ? liveMatch.id : LiveMatchData.matches[0].id;
+                }
+                renderSelectedMatch();
+            } else {
+                // Maç yoksa main alanını temizle
+                currentMatchId = null;
+                document.getElementById('homeLogo').src = 'https://via.placeholder.com/100?text=?';
+                document.getElementById('awayLogo').src = 'https://via.placeholder.com/100?text=?';
+                document.getElementById('homeName').textContent = 'Bekliyor';
+                document.getElementById('awayName').textContent = 'Bekliyor';
+                document.getElementById('homeScore').textContent = '0';
+                document.getElementById('awayScore').textContent = '0';
+                document.getElementById('matchStatus').textContent = 'Maç Bekleniyor';
+                document.getElementById('matchMinute').textContent = "0'";
+                document.getElementById('eventsList').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Henüz canlı maç yok</p>';
+            }
+        }
+
+        function init() {
+            console.log('🎮 Canlı maç sayfası başlatılıyor...');
+
+            // Önce local veriden başlat
+            renderMatchesSidebar();
+
+            // İlk aktif maçı seç veya ilk maçı
+            if (LiveMatchData.matches.length > 0) {
+                const liveMatch = LiveMatchData.matches.find(m =>
+                    m.status === 'firstHalf' || m.status === 'secondHalf' || m.status === 'halftime'
+                );
+                currentMatchId = liveMatch ? liveMatch.id : LiveMatchData.matches[0].id;
+                renderSelectedMatch();
+            }
+
+            // Her saniye dakikayı güncelle
+            minuteInterval = setInterval(() => {
+                updateMinute();
+                renderMatchesSidebar();
+            }, 1000);
+
+            // 🔥 Firebase real-time listener başlat
+            listenLiveMatch(handleFirebaseData);
+            console.log('🔥 Firebase dinleme başlatıldı - anlık güncellemeler aktif!');
+
+            // TribeData (takım logoları) yüklenince tekrar render et
+            listenAllData((data) => {
+                if (data && data.teams) {
+                    Object.assign(TribeData.teams, data.teams);
+                    console.log('📊 Takım logoları yüklendi!');
+                    // Logoları güncelle
+                    renderMatchesSidebar();
+                    if (currentMatchId !== null) {
+                        renderSelectedMatch();
+                    }
+                }
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ⚽ PENALTI SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let penaltyState = {
+            active: false,
+            matchId: null,
+            team: null,
+            isRebound: false
+        };
+
+        // Penaltı başlat (Firebase'den tetiklenir)
+        function startPenalty(matchId, team, side) {
+            penaltyState = {
+                active: true,
+                matchId: matchId,
+                team: team,
+                side: side, // 'home' veya 'away'
+                isRebound: false
+            };
+
+            // Overlay göster
+            document.getElementById('penaltyOverlay').classList.add('active');
+            document.getElementById('penaltyTitle').textContent = '⚽ PENALTI!';
+            document.getElementById('penaltyInfo').textContent = `${team} penaltı kullanacak...`;
+
+            // Reset elements
+            resetPenaltyField();
+
+            // Geri sayım başlat
+            startPenaltyCountdown();
+        }
+
+        function resetPenaltyField() {
+            const ball = document.getElementById('penaltyBall');
+            const keeper = document.getElementById('penaltyGoalkeeper');
+            const result = document.getElementById('penaltyResult');
+
+            ball.className = 'penalty-ball';
+            keeper.className = 'penalty-goalkeeper';
+            result.className = 'penalty-result';
+            result.textContent = '';
+        }
+
+        function startPenaltyCountdown() {
+            const countdownEl = document.getElementById('penaltyCountdown');
+            let count = 5;
+
+            countdownEl.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    countdownEl.textContent = '';
+                    clearInterval(interval);
+                    executePenalty();
+                }
+            }, 1000);
+        }
+
+        function executePenalty() {
+            const directions = ['left', 'center', 'right'];
+            const shootDir = directions[Math.floor(Math.random() * 3)];
+            const diveDir = directions[Math.floor(Math.random() * 3)];
+
+            // Animasyonları başlat
+            const ball = document.getElementById('penaltyBall');
+            const keeper = document.getElementById('penaltyGoalkeeper');
+
+            ball.classList.add('shooting', `shoot-${shootDir}`);
+            keeper.classList.add(`dive-${diveDir}`);
+
+            // Sonucu hesapla
+            setTimeout(() => {
+                calculatePenaltyResult(shootDir, diveDir);
+            }, 600);
+        }
+
+        function calculatePenaltyResult(shootDir, diveDir) {
+            const resultEl = document.getElementById('penaltyResult');
+            const infoEl = document.getElementById('penaltyInfo');
+
+            // Kaleci doğru köşeye uçtuysa
+            if (shootDir === diveDir) {
+                // %70 kurtarır, %20 direk, %10 aut
+                const rand = Math.random();
+                if (rand < 0.70) {
+                    // Kaleci kurtardı
+                    resultEl.textContent = '🧤 KALECİ KURTARDI!';
+                    resultEl.className = 'penalty-result saved';
+                    infoEl.textContent = 'Kaleci doğru köşeye uçtu!';
+                    endPenalty(false, 'saved');
+                } else if (rand < 0.90) {
+                    // Direkten döndü - 2. şans
+                    resultEl.textContent = '🥅 DİREKTEN SEKTİ!';
+                    resultEl.className = 'penalty-result post';
+                    infoEl.textContent = 'Top direkten döndü!';
+
+                    if (!penaltyState.isRebound) {
+                        // İkinci şans ver
+                        setTimeout(() => {
+                            penaltyState.isRebound = true;
+                            resultEl.className = 'penalty-result';
+                            infoEl.textContent = '2. ŞANS! Top geri geldi...';
+                            resetPenaltyField();
+                            setTimeout(() => startReboundCountdown(), 1000);
+                        }, 2000);
+                    } else {
+                        endPenalty(false, 'post');
+                    }
+                } else {
+                    // Aut gitti
+                    resultEl.textContent = '❌ AUT!';
+                    resultEl.className = 'penalty-result out';
+                    infoEl.textContent = 'Top auta gitti!';
+                    endPenalty(false, 'out');
+                }
+            } else {
+                // Kaleci yanlış köşeye uçtu - GOL!
+                resultEl.textContent = '⚽ GOOOL!';
+                resultEl.className = 'penalty-result goal';
+                infoEl.textContent = 'Top ağlara gitti!';
+                endPenalty(true, 'goal');
+            }
+        }
+
+        function startReboundCountdown() {
+            document.getElementById('penaltyTitle').textContent = '🔄 2. ŞANS!';
+            const countdownEl = document.getElementById('penaltyCountdown');
+            let count = 3;
+
+            countdownEl.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    countdownEl.textContent = '';
+                    clearInterval(interval);
+                    executeRebound();
+                }
+            }, 1000);
+        }
+
+        function executeRebound() {
+            // Rebound daha basit - %50 gol, %50 kaçar
+            const ball = document.getElementById('penaltyBall');
+            const resultEl = document.getElementById('penaltyResult');
+            const infoEl = document.getElementById('penaltyInfo');
+
+            ball.classList.add('shooting', 'shoot-center');
+
+            setTimeout(() => {
+                if (Math.random() < 0.5) {
+                    resultEl.textContent = '⚽ GOOOL!';
+                    resultEl.className = 'penalty-result goal';
+                    infoEl.textContent = 'İkinci vuruşta gol!';
+                    endPenalty(true, 'rebound_goal');
+                } else {
+                    resultEl.textContent = '❌ KAÇTI!';
+                    resultEl.className = 'penalty-result out';
+                    infoEl.textContent = 'İkinci vuruş da kaçtı!';
+                    endPenalty(false, 'rebound_miss');
+                }
+            }, 500);
+        }
+
+        function endPenalty(isGoal, resultType) {
+            // Gol olduysa skoru artır ve isim sor
+            if (isGoal && penaltyState.matchId !== null) {
+                const match = LiveMatchData.matches.find(m => m.id === penaltyState.matchId);
+                if (match) {
+                    // İsim sor
+                    setTimeout(() => {
+                        const scorerName = prompt(`⚽ GOL! ${penaltyState.team} için gol atan oyuncunun adı:`);
+                        if (scorerName) {
+                            // Bu bilgiyi Firebase'e gönderiyoruz - admin panel güncelleyecek
+                            console.log(`Penaltı golü: ${scorerName} (${penaltyState.team})`);
+                        }
+                    }, 500);
+                }
+            }
+
+            // 3 saniye sonra kapat
+            setTimeout(() => {
+                closePenalty();
+            }, 3000);
+        }
+
+        function closePenalty() {
+            document.getElementById('penaltyOverlay').classList.remove('active');
+            penaltyState.active = false;
+            // Penaltıyı işlenmiş olarak işaretle
+            if (penaltyState.matchId !== null) {
+                processedPenalties.add(penaltyState.matchId + '_' + Date.now());
+            }
+        }
+
+        // İşlenmiş penaltıları takip et
+        let processedPenalties = new Set();
+
+        // Firebase'den penaltı durumunu dinle
+        function checkPenaltyState(matches) {
+            matches.forEach(match => {
+                // Sadece aktif ve henüz işlenmemiş penaltıları başlat
+                const penaltyKey = match.id + '_penalty';
+                if (match.penaltyActive && !penaltyState.active && !processedPenalties.has(penaltyKey)) {
+                    processedPenalties.add(penaltyKey);
+                    startPenalty(match.id, match.penaltyTeam, match.penaltySide);
+                }
+                // penaltyActive false olduğunda key'i temizle (yeni penaltı için)
+                if (!match.penaltyActive) {
+                    processedPenalties.delete(penaltyKey);
+                }
+            });
+        }
+
+        init();
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+
+</body>
+
+</html>

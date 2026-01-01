@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tribe Social - Sosyal Medya</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Teko:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.95);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --red: #ff4757;
+            --green: #2ed573;
+            --gold: #ffd700;
+            --font-main: 'Outfit', sans-serif;
+            --font-head: 'Teko', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           3 SÜTUNLU TWITTER TARZI LAYOUT
+        ═══════════════════════════════════════════════════════════════ */
+        .social-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 70px;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* Sol Sidebar */
+        .left-sidebar {
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 30px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(196, 255, 14, 0.1);
+            color: var(--primary);
+        }
+
+        .sidebar-link.active {
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .sidebar-link i {
+            width: 25px;
+            font-size: 1.2rem;
+        }
+
+        .notif-badge {
+            background: #ff4757;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* Merkez Feed */
+        .center-feed {
+            border-right: 1px solid var(--border);
+            min-height: 100%;
+        }
+
+        .feed-header {
+            position: sticky;
+            top: 70px;
+            background: rgba(10, 10, 14, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .feed-header h2 {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Sağ Sidebar - Etiketler */
+        .right-sidebar {
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .trends-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .trends-title {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trend-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .trend-item:last-child {
+            border-bottom: none;
+        }
+
+        .trend-item:hover {
+            padding-left: 10px;
+        }
+
+        .trend-tag {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .trend-count {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Post Form */
+        .post-form {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .post-form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .post-textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            resize: none;
+            min-height: 80px;
+        }
+
+        .post-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .post-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .post-tools {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .post-tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-tool-btn:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .post-submit-btn {
+            background: linear-gradient(135deg, var(--primary), #a8d900);
+            border: none;
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .post-submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+
+        .post-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            position: relative;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .image-preview .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Emoji Picker - Düzeltilmiş */
+        .emoji-picker {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+            width: 220px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .emoji-picker.active {
+            display: grid;
+        }
+
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .emoji-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.15);
+        }
+
+        /* Feed */
+        .feed {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-card {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .post-card:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .post-username:hover {
+            color: var(--primary);
+        }
+
+        .verified-badge {
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        .post-time {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-btn.liked {
+            color: var(--red);
+        }
+
+        .stat-btn.liked i {
+            animation: heartBeat 0.3s ease;
+        }
+
+        .stat-btn.reposted {
+            color: var(--green);
+        }
+
+        .stat-btn.reposted i {
+            animation: heartBeat 0.3s ease;
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        .comments-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .comments-section.active {
+            display: block;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .comment-submit {
+            background: var(--primary);
+            border: none;
+            color: #000;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-submit:hover {
+            transform: scale(1.1);
+        }
+
+        /* Profile Modal */
+        .profile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .profile-modal.active {
+            display: flex;
+        }
+
+        .profile-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 12px;
+            border: 3px solid var(--bg-card);
+        }
+
+        .profile-name {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .profile-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .profile-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .profile-posts {
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .login-required {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .login-required a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .social-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+
+            .center-feed {
+                border: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .post-stats {
+                gap: 10px;
+            }
+
+            .stat-btn {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Toast Notification Animasyonları */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           🔍 ARAMA KUTUSU STİLLERİ
+        ═══════════════════════════════════════════════════════════════ */
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 12px 18px;
+            transition: all 0.3s;
+        }
+
+        .search-input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(196, 255, 14, 0.2);
+        }
+
+        .search-input-wrapper i {
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
+        .search-input-wrapper input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 8px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-section-title {
+            padding: 10px 15px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: rgba(196, 255, 14, 0.1);
+        }
+
+        .search-result-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            overflow: hidden;
+        }
+
+        .search-result-avatar.user {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #000;
+        }
+
+        .search-result-avatar.team {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .search-result-avatar.team img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .search-result-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .search-no-results {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           🔄 HESAP SEÇİCİ STİLLERİ  
+        ═══════════════════════════════════════════════════════════════ */
+        .account-switcher {
+            display: flex;
+            align-items: center;
+        }
+
+        .account-switch-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .account-switch-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .account-switch-btn.team-mode {
+            background: rgba(196, 255, 14, 0.1);
+            border-color: rgba(196, 255, 14, 0.3);
+            color: var(--primary);
+        }
+
+        .account-indicator {
+            font-size: 1.1rem;
+        }
+
+        .account-label {
+            font-weight: 600;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ✓ MAVİ TİK / VERİFİED BADGE STİLLERİ
+        ═══════════════════════════════════════════════════════════════ */
+        .verified-badge {
+            color: #1da1f2;
+            font-size: 0.9rem;
+        }
+
+        .team-post-badge {
+            background: linear-gradient(135deg, #1da1f2, #0099cc);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .user-avatar.team-avatar {
+            border: 2px solid #1da1f2;
+            padding: 3px;
+            background: var(--bg-card);
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            min-height: 45px;
+            max-width: 45px;
+            max-height: 45px;
+        }
+
+        .user-avatar.team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="social-layout">
+        <!-- Sol Sidebar -->
+        <aside class="left-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-link active" id="feedLink" onclick="showFeedView(); return false;">
+                    <i class="fas fa-home"></i>
+                    <span>Gönderiler</span>
+                </a>
+                <a href="#" class="sidebar-link" id="notificationsLink" onclick="showNotifications(); return false;">
+                    <i class="fas fa-bell"></i>
+                    <span>Bildirimler</span>
+                    <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                </a>
+                <a href="#" class="sidebar-link" id="myProfileLink" onclick="showMyProfile(); return false;">
+                    <i class="fas fa-user"></i>
+                    <span>Hesabım</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Merkez Feed -->
+        <main class="center-feed">
+            <div class="feed-header">
+                <h2 id="feedTitle"><i class="fas fa-comments"></i> Anasayfa</h2>
+            </div>
+
+            <!-- Center Feed Content (Gönderiler görünümü) -->
+            <div id="centerFeed">
+                <!-- Post Form -->
+                <div class="post-form" id="postForm" style="display: none;">
+                    <div class="post-form-header">
+                        <div class="user-avatar" id="currentUserAvatar">?</div>
+                        <div>
+                            <div style="font-weight: 600;" id="currentUserName">Yükleniyor...</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Herkese açık</div>
+                        </div>
+                    </div>
+
+                    <textarea class="post-textarea" id="postContent" placeholder="Neler oluyor?"></textarea>
+
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="" alt="Preview">
+                        <button class="remove-image" onclick="removeImage()"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div class="post-actions">
+                        <div class="post-tools">
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;"
+                                onchange="handleImageSelect(event)">
+                            <button class="post-tool-btn" onclick="document.getElementById('imageInput').click()"
+                                title="Fotoğraf">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="post-tool-btn" onclick="toggleEmojiPicker()" title="Emoji">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <div class="emoji-picker" id="emojiPicker"></div>
+                        </div>
+
+                        <!-- Hesap Seçici (Takım hesabı varsa göster) -->
+                        <div class="account-switcher" id="accountSwitcher" style="display: none;">
+                            <button class="account-switch-btn" id="accountSwitchBtn" onclick="toggleAccountType()"
+                                title="Hesap Değiştir">
+                                <span class="account-indicator" id="accountIndicator">👤</span>
+                                <span class="account-label" id="accountLabel">Kişisel</span>
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+
+                        <button class="post-submit-btn" onclick="submitPost()" id="submitBtn">
+                            Paylaş
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Login Required -->
+                <div class="login-required" id="loginRequired">
+                    <i class="fas fa-lock" style="font-size: 1.8rem; margin-bottom: 12px; display: block;"></i>
+                    <p>Gönderi paylaşmak için <a href="account.html">giriş yapın</a></p>
+                </div>
+
+                <!-- Feed -->
+                <div class="feed" id="feedContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Gönderiler yükleniyor...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sağ Sidebar - Arama ve Etiketler -->
+        <aside class="right-sidebar">
+            <!-- Arama Kutusu -->
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Mesaj veya kullanıcı ara..." autocomplete="off">
+                </div>
+                <div class="search-results" id="searchResults" style="display: none;"></div>
+            </div>
+
+            <div class="trends-box">
+                <div class="trends-title">
+                    <i class="fas fa-hashtag"></i> Gündem Etiketler
+                </div>
+                <div id="trendsList">
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-content">
+            <div class="profile-header">
+                <button class="profile-close" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <div class="profile-name" id="profileName">
+                    <span id="profileNameText">Kullanıcı</span>
+                    <i class="fas fa-check-circle verified-badge" id="profileVerified" style="display: none;"></i>
+                </div>
+            </div>
+            <div class="profile-tabs">
+                <div class="profile-tab active" onclick="switchProfileTab('posts', this)">Gönderiler</div>
+                <div class="profile-tab" onclick="switchProfileTab('likes', this)">Beğeniler</div>
+            </div>
+            <div class="profile-posts" id="profilePosts">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../firebase-config.js"></script>
+    <script src="../data.js"></script>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // 🛡️ KÜFÜR FİLTRESİ VE YASAKLI KELİMELER
+        // ═══════════════════════════════════════════════════════════════
+        const BANNED_WORDS = [
+            'amk', 'aq', 'mk', 'oc', 'oç', 'oe', 'piç', 'pic', 'am', 'amcık', 'amcik',
+            'sik', 'yarrak', 'yarak', 'orospu', 'orospuçocuğu', 'sikerim', 'sikeyim',
+            'kahpe', 'pezevenk', 'göt', 'got', 'taşak', 'tasak', 'meme', 'kaltak',
+            'şerefsiz', 'serefsiz', 'puşt', 'pust', 'ibne', 'anan', 'anani', 'ananı',
+            'amına', 'amina', 'sikim', 'sikimin', 'siktir', 'amın', 'amin', 'götüne',
+            'feryadı', 'feryadi'
+        ];
+
+        const VERIFIED_ACCOUNTS = [
+            'Galatasaray', 'Fenerbahçe', 'Beşiktaş', 'Trabzonspor', 'Başakşehir',
+            'Alanyaspor', 'Antalyaspor', 'Konyaspor', 'Samsunspor', 'Kayserispor',
+            'Göztepe', 'Gaziantep FK', 'Eyüpspor', 'Gençlerbirliği', 'Adana Demirspor',
+            'TribeLeague', 'Admin'
+        ];
+
+        function filterBadWords(text) {
+            let filtered = text;
+            BANNED_WORDS.forEach(word => {
+                const regex = new RegExp('\\b' + word + '\\b', 'gi');
+                filtered = filtered.replace(regex, '####');
+            });
+            return filtered;
+        }
+
+        function isVerified(username) {
+            return VERIFIED_ACCOUNTS.some(v => v.toLowerCase() === username?.toLowerCase());
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 😀 EMOJİ LİSTESİ
+        // ═══════════════════════════════════════════════════════════════
+        const EMOJIS = [
+            '😀', '😂', '🤣', '😍', '😎', '🤔',
+            '😢', '😡', '🔥', '💪', '👍', '👎',
+            '❤️', '💔', '⚽', '🏆', '🥇', '🎉',
+            '👏', '🙌', '💯', '✨', '😱', '🤡'
+        ];
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔐 KULLANICI DURUMU
+        // ═══════════════════════════════════════════════════════════════
+        let currentUser = null;
+        let allPosts = {};
+        let currentProfileUserId = null;
+
+        async function checkUserAuth() {
+            console.log('🔐 Kullanıcı kontrolü başlıyor...');
+            try {
+                // 1. Önce localStorage'dan kontrol et
+                const storedUser = localStorage.getItem('tribeUser');
+                console.log('📦 localStorage tribeUser:', storedUser ? 'VAR' : 'YOK');
+
+                if (storedUser) {
+                    const userData = JSON.parse(storedUser);
+                    console.log('📋 User data:', userData.username);
+
+                    if (userData && userData.id && userData.username) {
+                        currentUser = userData;
+                        await updateUserFromFirebase(userData.id);
+                        showPostForm();
+                        return;
+                    }
+                }
+
+                // 2. localStorage'da yoksa Firebase Auth kontrol et
+                console.log('🔥 Firebase Auth kontrol ediliyor...');
+                await waitForFirebase();
+
+                if (window.firebaseAuth && window.firebaseOnAuthStateChanged) {
+                    window.firebaseOnAuthStateChanged(window.firebaseAuth, async (authUser) => {
+                        if (authUser) {
+                            console.log('✅ Firebase Auth kullanıcısı bulundu:', authUser.email);
+                            // Firebase users koleksiyonundan kullanıcı bilgilerini çek
+                            try {
+                                const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${authUser.uid}`));
+                                if (userSnapshot.exists()) {
+                                    const firebaseUserData = userSnapshot.val();
+                                    currentUser = {
+                                        id: authUser.uid,
+                                        username: firebaseUserData.username || authUser.displayName || authUser.email.split('@')[0],
+                                        email: authUser.email,
+                                        avatar: firebaseUserData.avatar || authUser.photoURL,
+                                        isSocialMod: firebaseUserData.isSocialMod || false,
+                                        socialBanUntil: firebaseUserData.socialBanUntil || null
+                                    };
+                                    // localStorage'a da kaydet (diğer sayfalar için)
+                                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                                    console.log('✅ Firebase Auth ile giriş yapıldı:', currentUser.username);
+                                    showPostForm();
+                                } else {
+                                    console.log('❌ Kullanıcı Firebase DB\'de bulunamadı');
+                                    showLoginRequired();
+                                }
+                            } catch (e) {
+                                console.error('Firebase kullanıcı bilgisi hatası:', e);
+                                showLoginRequired();
+                            }
+                        } else {
+                            console.log('❌ Firebase Auth kullanıcısı yok');
+                            showLoginRequired();
+                        }
+                    });
+                } else {
+                    console.log('❌ Firebase Auth yüklenmedi');
+                    showLoginRequired();
+                }
+            } catch (e) {
+                console.error('❌ Auth kontrol hatası:', e);
+                showLoginRequired();
+            }
+        }
+
+        async function updateUserFromFirebase(userId) {
+            try {
+                await waitForFirebase();
+                const userSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${userId}`));
+                if (userSnapshot.exists()) {
+                    const firebaseUser = userSnapshot.val();
+                    currentUser.isSocialMod = firebaseUser.isSocialMod || false;
+                    currentUser.socialBanUntil = firebaseUser.socialBanUntil || null;
+                    currentUser.avatar = firebaseUser.avatar || currentUser.avatar;
+                    console.log('🔄 Firebase\'den güncellendi - isSocialMod:', currentUser.isSocialMod);
+                }
+            } catch (e) {
+                console.log('⚠️ Firebase güncelleme atlandı:', e.message);
+            }
+        }
+
+        function showLoginRequired() {
+            document.getElementById('postForm').style.display = 'none';
+            document.getElementById('loginRequired').style.display = 'block';
+        }
+
+        function showPostForm() {
+            document.getElementById('loginRequired').style.display = 'none';
+            document.getElementById('postForm').style.display = 'block';
+
+            const avatar = currentUser.username?.charAt(0).toUpperCase() || '?';
+            document.getElementById('currentUserAvatar').textContent = avatar;
+            document.getElementById('currentUserName').textContent = currentUser.username || 'Anonim';
+        }
+
+        function showFeedView() {
+            // Feed görünümüne geç
+            document.getElementById('centerFeed').style.display = 'block';
+
+            const myProfileView = document.getElementById('myProfileView');
+            if (myProfileView) myProfileView.style.display = 'none';
+
+            const notifView = document.getElementById('notificationsView');
+            if (notifView) notifView.style.display = 'none';
+
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('feedLink').classList.add('active');
+        }
+
+        function showMyProfile() {
+            if (!currentUser) {
+                window.location.href = 'account.html';
+                return;
+            }
+
+            // Diğer görünümleri gizle
+            document.getElementById('centerFeed').style.display = 'none';
+
+            const notifView = document.getElementById('notificationsView');
+            if (notifView) notifView.style.display = 'none';
+
+            // Sidebar aktif durumlarını güncelle
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('myProfileLink').classList.add('active');
+
+            // Profil görünümü oluştur veya göster
+            let profileView = document.getElementById('myProfileView');
+            if (!profileView) {
+                profileView = document.createElement('div');
+                profileView.id = 'myProfileView';
+                profileView.style.cssText = 'padding: 0;';
+                document.querySelector('.center-feed').appendChild(profileView);
+            }
+            profileView.style.display = 'block';
+
+            renderMyProfile();
+        }
+
+        function renderMyProfile() {
+            const view = document.getElementById('myProfileView');
+            const avatar = currentUser.username?.charAt(0).toUpperCase() || '?';
+            const verified = isVerified(currentUser.username);
+
+            // Kullanıcının gönderileri
+            const myPosts = Object.entries(allPosts)
+                .filter(([id, p]) => p.userId === currentUser.id)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            // Kullanıcının beğenileri
+            const likedPosts = Object.entries(allPosts)
+                .filter(([id, p]) => p.likes && p.likes[currentUser.id])
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            // Kullanıcının yeniden paylaştıkları (retweet henüz yok, boş bırak)
+            const retweetedPosts = [];
+
+            view.innerHTML = `
+                <div style="background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 30px; text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary); margin: 0 auto 15px; border: 3px solid #fff;">
+                        ${avatar}
+                    </div>
+                    <div style="font-family: var(--font-head); font-size: 1.8rem; color: #000; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        ${currentUser.username}
+                        ${verified ? '<i class="fas fa-check-circle" style="color: #fff;"></i>' : ''}
+                    </div>
+                    ${currentUser.team ? `<div style="color: rgba(0,0,0,0.7); margin-top: 5px;"><i class="fas fa-futbol"></i> ${currentUser.team}</div>` : ''}
+                </div>
+
+                <div style="display: flex; border-bottom: 1px solid var(--border);">
+                    <button class="my-profile-tab active" onclick="switchMyProfileTab('posts', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--primary); border-bottom: 2px solid var(--primary); cursor: pointer; font-weight: 600;">
+                        <i class="fas fa-pencil-alt"></i> Gönderiler <span style="color: var(--text-muted);">(${myPosts.length})</span>
+                    </button>
+                    <button class="my-profile-tab" onclick="switchMyProfileTab('likes', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: pointer;">
+                        <i class="fas fa-heart"></i> Beğeniler <span>(${likedPosts.length})</span>
+                    </button>
+                    <button class="my-profile-tab" onclick="switchMyProfileTab('retweets', this)" style="flex: 1; padding: 15px; background: none; border: none; color: var(--text-muted); border-bottom: 2px solid transparent; cursor: pointer;">
+                        <i class="fas fa-retweet"></i> Repostlar <span>(${retweetedPosts.length})</span>
+                    </button>
+                </div>
+
+                <div id="myProfileContent" style="padding: 0;">
+                    ${renderMyPostsList(myPosts)}
+                </div>
+            `;
+        }
+
+        function switchMyProfileTab(tab, btn) {
+            // Tab stillerini güncelle
+            document.querySelectorAll('.my-profile-tab').forEach(t => {
+                t.style.color = 'var(--text-muted)';
+                t.style.borderBottomColor = 'transparent';
+            });
+            btn.style.color = 'var(--primary)';
+            btn.style.borderBottomColor = 'var(--primary)';
+
+            const content = document.getElementById('myProfileContent');
+
+            if (tab === 'posts') {
+                const myPosts = Object.entries(allPosts)
+                    .filter(([id, p]) => p.userId === currentUser.id)
+                    .sort((a, b) => b[1].timestamp - a[1].timestamp);
+                content.innerHTML = renderMyPostsList(myPosts);
+            } else if (tab === 'likes') {
+                const likedPosts = Object.entries(allPosts)
+                    .filter(([id, p]) => p.likes && p.likes[currentUser.id])
+                    .sort((a, b) => b[1].timestamp - a[1].timestamp);
+                content.innerHTML = renderLikedPostsList(likedPosts);
+            } else if (tab === 'retweets') {
+                content.innerHTML = '<div class="empty-state" style="padding: 40px;"><i class="fas fa-retweet" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz repost yok</p></div>';
+            }
+        }
+
+        function renderMyPostsList(posts) {
+            if (posts.length === 0) {
+                return '<div class="empty-state" style="padding: 40px;"><i class="fas fa-pencil-alt" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz gönderi yok</p></div>';
+            }
+            return posts.map(([id, post]) => `
+                <div style="padding: 15px 20px; border-bottom: 1px solid var(--border);">
+                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">${getTimeAgo(post.timestamp)}</div>
+                    <div style="line-height: 1.5;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 10px;">` : ''}
+                    <div style="display: flex; gap: 15px; margin-top: 10px; color: var(--text-muted); font-size: 0.9rem;">
+                        <span><i class="fas fa-heart"></i> ${post.likes ? Object.keys(post.likes).length : 0}</span>
+                        <span><i class="fas fa-comment"></i> ${post.comments ? Object.keys(post.comments).length : 0}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLikedPostsList(posts) {
+            if (posts.length === 0) {
+                return '<div class="empty-state" style="padding: 40px;"><i class="fas fa-heart" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px; display: block;"></i><p>Henüz beğeni yok</p></div>';
+            }
+            return posts.map(([id, post]) => `
+                <div style="padding: 15px 20px; border-bottom: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #000; font-size: 0.8rem;">
+                            ${post.username?.charAt(0).toUpperCase() || '?'}
+                        </div>
+                        <span style="font-weight: 600;">${post.username}</span>
+                        ${isVerified(post.username) ? '<i class="fas fa-check-circle" style="color: var(--accent); font-size: 0.85rem;"></i>' : ''}
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">${getTimeAgo(post.timestamp)}</span>
+                    </div>
+                    <div style="line-height: 1.5;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 10px;">` : ''}
+                </div>
+            `).join('');
+        }
+
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📝 GÖNDERİ İŞLEMLERİ
+        // ═══════════════════════════════════════════════════════════════
+        let selectedImage = null;
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 50 * 1024 * 1024) {
+                alert('Dosya boyutu 50MB\'dan küçük olmalı!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedImage = e.target.result;
+                document.getElementById('previewImg').src = selectedImage;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            selectedImage = null;
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageInput').value = '';
+        }
+
+        // Spam koruması değişkenleri
+        let lastPostTime = 0;
+        let spamAttempts = 0;
+        const POST_COOLDOWN = 3000; // 3 saniye
+        const SPAM_PENALTY = 5000; // +5 saniye ceza
+
+        async function submitPost() {
+            if (!currentUser) {
+                showToast('Lütfen giriş yapın!', 'error');
+                return;
+            }
+
+            // Ban kontrolü
+            if (await isUserBanned()) {
+                return;
+            }
+
+            // Spam koruması - Timeout kontrolü
+            const now = Date.now();
+            const timeSinceLastPost = now - lastPostTime;
+            const requiredCooldown = POST_COOLDOWN + (spamAttempts * SPAM_PENALTY);
+
+            if (timeSinceLastPost < requiredCooldown) {
+                const remaining = Math.ceil((requiredCooldown - timeSinceLastPost) / 1000);
+                spamAttempts++;
+
+                if (spamAttempts >= 3) {
+                    // 1 saat ban uygula
+                    await applySocialBan(currentUser.id, 60 * 60 * 1000); // 1 saat
+                    showToast('🚫 Spam nedeniyle 1 saat sosyal medya ban\'ı aldınız!', 'error');
+                    spamAttempts = 0;
+                    return;
+                }
+
+                showToast(`⏳ Lütfen ${remaining} saniye bekleyin! (Spam uyarısı ${spamAttempts}/3)`, 'error');
+                return;
+            }
+
+            const content = document.getElementById('postContent').value.trim();
+            if (!content && !selectedImage) {
+                showToast('Lütfen bir şeyler yazın veya fotoğraf ekleyin!', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                // Firebase hazır mı kontrol et
+                if (!window.firebaseDb) {
+                    await waitForFirebase();
+                }
+
+                // Hashtagleri çıkar
+                const hashtags = extractHashtags(content);
+
+                // Takım modunda mı?
+                const postAsTeam = isTeamMode && connectedTeamAccount;
+
+                const post = {
+                    userId: currentUser.id,
+                    username: postAsTeam ? connectedTeamAccount.teamName : currentUser.username,
+                    content: filterBadWords(content),
+                    imageUrl: selectedImage || null,
+                    timestamp: Date.now(),
+                    likes: {},
+                    comments: {},
+                    hashtags: hashtags,
+                    isTeamPost: postAsTeam ? true : false,
+                    teamName: postAsTeam ? connectedTeamAccount.teamName : null
+                };
+
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, 'socialPosts'), post);
+
+                document.getElementById('postContent').value = '';
+                removeImage();
+
+                // Başarılı - spam sayacını sıfırla
+                lastPostTime = Date.now();
+                spamAttempts = 0;
+
+                // Toast notification
+                showToast('✅ Gönderi paylaşıldı!', 'success');
+
+                // Etiketleri güncelle
+                updateTrends();
+            } catch (e) {
+                console.error('Gönderi hatası:', e);
+                showToast('❌ Hata: ' + e.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Paylaş';
+            }
+        }
+
+        // Ban kontrolü
+        async function isUserBanned() {
+            if (!currentUser) return false;
+
+            try {
+                const banRef = window.firebaseRef(window.firebaseDb, `users/${currentUser.id}/socialBanUntil`);
+                const snapshot = await window.firebaseGet(banRef);
+
+                if (snapshot.exists()) {
+                    const banUntil = snapshot.val();
+                    if (Date.now() < banUntil) {
+                        const remaining = Math.ceil((banUntil - Date.now()) / 60000);
+                        showToast(`🚫 Sosyal medya ban\'ınız var! Kalan süre: ${remaining} dakika`, 'error');
+                        return true;
+                    } else {
+                        // Ban süresi dolmuş, kaldır
+                        await window.firebaseRemove(banRef);
+                    }
+                }
+            } catch (e) {
+                console.error('Ban kontrol hatası:', e);
+            }
+            return false;
+        }
+
+        // Ban uygula
+        async function applySocialBan(userId, durationMs) {
+            const banUntil = Date.now() + durationMs;
+            await window.firebaseSet(window.firebaseRef(window.firebaseDb, `users/${userId}/socialBanUntil`), banUntil);
+
+            // Bildirim oluştur
+            await createNotification(userId, 'ban', 'Spam nedeniyle sosyal medya ban\'ı aldınız.');
+        }
+
+        function extractHashtags(text) {
+            const regex = /#(\w+)/g;
+            const matches = text.match(regex);
+            return matches ? matches.map(h => h.toLowerCase()) : [];
+        }
+
+        // Firebase hazır olana kadar bekle
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 30) {
+                await new Promise(r => setTimeout(r, 200));
+                attempts++;
+            }
+            if (!window.firebaseDb) {
+                throw new Error('Firebase bağlantısı kurulamadı');
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            // Varsa eski toast'ı kaldır
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 12px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideDown 0.3s ease;
+                ${type === 'success'
+                    ? 'background: linear-gradient(135deg, var(--primary), #a8d900); color: #000;'
+                    : 'background: linear-gradient(135deg, #ff4757, #ff6b7a); color: #fff;'
+                }
+            `;
+            document.body.appendChild(toast);
+
+            // 3 saniye sonra kaldır
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📰 FEED YÜKLEMESİ
+        // ═══════════════════════════════════════════════════════════════
+        async function loadPosts() {
+            try {
+                // Firebase hazır olana kadar bekle
+                await waitForFirebase();
+
+                window.firebaseOnValue(window.firebaseRef(window.firebaseDb, 'socialPosts'), (snapshot) => {
+                    allPosts = snapshot.exists() ? snapshot.val() : {};
+                    renderFeed();
+                    updateTrends();
+                });
+            } catch (e) {
+                console.error('Feed yükleme hatası:', e);
+                document.getElementById('feedContainer').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Bağlantı hatası. Sayfayı yenileyin.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContainer');
+
+            // Tüm postları al
+            const postsArray = Object.entries(allPosts);
+
+            // Takım postları önce, sonra diğerleri (her grup kendi içinde tarihe göre sıralı)
+            const teamPosts = postsArray.filter(([id, p]) => p.isTeamPost).sort((a, b) => b[1].timestamp - a[1].timestamp);
+            const normalPosts = postsArray.filter(([id, p]) => !p.isTeamPost).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            const posts = [...teamPosts, ...normalPosts];
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <p>Henüz gönderi yok. İlk sen paylaş!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = posts.map(([id, post]) => createPostHTML(id, post)).join('');
+        }
+
+        function createPostHTML(id, post) {
+            const verified = isVerified(post.username) || post.isTeamPost;
+            const isTeamPost = post.isTeamPost === true;
+            const timeAgo = getTimeAgo(post.timestamp);
+            const likeCount = post.likes ? Object.keys(post.likes).length : 0;
+            const commentCount = post.comments ? Object.keys(post.comments).length : 0;
+            const isLiked = currentUser && post.likes && post.likes[currentUser.id];
+
+            // Silme yetkisi: kendi gönderisi veya moderatör
+            const canDelete = currentUser && (post.userId === currentUser.id || currentUser.isSocialMod);
+
+            // Avatar - takım postuysa logo, değilse harf
+            let avatarHTML;
+            if (isTeamPost && post.teamName && window.TribeData?.teams?.[post.teamName]?.logo) {
+                avatarHTML = `<div class="user-avatar team-avatar" style="width:45px;height:45px;min-width:45px;max-width:45px;padding:3px;border:2px solid #1da1f2;background:var(--bg-card);" onclick="filterByTeam('${post.teamName}')"><img src="${window.TribeData.teams[post.teamName].logo}" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" alt="${post.teamName}"></div>`;
+            } else {
+                const avatar = post.username?.charAt(0).toUpperCase() || '?';
+                avatarHTML = `<div class="user-avatar" onclick="openProfile('${post.userId}', '${post.username}')">${avatar}</div>`;
+            }
+
+            // Hashtagleri renklendir
+            let content = post.content || '';
+            content = content.replace(/#(\w+)/g, '<span style="color: var(--primary);">#$1</span>');
+
+            let commentsHTML = '';
+            if (post.comments) {
+                const comments = Object.entries(post.comments).sort((a, b) => a[1].timestamp - b[1].timestamp);
+                commentsHTML = comments.slice(0, 5).map(([cId, c]) => `
+                    <div class="comment">
+                        <div class="comment-avatar">${c.username?.charAt(0).toUpperCase() || '?'}</div>
+                        <div class="comment-content">
+                            <div class="comment-username">
+                                ${c.username}
+                                ${isVerified(c.username) ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                            </div>
+                            <div class="comment-text">${c.content}</div>
+                            <div class="comment-time">${getTimeAgo(c.timestamp)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            return `
+                <div class="post-card" data-post-id="${id}">
+                    <div class="post-header">
+                        ${avatarHTML}
+                        <div class="post-user-info">
+                            <div class="post-username" onclick="${isTeamPost ? `filterByTeam('${post.teamName}')` : `openProfile('${post.userId}', '${post.username}')`}">
+                                ${post.username}
+                                ${verified ? '<i class="fas fa-check-circle verified-badge"></i>' : ''}
+                                ${isTeamPost ? '<span class="team-post-badge">TAKİM</span>' : ''}
+                            </div>
+                            <div class="post-time">${timeAgo}</div>
+                        </div>
+                        ${canDelete ? `
+                            <button class="delete-post-btn" onclick="deletePost('${id}', '${post.userId}')" title="Gönderiyi Sil" style="
+                                background: none;
+                                border: none;
+                                color: var(--text-muted);
+                                cursor: pointer;
+                                padding: 8px;
+                                border-radius: 50%;
+                                transition: all 0.2s;
+                                margin-left: auto;
+                            " onmouseover="this.style.color='#ff4757';this.style.background='rgba(255,71,87,0.1)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="post-content">${content}</div>
+                    ${post.imageUrl ? `<img class="post-image" src="${post.imageUrl}" alt="Post">` : ''}
+                    <div class="post-stats">
+                        <button class="stat-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${id}')">
+                            <i class="fas fa-heart"></i> ${likeCount}
+                        </button>
+                        <button class="stat-btn" onclick="toggleComments('${id}')">
+                            <i class="fas fa-comment"></i> ${commentCount}
+                        </button>
+                        <button class="stat-btn ${post.reposts && post.reposts[currentUser?.id] ? 'reposted' : ''}" onclick="toggleRepost('${id}')">
+                            <i class="fas fa-retweet"></i> ${post.reposts ? Object.keys(post.reposts).length : 0}
+                        </button>
+                        <button class="stat-btn" onclick="sharePost('${id}')">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${id}">
+                        ${commentsHTML}
+                        ${currentUser ? `
+                            <div class="comment-form">
+                                <input type="text" class="comment-input" id="comment-input-${id}" placeholder="Yorum yaz..." onkeypress="if(event.key==='Enter')submitComment('${id}')">
+                                <button class="comment-submit" onclick="submitComment('${id}')">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            if (seconds < 60) return 'Az önce';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes} dk`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} sa`;
+            const days = Math.floor(hours / 24);
+            if (days < 7) return `${days} g`;
+            return new Date(timestamp).toLocaleDateString('tr-TR');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // # ETİKETLER (TRENDS)
+        // ═══════════════════════════════════════════════════════════════
+        function updateTrends() {
+            const hashtagCounts = {};
+
+            Object.values(allPosts).forEach(post => {
+                // Sadece içerikten hashtag çıkar (çift sayımı önle)
+                const tags = extractHashtags(post.content || '');
+                // Benzersiz etiketler için Set kullan
+                const uniqueTags = [...new Set(tags)];
+                uniqueTags.forEach(tag => {
+                    hashtagCounts[tag] = (hashtagCounts[tag] || 0) + 1;
+                });
+            });
+
+            const sorted = Object.entries(hashtagCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const container = document.getElementById('trendsList');
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem;">Henüz etiket yok</div>';
+                return;
+            }
+
+            container.innerHTML = sorted.map(([tag, count]) => `
+            < div class="trend-item" onclick = "searchHashtag('${tag}')" >
+                    <div class="trend-tag">${tag}</div>
+                    <div class="trend-count">${count} gönderi</div>
+                </div >
+            `).join('');
+        }
+
+        function searchHashtag(tag) {
+            // TODO: Hashtag araması
+            alert(`${tag} etiketli gönderiler`);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ❤️ BEĞENİ VE YORUM
+        // ═══════════════════════════════════════════════════════════════
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                alert('Beğenmek için giriş yapın!');
+                return;
+            }
+
+            const likeRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/likes/${currentUser.id}`);
+            const snapshot = await window.firebaseGet(likeRef);
+
+            if (snapshot.exists()) {
+                await window.firebaseRemove(likeRef);
+            } else {
+                await window.firebaseSet(likeRef, true);
+            }
+        }
+
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-${postId}`);
+            if (section) section.classList.toggle('active');
+        }
+
+        async function submitComment(postId) {
+            if (!currentUser) return;
+
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            try {
+                const comment = {
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    content: filterBadWords(content),
+                    timestamp: Date.now()
+                };
+
+                await window.firebasePush(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/comments`), comment);
+                input.value = '';
+            } catch (e) {
+                alert('Yorum eklenemedi: ' + e.message);
+            }
+        }
+
+        function sharePost(postId) {
+            const url = window.location.href.split('?')[0] + `?post=${postId}`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('🔗 Link kopyalandı!', 'success');
+            });
+        }
+
+        async function toggleRepost(postId) {
+            if (!currentUser) {
+                showToast('Repost için giriş yapın!', 'error');
+                return;
+            }
+
+            try {
+                const repostRef = window.firebaseRef(window.firebaseDb, `socialPosts/${postId}/reposts/${currentUser.id}`);
+                const snapshot = await window.firebaseGet(repostRef);
+
+                if (snapshot.exists()) {
+                    await window.firebaseRemove(repostRef);
+                    showToast('Repost geri alındı', 'success');
+                } else {
+                    await window.firebaseSet(repostRef, {
+                        userId: currentUser.id,
+                        username: currentUser.username,
+                        timestamp: Date.now()
+                    });
+                    showToast('🔄 Repost yapıldı!', 'success');
+                }
+            } catch (e) {
+                showToast('Repost hatası: ' + e.message, 'error');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 👤 PROFİL
+        // ═══════════════════════════════════════════════════════════════
+        function openProfile(userId, username) {
+            currentProfileUserId = userId;
+            const modal = document.getElementById('profileModal');
+            const avatar = document.getElementById('profileAvatar');
+            const nameText = document.getElementById('profileNameText');
+            const verified = document.getElementById('profileVerified');
+
+            avatar.textContent = username?.charAt(0).toUpperCase() || '?';
+            nameText.textContent = username;
+            verified.style.display = isVerified(username) ? 'inline' : 'none';
+
+            loadUserPosts(userId);
+            modal.classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function loadUserPosts(userId) {
+            const container = document.getElementById('profilePosts');
+            const userPosts = Object.entries(allPosts)
+                .filter(([id, post]) => post.userId === userId)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            if (userPosts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Henüz gönderi yok</p></div>';
+                return;
+            }
+
+            container.innerHTML = userPosts.map(([id, post]) => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 6px;">${getTimeAgo(post.timestamp)}</div>
+                    <div style="font-size: 0.95rem;">${post.content || ''}</div>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">` : ''}
+                </div>
+            `).join('');
+        }
+
+        function loadUserLikes(userId) {
+            const container = document.getElementById('profilePosts');
+            const likedPosts = Object.entries(allPosts)
+                .filter(([id, post]) => post.likes && post.likes[userId])
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+            if (likedPosts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Henüz beğeni yok</p></div>';
+                return;
+            }
+
+            container.innerHTML = likedPosts.map(([id, post]) => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="font-weight: 600; margin-bottom: 4px;">${post.username}</div>
+                    <div style="font-size: 0.95rem;">${post.content || ''}</div>
+                </div>
+            `).join('');
+        }
+
+        function switchProfileTab(tab, element) {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+
+            if (tab === 'posts') {
+                loadUserPosts(currentProfileUserId);
+            } else if (tab === 'likes') {
+                loadUserLikes(currentProfileUserId);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔔 BİLDİRİM SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let userNotifications = [];
+
+        async function createNotification(userId, type, message, postId = null) {
+            const notification = {
+                type: type, // 'ban', 'delete', 'warning', 'like', 'comment'
+                message: message,
+                postId: postId,
+                timestamp: Date.now(),
+                read: false
+            };
+
+            await window.firebasePush(window.firebaseRef(window.firebaseDb, `notifications/${userId}`), notification);
+        }
+
+        async function loadNotifications() {
+            if (!currentUser) return;
+
+            window.firebaseOnValue(window.firebaseRef(window.firebaseDb, `notifications/${currentUser.id}`), (snapshot) => {
+                if (snapshot.exists()) {
+                    userNotifications = Object.entries(snapshot.val())
+                        .map(([id, n]) => ({ id, ...n }))
+                        .sort((a, b) => b.timestamp - a.timestamp);
+
+                    // Okunmamış bildirim sayısı
+                    const unreadCount = userNotifications.filter(n => !n.read).length;
+                    const badge = document.getElementById('notifBadge');
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = 'inline-flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } else {
+                    userNotifications = [];
+                    document.getElementById('notifBadge').style.display = 'none';
+                }
+            });
+        }
+
+        function showNotifications() {
+            if (!currentUser) {
+                window.location.href = 'account.html';
+                return;
+            }
+
+            document.getElementById('centerFeed').style.display = 'none';
+            const myProfileView = document.getElementById('myProfileView');
+            if (myProfileView) myProfileView.style.display = 'none';
+
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('notificationsLink').classList.add('active');
+
+            let notifView = document.getElementById('notificationsView');
+            if (!notifView) {
+                notifView = document.createElement('div');
+                notifView.id = 'notificationsView';
+                document.querySelector('.center-feed').appendChild(notifView);
+            }
+            notifView.style.display = 'block';
+
+            renderNotifications();
+            markNotificationsRead();
+        }
+
+        function renderNotifications() {
+            const view = document.getElementById('notificationsView');
+
+            if (userNotifications.length === 0) {
+                view.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-bell"></i> Bildirimler</h3>
+                        <div class="empty-state">
+                            <i class="fas fa-bell-slash" style="font-size: 2rem; opacity: 0.5; margin-bottom: 10px;"></i>
+                            <p>Henüz bildirim yok</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            view.innerHTML = `
+                <div style="padding: 20px;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-bell"></i> Bildirimler</h3>
+                    ${userNotifications.map(n => `
+                        <div style="padding: 15px; background: ${n.read ? 'transparent' : 'rgba(196, 255, 14, 0.05)'}; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center;">
+                            <i class="fas ${getNotifIcon(n.type)}" style="color: ${getNotifColor(n.type)}; font-size: 1.2rem;"></i>
+                            <div style="flex: 1;">
+                                <div>${n.message}</div>
+                                <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">${getTimeAgo(n.timestamp)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getNotifIcon(type) {
+            const icons = {
+                'ban': 'fa-ban',
+                'delete': 'fa-trash',
+                'warning': 'fa-exclamation-triangle',
+                'like': 'fa-heart',
+                'comment': 'fa-comment'
+            };
+            return icons[type] || 'fa-bell';
+        }
+
+        function getNotifColor(type) {
+            const colors = {
+                'ban': '#ff4757',
+                'delete': '#ff6b7a',
+                'warning': '#ffa502',
+                'like': '#ff4757',
+                'comment': 'var(--accent)'
+            };
+            return colors[type] || 'var(--primary)';
+        }
+
+        async function markNotificationsRead() {
+            if (!currentUser || userNotifications.length === 0) return;
+
+            for (const n of userNotifications.filter(x => !x.read)) {
+                await window.firebaseSet(
+                    window.firebaseRef(window.firebaseDb, `notifications/${currentUser.id}/${n.id}/read`),
+                    true
+                );
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🗑️ MESAJ SİLME
+        // ═══════════════════════════════════════════════════════════════
+        async function deletePost(postId, postUserId) {
+            if (!currentUser) {
+                showToast('Lütfen giriş yapın!', 'error');
+                return;
+            }
+
+            console.log('🗑️ Silme kontrolü:', { postUserId, currentUserId: currentUser.id, isMod: currentUser.isSocialMod });
+
+            // String karşılaştırma yap
+            const isOwner = String(postUserId) === String(currentUser.id);
+            const canDelete = isOwner || currentUser.isSocialMod;
+
+            console.log('🗑️ İsOwner:', isOwner, 'CanDelete:', canDelete);
+
+            if (!canDelete) {
+                showToast('Bu gönderiyi silme yetkiniz yok!', 'error');
+                return;
+            }
+
+            if (!confirm('Bu gönderiyi silmek istediğinize emin misiniz?')) return;
+
+            try {
+                await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `socialPosts/${postId}`));
+
+                // Yetkili sildiyse bildirim gönder (kendi gönderisi değilse)
+                if (currentUser.isSocialMod && !isOwner) {
+                    await createNotification(
+                        postUserId,
+                        'delete',
+                        '⚠️ Gönderiniz bir moderatör tarafından silindi. Lütfen kurallara uyun.'
+                    );
+                }
+
+                showToast('🗑️ Gönderi silindi', 'success');
+            } catch (e) {
+                console.error('Silme hatası:', e);
+                showToast('❌ Silme hatası: ' + e.message, 'error');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 😀 EMOJİ PICKER
+        // ═══════════════════════════════════════════════════════════════
+        function initEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.innerHTML = EMOJIS.map(e =>
+                `<button class="emoji-btn" onclick="insertEmoji('${e}')">${e}</button>`
+            ).join('');
+        }
+
+        function toggleEmojiPicker() {
+            document.getElementById('emojiPicker').classList.toggle('active');
+        }
+
+        function insertEmoji(emoji) {
+            const textarea = document.getElementById('postContent');
+            textarea.value += emoji;
+            textarea.focus();
+            document.getElementById('emojiPicker').classList.remove('active');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔍 ARAMA FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+        let searchTimeout = null;
+
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim().toLowerCase();
+
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => performSearch(query), 300);
+            });
+
+            // Dışarı tıklayınca kapat
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-box')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        async function performSearch(query) {
+            const resultsEl = document.getElementById('searchResults');
+            resultsEl.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i></div>';
+            resultsEl.style.display = 'block';
+
+            try {
+                // Kullanıcıları ara
+                const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
+                const users = usersSnapshot.exists() ? usersSnapshot.val() : {};
+                const matchedUsers = Object.entries(users)
+                    .filter(([id, u]) => u.username?.toLowerCase().includes(query))
+                    .slice(0, 5);
+
+                // Takımları ara
+                const matchedTeams = window.TribeData?.teams
+                    ? Object.keys(window.TribeData.teams).filter(t => t.toLowerCase().includes(query)).slice(0, 5)
+                    : [];
+
+                // Mesajları ara
+                const matchedPosts = allPosts
+                    .filter(p => p.content?.toLowerCase().includes(query))
+                    .slice(0, 5);
+
+                // Sonuçları göster
+                let html = '';
+
+                if (matchedUsers.length > 0) {
+                    html += '<div class="search-section-title">Kullanıcılar</div>';
+                    matchedUsers.forEach(([id, u]) => {
+                        const avatar = u.avatar?.startsWith('data:image')
+                            ? `<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+                            : u.username?.charAt(0).toUpperCase() || '?';
+                        html += `
+                            <div class="search-result-item" onclick="openProfile('${id}', '${u.username}')">
+                                <div class="search-result-avatar user">${avatar}</div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${u.username || 'Anonim'}</div>
+                                    <div class="search-result-meta">${u.team || 'Kullanıcı'}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (matchedTeams.length > 0) {
+                    html += '<div class="search-section-title">Takımlar</div>';
+                    matchedTeams.forEach(team => {
+                        const logo = window.TribeData.getTeamLogo(team);
+                        html += `
+                            <div class="search-result-item" onclick="filterByTeam('${team}')">
+                                <div class="search-result-avatar team"><img src="${logo}" alt="${team}"></div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${team} <i class="fas fa-check-circle verified-badge"></i></div>
+                                    <div class="search-result-meta">Takım Hesabı</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (matchedPosts.length > 0) {
+                    html += '<div class="search-section-title">Mesajlar</div>';
+                    matchedPosts.forEach(post => {
+                        const preview = post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content;
+                        html += `
+                            <div class="search-result-item" onclick="scrollToPost('${post.id}')">
+                                <div class="search-result-avatar user"><i class="fas fa-quote-left"></i></div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${post.username || 'Anonim'}</div>
+                                    <div class="search-result-meta">${preview}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                if (!html) {
+                    html = '<div class="search-no-results"><i class="fas fa-search"></i><p>Sonuç bulunamadı</p></div>';
+                }
+
+                resultsEl.innerHTML = html;
+
+            } catch (e) {
+                resultsEl.innerHTML = '<div class="search-no-results">Arama hatası</div>';
+            }
+        }
+
+        function filterByTeam(teamName) {
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            // Takıma göre filtrele
+            const filtered = allPosts.filter(p => p.teamName === teamName);
+            renderPostsFiltered(filtered, `${teamName} Gönderileri`);
+        }
+
+        function scrollToPost(postId) {
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+            if (postEl) {
+                postEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                postEl.style.boxShadow = '0 0 20px var(--primary)';
+                setTimeout(() => postEl.style.boxShadow = '', 2000);
+            }
+        }
+
+        function renderPostsFiltered(posts, title) {
+            const container = document.getElementById('feedContainer');
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><p>${title}: Gönderi bulunamadı</p></div>`;
+                return;
+            }
+            container.innerHTML = `<div style="padding: 15px; color: var(--primary); font-weight: 600;">${title} (${posts.length})</div>`;
+            posts.forEach(post => container.innerHTML += createPostHTML(post));
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔄 HESAP DEĞİŞTİRME (KİŞİSEL / TAKIM)
+        // ═══════════════════════════════════════════════════════════════
+        let isTeamMode = false;
+        let connectedTeamAccount = null;
+
+        async function checkTeamAccount() {
+            // Önce localStorage'a bak (şifre ile giriş yapılmış)
+            const savedTeam = localStorage.getItem('tribeTeamAccount');
+            if (savedTeam) {
+                connectedTeamAccount = JSON.parse(savedTeam);
+                document.getElementById('accountSwitcher').style.display = 'flex';
+                updateAccountSwitcherUI();
+                return;
+            }
+
+            // Firebase'den linkedTeamAccount kontrol et (admin tarafından atanmış)
+            if (currentUser && window.firebaseDb) {
+                try {
+                    const userRef = window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`);
+                    const snapshot = await window.firebaseGet(userRef);
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        if (userData.linkedTeamAccount) {
+                            connectedTeamAccount = { teamName: userData.linkedTeamAccount };
+                            document.getElementById('accountSwitcher').style.display = 'flex';
+                            updateAccountSwitcherUI();
+                        }
+                    }
+                } catch (e) {
+                    console.log('Takım hesabı kontrolü:', e.message);
+                }
+            }
+        }
+
+        function toggleAccountType() {
+            isTeamMode = !isTeamMode;
+            updateAccountSwitcherUI();
+        }
+
+        function updateAccountSwitcherUI() {
+            const btn = document.getElementById('accountSwitchBtn');
+            const indicator = document.getElementById('accountIndicator');
+            const label = document.getElementById('accountLabel');
+            const avatar = document.getElementById('currentUserAvatar');
+
+            if (isTeamMode && connectedTeamAccount) {
+                btn.classList.add('team-mode');
+                indicator.innerHTML = '🏟️';
+                label.textContent = connectedTeamAccount.teamName;
+
+                // Avatar'ı takım logosuyla değiştir
+                if (window.TribeData?.teams?.[connectedTeamAccount.teamName]?.logo) {
+                    avatar.innerHTML = `<img src="${window.TribeData.teams[connectedTeamAccount.teamName].logo}" style="width:100%;height:100%;object-fit:contain;">`;
+                } else {
+                    avatar.textContent = connectedTeamAccount.teamName.charAt(0);
+                }
+            } else {
+                btn.classList.remove('team-mode');
+                indicator.innerHTML = '👤';
+                label.textContent = 'Kişisel';
+
+                // Avatar'ı kullanıcı avatarına geri döndür
+                if (currentUser?.avatar?.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    avatar.textContent = currentUser?.username?.charAt(0).toUpperCase() || '?';
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🚀 BAŞLAT
+        // ═══════════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', async () => {
+            initEmojiPicker();
+            initSearch();
+            await checkUserAuth();
+            checkTeamAccount();
+            loadPosts();
+            loadNotifications();
+        });
+
+        document.addEventListener('click', (e) => {
+            const picker = document.getElementById('emojiPicker');
+            if (!e.target.closest('.post-tools')) {
+                picker.classList.remove('active');
+            }
+        });
+
+        document.getElementById('profileModal').addEventListener('click', (e) => {
+            if (e.target.id === 'profileModal') {
+                closeProfileModal();
+            }
+        });
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anket Merkezi - Tribe League</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --bg-glass: rgba(20, 20, 25, 0.95);
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --text-main: #fff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(196, 255, 14, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Poll Card */
+        .poll-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .poll-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .poll-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .poll-question {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            flex: 1;
+        }
+
+        .poll-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .poll-badge.active {
+            background: rgba(46, 213, 115, 0.2);
+            color: var(--success);
+        }
+
+        .poll-badge.ended {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--danger);
+        }
+
+        /* Poll Options */
+        .poll-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .poll-option {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .poll-option:hover {
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.05);
+        }
+
+        .poll-option.selected {
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.1);
+        }
+
+        .poll-option.voted {
+            cursor: default;
+        }
+
+        .poll-option-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), rgba(196, 255, 14, 0.3));
+            opacity: 0.2;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .poll-option-content {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .poll-option-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .poll-option-text img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+
+        .poll-option-percent {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .poll-option-votes {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Poll Footer */
+        .poll-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .poll-stats {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .poll-stats i {
+            margin-right: 5px;
+            color: var(--accent);
+        }
+
+        .btn-vote {
+            background: linear-gradient(135deg, var(--primary), #a8e000);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-vote:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+
+        .btn-vote:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Login Required */
+        .login-required {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-required a {
+            color: var(--warning);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-poll"></i> ANKET MERKEZİ</h1>
+            <p style="color: var(--text-muted);">Oy ver, fikrini paylaş!</p>
+        </div>
+
+        <!-- Login Check -->
+        <div id="loginRequired" class="login-required" style="display: none;">
+            <i class="fas fa-user-lock" style="font-size: 2rem; color: var(--warning); margin-bottom: 10px;"></i>
+            <p>Oy vermek için <a href="account.html">giriş yapmalısınız</a></p>
+        </div>
+
+        <!-- Polls Container -->
+        <div id="pollsContainer">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Anketler yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        let currentUser = null;
+        let userVotes = {};
+
+        // Firebase bekle
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebaseDb && attempts < 50) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            return window.firebaseDb !== undefined;
+        }
+
+        // Kullanıcı kontrolü
+        function checkUser() {
+            const stored = localStorage.getItem('tribeUser');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+                document.getElementById('loginRequired').style.display = 'none';
+            } else {
+                document.getElementById('loginRequired').style.display = 'block';
+            }
+        }
+
+        // Anketleri yükle
+        async function loadPolls() {
+            const container = document.getElementById('pollsContainer');
+
+            try {
+                await waitForFirebase();
+
+                // Kullanıcı oylarını çek
+                if (currentUser) {
+                    const votesSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `userVotes/${currentUser.id}`));
+                    if (votesSnapshot.exists()) {
+                        userVotes = votesSnapshot.val();
+                    }
+                }
+
+                // Anketleri dinle
+                const pollsRef = window.firebaseRef(window.firebaseDb, 'polls');
+                window.firebaseOnValue(pollsRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const polls = snapshot.val();
+                        renderPolls(polls);
+                    } else {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-poll-h"></i>
+                                <p>Henüz aktif anket yok</p>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (e) {
+                console.error('Anket yükleme hatası:', e);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Anketler yüklenemedi</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Anketleri render et
+        function renderPolls(polls) {
+            const container = document.getElementById('pollsContainer');
+            const pollsArray = Object.entries(polls).sort((a, b) => b[1].createdAt - a[1].createdAt);
+
+            container.innerHTML = pollsArray.map(([id, poll]) => {
+                const totalVotes = poll.options ? poll.options.reduce((sum, opt) => sum + (opt.votes || 0), 0) : 0;
+                const hasVoted = userVotes[id] !== undefined;
+                const isActive = !poll.endDate || poll.endDate > Date.now();
+
+                return `
+                    <div class="poll-card" data-poll-id="${id}">
+                        <div class="poll-header">
+                            <div class="poll-question">${poll.question}</div>
+                            <span class="poll-badge ${isActive ? 'active' : 'ended'}">${isActive ? 'Aktif' : 'Sona Erdi'}</span>
+                        </div>
+                        
+                        <div class="poll-options">
+                            ${poll.options.map((opt, i) => {
+                    const percent = totalVotes > 0 ? Math.round((opt.votes || 0) / totalVotes * 100) : 0;
+                    const isSelected = userVotes[id] === i;
+                    const logo = window.TribeData?.getTeamLogo?.(opt.text) || '';
+
+                    return `
+                                    <div class="poll-option ${hasVoted ? 'voted' : ''} ${isSelected ? 'selected' : ''}" 
+                                         onclick="${hasVoted || !isActive ? '' : `selectOption('${id}', ${i})`}"
+                                         data-option="${i}">
+                                        <div class="poll-option-bar" style="width: ${hasVoted ? percent : 0}%"></div>
+                                        <div class="poll-option-content">
+                                            <div class="poll-option-text">
+                                                ${logo ? `<img src="${logo}" alt="${opt.text}">` : ''}
+                                                <span>${opt.text}</span>
+                                            </div>
+                                            ${hasVoted ? `
+                                                <div style="text-align: right;">
+                                                    <div class="poll-option-percent">${percent}%</div>
+                                                    <div class="poll-option-votes">${opt.votes || 0} oy</div>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                }).join('')}
+                        </div>
+                        
+                        <div class="poll-footer">
+                            <div class="poll-stats">
+                                <span><i class="fas fa-users"></i> ${totalVotes} oy</span>
+                                <span><i class="fas fa-clock"></i> ${getTimeAgo(poll.createdAt)}</span>
+                            </div>
+                            ${!hasVoted && isActive && currentUser ? `
+                                <button class="btn-vote" onclick="submitVote('${id}')" id="voteBtn-${id}" disabled>
+                                    <i class="fas fa-check"></i> Oy Ver
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Seçenek seç
+        let selectedOptions = {};
+        function selectOption(pollId, optionIndex) {
+            selectedOptions[pollId] = optionIndex;
+
+            // UI güncelle
+            const card = document.querySelector(`[data-poll-id="${pollId}"]`);
+            card.querySelectorAll('.poll-option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === optionIndex);
+            });
+
+            // Vote butonunu aktif et
+            const btn = document.getElementById(`voteBtn-${pollId}`);
+            if (btn) btn.disabled = false;
+        }
+
+        // Oy ver
+        async function submitVote(pollId) {
+            if (!currentUser) {
+                alert('Oy vermek için giriş yapmalısınız!');
+                return;
+            }
+
+            const optionIndex = selectedOptions[pollId];
+            if (optionIndex === undefined) return;
+
+            try {
+                // Oy sayısını artır
+                const pollRef = window.firebaseRef(window.firebaseDb, `polls/${pollId}/options/${optionIndex}/votes`);
+                const snapshot = await window.firebaseGet(pollRef);
+                const currentVotes = snapshot.exists() ? snapshot.val() : 0;
+                await window.firebaseSet(pollRef, currentVotes + 1);
+
+                // Kullanıcının oyunu kaydet
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, `userVotes/${currentUser.id}/${pollId}`), optionIndex);
+
+                userVotes[pollId] = optionIndex;
+                loadPolls();
+
+            } catch (e) {
+                console.error('Oy verme hatası:', e);
+                alert('Oy verirken hata oluştu!');
+            }
+        }
+
+        function getTimeAgo(timestamp) {
+            if (!timestamp) return '';
+            const diff = Date.now() - timestamp;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const days = Math.floor(hours / 24);
+            if (days > 0) return `${days} gün önce`;
+            if (hours > 0) return `${hours} saat önce`;
+            return 'Az önce';
+        }
+
+        // Sayfa yüklenince
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUser();
+            setTimeout(loadPolls, 500);
+        });
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

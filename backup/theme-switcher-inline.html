@@ -1,0 +1,88 @@
+<!-- TEMA DEĞİŞTİRİCİ - Bu kodu </body> tagından önce yapıştır -->
+<script>
+  (function () {
+    'use strict';
+    const STORAGE_KEY = 'tribe-league-theme';
+    const THEMES = {
+      dark: { name: "Karanlık", icon: "fa-moon", vars: { "--bg-body": "#0a0a0e", "--bg-card": "#141419", "--bg-glass": "rgba(20,20,25,0.95)", "--primary": "#c4ff0e", "--primary-glow": "rgba(196,255,14,0.4)", "--accent": "#00d4ff", "--text-main": "#ffffff", "--text-muted": "#8b8b96", "--text-on-primary": "#000000", "--header-text": "#c4ff0e", "--border": "rgba(255,255,255,0.08)", "--header-bg": "linear-gradient(135deg,#222 0%,#111 100%)" } },
+      light: { name: "Aydınlık", icon: "fa-sun", vars: { "--bg-body": "#f0f2f5", "--bg-card": "#ffffff", "--bg-glass": "rgba(255,255,255,0.95)", "--primary": "#1a1a1a", "--primary-glow": "rgba(0,0,0,0.2)", "--accent": "#555555", "--text-main": "#1a1a1a", "--text-muted": "#666666", "--text-on-primary": "#ffffff", "--header-text": "#ffffff", "--border": "rgba(0,0,0,0.1)", "--header-bg": "linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%)" } },
+      galatasaray: { name: "Galatasaray", icon: "fa-futbol", vars: { "--bg-body": "#1a0808", "--bg-card": "#2a1212", "--bg-glass": "rgba(42,18,18,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#ff0000", "--text-main": "#ffffff", "--text-muted": "#ffcccc", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#8b0000 0%,#4a0000 100%)" } },
+      fenerbahce: { name: "Fenerbahçe", icon: "fa-futbol", vars: { "--bg-body": "#0a0a1a", "--bg-card": "#12123a", "--bg-glass": "rgba(18,18,58,0.95)", "--primary": "#ffed00", "--primary-glow": "rgba(255,237,0,0.4)", "--accent": "#0033a0", "--text-main": "#ffffff", "--text-muted": "#ccccff", "--text-on-primary": "#000000", "--border": "rgba(255,237,0,0.2)", "--header-bg": "linear-gradient(135deg,#0033a0 0%,#001a50 100%)" } },
+      besiktas: { name: "Beşiktaş", icon: "fa-futbol", vars: { "--bg-body": "#0a0a0a", "--bg-card": "#1a1a1a", "--bg-glass": "rgba(26,26,26,0.95)", "--primary": "#ffffff", "--primary-glow": "rgba(255,255,255,0.3)", "--accent": "#e0e0e0", "--text-main": "#ffffff", "--text-muted": "#999999", "--text-on-primary": "#000000", "--border": "rgba(255,255,255,0.15)", "--header-bg": "linear-gradient(135deg,#333333 0%,#1a1a1a 100%)" } },
+      trabzonspor: { name: "Trabzonspor", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#1a1025", "--bg-glass": "rgba(26,16,37,0.95)", "--primary": "#00bfff", "--primary-glow": "rgba(0,191,255,0.4)", "--accent": "#8b0000", "--text-main": "#ffffff", "--text-muted": "#ccaaff", "--text-on-primary": "#000000", "--border": "rgba(0,191,255,0.2)", "--header-bg": "linear-gradient(135deg,#6b0000 0%,#400000 100%)" } },
+      basaksehir: { name: "Başakşehir", icon: "fa-futbol", vars: { "--bg-body": "#100a05", "--bg-card": "#201510", "--bg-glass": "rgba(32,21,16,0.95)", "--primary": "#ff6600", "--primary-glow": "rgba(255,102,0,0.4)", "--accent": "#1a1a80", "--text-main": "#ffffff", "--text-muted": "#ffcc99", "--text-on-primary": "#000000", "--border": "rgba(255,102,0,0.2)", "--header-bg": "linear-gradient(135deg,#1a1a80 0%,#0d0d40 100%)" } },
+      alanyaspor: { name: "Alanyaspor", icon: "fa-futbol", vars: { "--bg-body": "#051005", "--bg-card": "#0a200a", "--bg-glass": "rgba(10,32,10,0.95)", "--primary": "#ff8c00", "--primary-glow": "rgba(255,140,0,0.4)", "--accent": "#228b22", "--text-main": "#ffffff", "--text-muted": "#aaffaa", "--text-on-primary": "#000000", "--border": "rgba(255,140,0,0.2)", "--header-bg": "linear-gradient(135deg,#228b22 0%,#145214 100%)" } },
+      antalyaspor: { name: "Antalyaspor", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#200a0a", "--bg-glass": "rgba(32,10,10,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+      konyaspor: { name: "Konyaspor", icon: "fa-futbol", vars: { "--bg-body": "#051005", "--bg-card": "#0a1f0a", "--bg-glass": "rgba(10,31,10,0.95)", "--primary": "#00cc00", "--primary-glow": "rgba(0,204,0,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#aaffaa", "--text-on-primary": "#000000", "--border": "rgba(0,204,0,0.2)", "--header-bg": "linear-gradient(135deg,#228b22 0%,#145214 100%)" } },
+      samsunspor: { name: "Samsunspor", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#1f0a0a", "--bg-glass": "rgba(31,10,10,0.95)", "--primary": "#ff4444", "--primary-glow": "rgba(255,68,68,0.4)", "--accent": "#ffffff", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,68,68,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+      kayserispor: { name: "Kayserispor", icon: "fa-futbol", vars: { "--bg-body": "#0f0a00", "--bg-card": "#1f1505", "--bg-glass": "rgba(31,21,5,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#cc0000", "--text-main": "#ffffff", "--text-muted": "#ffeeaa", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+      goztepe: { name: "Göztepe", icon: "fa-futbol", vars: { "--bg-body": "#0f0a00", "--bg-card": "#1f1500", "--bg-glass": "rgba(31,21,0,0.95)", "--primary": "#ffd700", "--primary-glow": "rgba(255,215,0,0.4)", "--accent": "#cc0000", "--text-main": "#ffffff", "--text-muted": "#ffeeaa", "--text-on-primary": "#000000", "--border": "rgba(255,215,0,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+      gaziantep: { name: "Gaziantep FK", icon: "fa-futbol", vars: { "--bg-body": "#100505", "--bg-card": "#1f0a0a", "--bg-glass": "rgba(31,10,10,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#1a1a1a", "--text-main": "#ffffff", "--text-muted": "#ffaaaa", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } },
+      eyupspor: { name: "Eyüpspor", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#150a1f", "--bg-glass": "rgba(21,10,31,0.95)", "--primary": "#9932cc", "--primary-glow": "rgba(153,50,204,0.4)", "--accent": "#ffd700", "--text-main": "#ffffff", "--text-muted": "#ddaaff", "--text-on-primary": "#ffffff", "--border": "rgba(153,50,204,0.2)", "--header-bg": "linear-gradient(135deg,#6b0099 0%,#3d0057 100%)" } },
+      genclerbirligi: { name: "Gençlerbirliği", icon: "fa-futbol", vars: { "--bg-body": "#0a0510", "--bg-card": "#150a1a", "--bg-glass": "rgba(21,10,26,0.95)", "--primary": "#ff3333", "--primary-glow": "rgba(255,51,51,0.4)", "--accent": "#1a1a1a", "--text-main": "#ffffff", "--text-muted": "#ffaacc", "--text-on-primary": "#ffffff", "--border": "rgba(255,51,51,0.2)", "--header-bg": "linear-gradient(135deg,#cc0000 0%,#660000 100%)" } }
+    };
+
+    function applyTheme(key) {
+      const t = THEMES[key];
+      if (!t) return;
+      Object.entries(t.vars).forEach(function (e) { document.documentElement.style.setProperty(e[0], e[1]) });
+      localStorage.setItem(STORAGE_KEY, key);
+      document.querySelectorAll('.tribe-theme-option').forEach(function (o) { o.classList.toggle('active', o.dataset.theme === key) });
+      var btn = document.querySelector('.tribe-theme-btn i');
+      if (btn) btn.className = 'fas ' + t.icon;
+    }
+
+    function createSwitcher() {
+      if (document.getElementById('tribeThemeSwitcher')) return;
+      var c = document.createElement('div');
+      c.id = 'tribeThemeSwitcher';
+      var css = '#tribeThemeSwitcher{position:fixed;bottom:25px;right:25px;z-index:9999;font-family:Outfit,sans-serif}' +
+        '.tribe-theme-btn{width:55px;height:55px;border-radius:50%;background:var(--bg-card,#141419);border:2px solid var(--border,rgba(255,255,255,0.1));color:var(--primary,#c4ff0e);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,0.4)}' +
+        '.tribe-theme-btn:hover{transform:scale(1.1);border-color:var(--primary,#c4ff0e)}' +
+        '.tribe-theme-dropdown{position:absolute;bottom:65px;right:0;background:var(--bg-card,#141419);border:1px solid var(--border);border-radius:16px;padding:15px;min-width:200px;max-height:60vh;overflow-y:auto;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.5)}' +
+        '.tribe-theme-dropdown.active{display:block}' +
+        '.tribe-theme-title{font-family:Teko,sans-serif;font-size:1.2rem;color:var(--primary,#c4ff0e);margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}' +
+        '.tribe-theme-section{font-size:.7rem;color:var(--text-muted,#888);text-transform:uppercase;padding:10px 0 5px;letter-spacing:1px}' +
+        '.tribe-theme-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:.2s;margin-bottom:4px;background:transparent;border:none;width:100%;color:var(--text-main,#fff);font-family:Outfit,sans-serif;font-size:.9rem;text-align:left}' +
+        '.tribe-theme-option:hover{background:rgba(255,255,255,0.1)}' +
+        '.tribe-theme-option.active{background:var(--primary,#c4ff0e);color:var(--text-on-primary,#000)}' +
+        '.tribe-theme-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem}';
+
+      var html = '<style>' + css + '</style>' +
+        '<button class="tribe-theme-btn" id="themeToggleBtn"><i class="fas fa-palette"></i></button>' +
+        '<div class="tribe-theme-dropdown" id="tribeThemeDropdown">' +
+        '<div class="tribe-theme-title"><i class="fas fa-paint-brush"></i> Tema Seç</div>' +
+        '<div class="tribe-theme-section">Ana Temalar</div>';
+
+      Object.keys(THEMES).forEach(function (k) {
+        var t = THEMES[k];
+        html += '<button class="tribe-theme-option" data-theme="' + k + '"><span class="tribe-theme-icon"><i class="fas ' + t.icon + '"></i></span><span>' + t.name + '</span></button>';
+      });
+      html += '</div>';
+      c.innerHTML = html;
+      document.body.appendChild(c);
+
+      document.getElementById('themeToggleBtn').onclick = function () {
+        document.getElementById('tribeThemeDropdown').classList.toggle('active');
+      };
+      c.querySelectorAll('.tribe-theme-option').forEach(function (btn) {
+        btn.onclick = function () { applyTheme(this.dataset.theme) };
+      });
+      document.addEventListener('click', function (e) {
+        if (!c.contains(e.target)) document.getElementById('tribeThemeDropdown').classList.remove('active');
+      });
+    }
+
+    function init() {
+      createSwitcher();
+      var saved = localStorage.getItem(STORAGE_KEY) || 'dark';
+      applyTheme(saved);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

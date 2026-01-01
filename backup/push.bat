@@ -1,0 +1,1 @@
+git add . && git commit -m "Improve mobile responsiveness - better navigation and viewport handling" && git push

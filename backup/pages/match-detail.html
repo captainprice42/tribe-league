@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maç Detayı - Tribe League</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --accent: #00d4ff;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .match-detail-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            width: 95%;
+            text-align: center;
+        }
+
+        .match-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-live {
+            background: linear-gradient(135deg, #ff4757, #ff6b7a);
+            color: #fff;
+        }
+
+        .status-finished {
+            background: linear-gradient(135deg, #2ed573, #7bed9f);
+            color: #000;
+        }
+
+        .status-upcoming {
+            background: linear-gradient(135deg, #ffa502, #ffbe32);
+            color: #000;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .teams-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .team-box {
+            text-align: center;
+        }
+
+        .team-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+        }
+
+        .team-name {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .score {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            color: var(--primary);
+            text-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .score-divider {
+            font-size: 2rem;
+            color: var(--text-muted);
+        }
+
+        .match-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .events-section {
+            text-align: left;
+            margin-top: 25px;
+        }
+
+        .events-title {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .event-minute {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: var(--primary);
+            min-width: 50px;
+        }
+
+        .event-icon {
+            font-size: 1.2rem;
+        }
+
+        .event-icon.goal {
+            color: #2ed573;
+        }
+
+        .event-icon.yellow {
+            color: #ffa502;
+        }
+
+        .event-icon.red {
+            color: #ff4757;
+        }
+
+        .event-text {
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #a8d900);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid var(--border);
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            font-size: 3rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-match {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .no-match i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="match-detail-container" id="matchContainer">
+        <div class="loading-container">
+            <i class="fas fa-futbol loading-spinner"></i>
+            <p style="margin-top: 20px; color: var(--text-muted);">Maç bilgileri yükleniyor...</p>
+        </div>
+    </div>
+
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        // URL'den maç ID'sini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchId = parseInt(urlParams.get('id')) || 0;
+
+        function getStatusText(status) {
+            const statusMap = {
+                'upcoming': 'Başlamadı',
+                'firstHalf': '1. Yarı',
+                'halftime': 'Devre Arası',
+                'secondHalf': '2. Yarı',
+                'finished': 'Maç Bitti'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getStatusClass(status) {
+            if (status === 'finished') return 'status-finished';
+            if (status === 'upcoming') return 'status-upcoming';
+            return 'status-live';
+        }
+
+        function renderMatch(match, teams) {
+            const container = document.getElementById('matchContainer');
+
+            if (!match) {
+                container.innerHTML = `
+                    <div class="no-match">
+                        <i class="fas fa-question-circle"></i>
+                        <p>Maç bulunamadı</p>
+                        <a href="fixtures.html" class="btn btn-primary" style="margin-top: 20px;">
+                            <i class="fas fa-arrow-left"></i> Fikstüre Dön
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const homeLogo = teams?.[match.home]?.logo || 'https://via.placeholder.com/100?text=?';
+            const awayLogo = teams?.[match.away]?.logo || 'https://via.placeholder.com/100?text=?';
+            const isLive = ['firstHalf', 'secondHalf', 'halftime'].includes(match.status);
+
+            // Eventleri render et
+            let eventsHtml = '';
+            if (match.events && match.events.length > 0) {
+                eventsHtml = `
+                    <div class="events-section">
+                        <h3 class="events-title"><i class="fas fa-list"></i> Maç Olayları</h3>
+                        ${match.events.map(e => `
+                            <div class="event-item">
+                                <span class="event-minute">${e.minute}'</span>
+                                <i class="fas ${e.type === 'goal' ? 'fa-futbol event-icon goal' :
+                        e.type === 'yellowCard' ? 'fa-square event-icon yellow' :
+                            e.type === 'redCard' ? 'fa-square event-icon red' : 'fa-circle'}"
+                                ></i>
+                                <span class="event-text">${e.player} (${e.team})</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="match-status ${getStatusClass(match.status)}">
+                    ${isLive ? '<i class="fas fa-circle" style="font-size: 0.6rem; margin-right: 8px;"></i>' : ''}
+                    ${getStatusText(match.status)}
+                    ${match.minute ? ` - ${match.minute}'` : ''}
+                </div>
+
+                <div class="teams-row">
+                    <div class="team-box">
+                        <img class="team-logo" src="${homeLogo}" alt="${match.home}">
+                        <div class="team-name">${match.home}</div>
+                    </div>
+                    <div class="score-box">
+                        <span class="score">${match.homeScore ?? 0}</span>
+                        <span class="score-divider">-</span>
+                        <span class="score">${match.awayScore ?? 0}</span>
+                    </div>
+                    <div class="team-box">
+                        <img class="team-logo" src="${awayLogo}" alt="${match.away}">
+                        <div class="team-name">${match.away}</div>
+                    </div>
+                </div>
+
+                <div class="match-info">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <div class="info-label">HAFTA</div>
+                            <div class="info-value">${match.week || '-'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">DURUM</div>
+                            <div class="info-value">${getStatusText(match.status)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${eventsHtml}
+
+                <div class="action-buttons">
+                    ${isLive ? `
+                        <a href="live-match.html" class="btn btn-primary">
+                            <i class="fas fa-broadcast-tower"></i> Canlı İzle
+                        </a>
+                    ` : ''}
+                    <a href="fixtures.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Fikstür
+                    </a>
+                </div>
+            `;
+
+            // Sayfa başlığını güncelle
+            document.title = `${match.home} vs ${match.away} - Tribe League`;
+        }
+
+        // Firebase'den maç verilerini dinle
+        listenLiveMatch((data) => {
+            if (data && data.matches) {
+                const match = data.matches.find(m => m.id === matchId);
+                // teams verisini de al
+                listenAllData((allData) => {
+                    renderMatch(match, allData?.teams);
+                });
+            }
+        });
+
+        // Fallback - eğer canlı maç yoksa fixtures'dan al
+        listenAllData((data) => {
+            if (data && data.matches) {
+                const match = data.matches[matchId];
+                if (match) {
+                    renderMatch(match, data.teams);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gol Krallığı - Tribe League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --gold: #ffd700;
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .firebase-badge {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .modern-table th {
+            text-align: left;
+            padding: 15px 20px;
+            color: var(--text-muted);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .modern-table tbody tr {
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .modern-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        .modern-table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+        }
+
+        .rank-cell {
+            width: 60px;
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .rank-1 {
+            color: var(--gold);
+        }
+
+        .rank-2 {
+            color: #c0c0c0;
+        }
+
+        .rank-3 {
+            color: #cd7f32;
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .team-flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-logo-sm {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .team-name-sub {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .points-box {
+            background: var(--primary);
+            color: #000;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .modern-table td {
+                padding: 10px;
+            }
+
+            .rank-cell {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="special-container">
+        <div class="header-banner">
+            <h1><i class="fas fa-futbol"></i> GOL KRALLIĞI</h1>
+        </div>
+
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Oyuncu</th>
+                    <th>Gol</th>
+                </tr>
+            </thead>
+            <tbody id="scorersBody">
+                <tr>
+                    <td colspan="3" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../data.js"></script>
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        function getLogoUrl(teamName) {
+            return TribeData?.teams?.[teamName]?.logo || "https://via.placeholder.com/24?text=?";
+        }
+
+        function renderScorers(scorers, teams) {
+            const tbody = document.getElementById('scorersBody');
+
+            if (!scorers || scorers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="loading">Henüz golcü verisi yok</td></tr>';
+                return;
+            }
+
+            // Gole göre sırala
+            const sorted = [...scorers].sort((a, b) => b.goals - a.goals);
+
+            let html = '';
+            sorted.forEach((player, i) => {
+                const rank = i + 1;
+                let rankClass = '';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                const logo = teams?.[player.team]?.logo || getLogoUrl(player.team);
+
+                html += `
+                    <tr>
+                        <td class="rank-cell ${rankClass}">${rank}</td>
+                        <td>
+                            <div class="player-info">
+                                <span class="player-name">${player.name}</span>
+                                <div class="team-flex">
+                                    <img src="${logo}" class="team-logo-sm">
+                                    <span class="team-name-sub">${player.team}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="points-box">${player.goals}</span></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        let dataLoaded = false;
+        function init() {
+            // Sadece Firebase'den yükle
+            listenAllData((data) => {
+                dataLoaded = true;
+                renderScorers(data.scorers, data.teams);
+            });
+
+            // 3 saniye fallback
+            setTimeout(() => {
+                if (!dataLoaded && typeof TribeData !== 'undefined') {
+                    renderScorers(TribeData.scorers, TribeData.teams);
+                }
+            }, 3000);
+        }
+
+        init();
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+</body>
+
+</html>

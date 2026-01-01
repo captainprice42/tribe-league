@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haftanın XI'i - Tribe League</title>
+    <meta name="description" content="Tribe League Haftanın En İyi 11'i">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-body: #0a0a0e;
+            --bg-card: #141419;
+            --primary: #c4ff0e;
+            --primary-glow: rgba(196, 255, 14, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #8b8b96;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-head: 'Teko', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --pitch-green: #2d5a27;
+            --pitch-light: #3d7a37;
+            --pos-gk: #ff9800;
+            --pos-df: #2196f3;
+            --pos-mf: #4caf50;
+            --pos-fw: #f44336;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .special-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 900px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        /* Header */
+        .header-banner {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(135deg, #222 0%, #111 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+        }
+
+        .header-banner h1 {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        /* Week Selector */
+        .week-selector-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .week-selector-label {
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .week-selector {
+            background: linear-gradient(135deg, #1a1a20 0%, #0d0d10 100%);
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .week-selector:hover,
+        .week-selector:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .week-selector option {
+            background: #1a1a20;
+            color: #fff;
+            padding: 10px;
+        }
+
+        /* Football Pitch */
+        .pitch-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            aspect-ratio: 68/105;
+            background: linear-gradient(180deg,
+                    var(--pitch-green) 0%,
+                    var(--pitch-light) 12.5%,
+                    var(--pitch-green) 12.5%,
+                    var(--pitch-green) 25%,
+                    var(--pitch-light) 25%,
+                    var(--pitch-light) 37.5%,
+                    var(--pitch-green) 37.5%,
+                    var(--pitch-green) 50%,
+                    var(--pitch-light) 50%,
+                    var(--pitch-light) 62.5%,
+                    var(--pitch-green) 62.5%,
+                    var(--pitch-green) 75%,
+                    var(--pitch-light) 75%,
+                    var(--pitch-light) 87.5%,
+                    var(--pitch-green) 87.5%);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Pitch Lines */
+        .pitch-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .pitch-lines::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20%;
+            aspect-ratio: 1;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .center-spot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Goal Areas */
+        .goal-area-top,
+        .goal-area-bottom {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .goal-area-top {
+            top: 0;
+            width: 44%;
+            height: 16%;
+        }
+
+        .goal-area-bottom {
+            bottom: 0;
+            width: 44%;
+            height: 16%;
+        }
+
+        .penalty-area-top,
+        .penalty-area-bottom {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .penalty-area-top {
+            top: 0;
+            width: 20%;
+            height: 6%;
+        }
+
+        .penalty-area-bottom {
+            bottom: 0;
+            width: 20%;
+            height: 6%;
+        }
+
+        /* Player Positions Container */
+        .players-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* Player Card */
+        .player-slot {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .player-card {
+            width: 70px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .player-card:hover {
+            transform: scale(1.1);
+        }
+
+        .player-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+            margin: 0 auto 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #666;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .player-avatar.filled {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-avatar .position-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.6rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border: 2px solid var(--bg-card);
+        }
+
+        .position-badge.gk {
+            background: var(--pos-gk);
+        }
+
+        .position-badge.df {
+            background: var(--pos-df);
+        }
+
+        .position-badge.mf {
+            background: var(--pos-mf);
+        }
+
+        .position-badge.fw {
+            background: var(--pos-fw);
+        }
+
+        .player-name {
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-team-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .player-team-logo {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        .player-team {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Player positions - 4-3-3 formation */
+        .pos-gk {
+            top: 90%;
+            left: 50%;
+        }
+
+        .pos-lb {
+            top: 75%;
+            left: 15%;
+        }
+
+        .pos-lcb {
+            top: 75%;
+            left: 35%;
+        }
+
+        .pos-rcb {
+            top: 75%;
+            left: 65%;
+        }
+
+        .pos-rb {
+            top: 75%;
+            left: 85%;
+        }
+
+        .pos-lm {
+            top: 50%;
+            left: 20%;
+        }
+
+        .pos-cm {
+            top: 50%;
+            left: 50%;
+        }
+
+        .pos-rm {
+            top: 50%;
+            left: 80%;
+        }
+
+        .pos-lw {
+            top: 25%;
+            left: 20%;
+        }
+
+        .pos-st {
+            top: 20%;
+            left: 50%;
+        }
+
+        .pos-rw {
+            top: 25%;
+            left: 80%;
+        }
+
+        /* Empty state */
+        .player-empty {
+            opacity: 0.5;
+        }
+
+        .player-empty .player-avatar {
+            border-color: rgba(255, 255, 255, 0.3);
+            border-style: dashed;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            z-index: 100;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--primary-glow);
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 380px;
+            box-shadow: 0 0 60px var(--primary-glow);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-title {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin: 0 0 25px;
+            color: #fff;
+        }
+
+        .login-title i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 14px 16px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .login-error {
+            color: #ff4466;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #666;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-close:hover {
+            color: #fff;
+        }
+
+        /* Edit Toolbar */
+        .edit-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            gap: 12px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .edit-toolbar.active {
+            display: flex;
+        }
+
+        .toolbar-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .toolbar-btn:hover {
+            background: #333;
+        }
+
+        .toolbar-btn.primary {
+            background: var(--primary);
+            color: #000;
+            border: none;
+        }
+
+        .toolbar-btn.primary:hover {
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .toolbar-btn.danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        /* Player Edit Modal */
+        .player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-modal.active {
+            display: flex;
+        }
+
+        .player-modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 400px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-title {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .modal-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .modal-input::placeholder {
+            color: #666;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        /* Team Selector in Modal */
+        .modal-select {
+            width: 100%;
+            background: #000;
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .modal-select option {
+            background: #1a1a20;
+            color: #fff;
+            padding: 10px;
+        }
+
+        /* Photo Upload */
+        .photo-upload-wrapper {
+            margin-bottom: 15px;
+        }
+
+        .photo-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .photo-upload-label:hover {
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.05);
+        }
+
+        .photo-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            display: none;
+        }
+
+        .photo-preview.active {
+            display: block;
+        }
+
+        .photo-upload-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .photo-upload-text i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        #photoInput {
+            display: none;
+        }
+
+        /* Export Modal */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal.active {
+            display: flex;
+        }
+
+        .export-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 700px;
+            max-width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .export-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 0 10px;
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #1a1a1f 0%, #0d0d10 100%);
+            color: #e0e0e0;
+            border: 2px solid var(--border);
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            resize: none;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .player-card {
+                width: 55px;
+            }
+
+            .player-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .player-name {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════ */
+        /* VOTING SECTION STYLES */
+        /* ═══════════════════════════════════════════════════════════════ */
+        .voting-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .voting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .voting-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .voting-timer {
+            background: rgba(196, 255, 14, 0.1);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+        }
+
+        .voting-position-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .voting-position-title {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 0 0 15px;
+        }
+
+        .voting-players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .voting-player-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .voting-player-option:hover {
+            border-color: rgba(196, 255, 14, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .voting-player-option.selected {
+            border-color: var(--primary);
+            background: rgba(196, 255, 14, 0.1);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .voting-player-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .voting-player-name {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .voting-player-team {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .voting-submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, #a8e600 100%);
+            color: #000;
+            border: none;
+            padding: 18px;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .voting-submit-btn:hover {
+            box-shadow: 0 0 30px var(--primary-glow);
+            transform: translateY(-3px);
+        }
+
+        .voting-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .voting-status {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .voting-status i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .already-voted {
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid #2ed573;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: #2ed573;
+        }
+
+        .already-voted i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Vote count and selection indicator */
+        .voting-player-votes {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .vote-check {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .voting-player-option {
+            position: relative;
+        }
+
+        .voting-player-option.selected {
+            animation: pulse-select 0.3s ease;
+        }
+
+        @keyframes pulse-select {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN MODAL -->
+    <div class="login-overlay" id="loginOverlay">
+        <span class="login-close" onclick="closeLogin()">&times;</span>
+        <div class="login-box">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Düzenleme Modu</h2>
+            <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı">
+            <input type="password" id="password" class="login-input" placeholder="Şifre">
+            <button class="login-btn" onclick="tryLogin()"><i class="fas fa-sign-in-alt"></i> GİRİŞ YAP</button>
+            <p class="login-error" id="loginError">Hatalı kullanıcı adı veya şifre!</p>
+        </div>
+    </div>
+
+    <!-- PLAYER EDIT MODAL -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-modal-box">
+            <h3 class="modal-title"><i class="fas fa-user-edit"></i> Oyuncu Düzenle</h3>
+
+            <!-- Photo Upload -->
+            <div class="photo-upload-wrapper">
+                <label class="photo-upload-label" for="photoInput">
+                    <img class="photo-preview" id="photoPreview" src="" alt="Preview">
+                    <span class="photo-upload-text"><i class="fas fa-camera"></i> Fotoğraf Yükle</span>
+                </label>
+                <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)">
+            </div>
+
+            <input type="text" class="modal-input" id="playerNameInput" placeholder="Oyuncu Adı">
+
+            <!-- Team Selector -->
+            <select class="modal-select" id="playerTeamSelect">
+                <option value="">Takım Seç...</option>
+                <option value="genclerbirligi">Gençlerbirliği FK</option>
+                <option value="samsunspor">Samsunspor</option>
+                <option value="fenerbahce">Fenerbahçe</option>
+                <option value="goztepe">Göztepe</option>
+                <option value="basaksehir">Başakşehir</option>
+                <option value="besiktas">Beşiktaş</option>
+                <option value="trabzonspor">Trabzonspor</option>
+                <option value="konyaspor">Konyaspor</option>
+                <option value="antalyaspor">Antalyaspor</option>
+                <option value="galatasaray">Galatasaray</option>
+                <option value="eyupspor">Eyüpspor</option>
+                <option value="kayserispor">Kayserispor</option>
+                <option value="alanyaspor">Alanyaspor</option>
+                <option value="gaziantep">Gaziantep FK</option>
+            </select>
+
+            <div class="modal-actions">
+                <button class="toolbar-btn" onclick="closePlayerModal()"><i class="fas fa-times"></i> İptal</button>
+                <button class="toolbar-btn primary" onclick="savePlayer()"><i class="fas fa-check"></i> Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div class="export-modal" id="exportModal">
+        <div class="export-box">
+            <h2 class="export-title"><i class="fas fa-code"></i> HTML KODU HAZIR</h2>
+            <p style="color:#888; margin:0;">Aşağıdaki kodu Blogger'a yapıştırın</p>
+            <textarea id="exportCode" class="export-textarea" readonly></textarea>
+            <div class="export-actions">
+                <button class="toolbar-btn" onclick="closeExport()"><i class="fas fa-times"></i> Kapat</button>
+                <button class="toolbar-btn primary" onclick="copyCode()"><i class="fas fa-copy"></i> Kopyala</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT TOOLBAR -->
+    <div class="edit-toolbar" id="editToolbar">
+        <button class="toolbar-btn danger" onclick="exitEditMode()"><i class="fas fa-times"></i> Çıkış</button>
+        <button class="toolbar-btn primary" onclick="exportHTML()"><i class="fas fa-save"></i> Kaydet & HTML Al</button>
+    </div>
+
+    <!-- VOTING SECTION (Admin tarafından aktif edildiğinde görünür) - ÜSTTE -->
+    <div class="voting-section" id="votingSection" style="display: none;">
+        <div class="voting-header">
+            <h2 class="voting-title"><i class="fas fa-vote-yea"></i> Haftanın XI'i Oylaması</h2>
+            <div class="voting-timer" id="votingTimer">Kalan: --:--</div>
+        </div>
+
+        <div id="votingContent">
+            <!-- Oylama durumuna göre doldurulacak -->
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="special-container" id="mainContainer">
+        <button class="edit-btn" id="editBtn" onclick="openLogin()">
+            <i class="fas fa-edit"></i> DÜZENLE
+        </button>
+
+        <div class="header-banner">
+            <h1><i class="fas fa-star"></i> HAFTANIN XI'İ</h1>
+            <div class="week-selector-wrapper">
+                <span class="week-selector-label">Hafta:</span>
+                <select class="week-selector" id="weekSelector" onchange="loadWeek(this.value)">
+                    <option value="12" selected>12. Hafta</option>
+                    <option value="13">13. Hafta</option>
+                    <option value="14">14. Hafta</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Football Pitch -->
+        <div class="pitch-container">
+            <!-- Pitch Lines -->
+            <div class="pitch-lines">
+                <div class="center-circle"></div>
+                <div class="center-spot"></div>
+                <div class="goal-area-top"></div>
+                <div class="goal-area-bottom"></div>
+                <div class="penalty-area-top"></div>
+                <div class="penalty-area-bottom"></div>
+            </div>
+
+            <!-- Players Layer -->
+            <div class="players-layer" id="playersLayer">
+                <!-- GK -->
+                <div class="player-slot pos-gk" data-position="GK">
+                    <div class="player-card player-empty" onclick="editPlayer('GK')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge gk">GK</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+
+                <!-- Defenders -->
+                <div class="player-slot pos-lb" data-position="LB">
+                    <div class="player-card player-empty" onclick="editPlayer('LB')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge df">LB</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-lcb" data-position="LCB">
+                    <div class="player-card player-empty" onclick="editPlayer('LCB')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge df">CB</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-rcb" data-position="RCB">
+                    <div class="player-card player-empty" onclick="editPlayer('RCB')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge df">CB</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-rb" data-position="RB">
+                    <div class="player-card player-empty" onclick="editPlayer('RB')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge df">RB</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+
+                <!-- Midfielders -->
+                <div class="player-slot pos-lm" data-position="LM">
+                    <div class="player-card player-empty" onclick="editPlayer('LM')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge mf">LM</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-cm" data-position="CM">
+                    <div class="player-card player-empty" onclick="editPlayer('CM')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge mf">CM</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-rm" data-position="RM">
+                    <div class="player-card player-empty" onclick="editPlayer('RM')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge mf">RM</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+
+                <!-- Forwards -->
+                <div class="player-slot pos-lw" data-position="LW">
+                    <div class="player-card player-empty" onclick="editPlayer('LW')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge fw">LW</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-st" data-position="ST">
+                    <div class="player-card player-empty" onclick="editPlayer('ST')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge fw">ST</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+                <div class="player-slot pos-rw" data-position="RW">
+                    <div class="player-card player-empty" onclick="editPlayer('RW')">
+                        <div class="player-avatar">
+                            <i class="fas fa-plus"></i>
+                            <span class="position-badge fw">RW</span>
+                        </div>
+                        <div class="player-name">-</div>
+                        <div class="player-team"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Config -->
+    <script src="../firebase-config.js"></script>
+
+    <script>
+        // Week Data
+        const weeksData = {
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {}
+        };
+
+        // Team Logos
+        const teamLogos = {
+            genclerbirligi: { name: "Gençlerbirliği FK", logo: "https://upload.wikimedia.org/wikipedia/tr/f/f7/Genclerbirligi.png" },
+            samsunspor: { name: "Samsunspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/d/d2/Samsunspor_logo.png/250px-Samsunspor_logo.png" },
+            fenerbahce: { name: "Fenerbahçe", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png" },
+            goztepe: { name: "Göztepe", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/f/fe/G%C3%B6ztepe.png/250px-G%C3%B6ztepe.png" },
+            basaksehir: { name: "Başakşehir", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/cd/%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png/250px-%C4%B0stanbul_Ba%C5%9Fak%C5%9Fehir_FK.png" },
+            besiktas: { name: "Beşiktaş", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/BesiktasJK-Logo.svg/250px-BesiktasJK-Logo.svg.png" },
+            trabzonspor: { name: "Trabzonspor", logo: "https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png" },
+            konyaspor: { name: "Konyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/4/41/Konyaspor_1922.png/250px-Konyaspor_1922.png" },
+            antalyaspor: { name: "Antalyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/b/b9/Antalyaspor_logo.png/250px-Antalyaspor_logo.png" },
+            galatasaray: { name: "Galatasaray", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Galatasaray_Sports_Club_Logo.svg/1200px-Galatasaray_Sports_Club_Logo.svg.png" },
+            eyupspor: { name: "Eyüpspor", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Ey%C3%BCpspor_Logosu.png/960px-Ey%C3%BCpspor_Logosu.png" },
+            kayserispor: { name: "Kayserispor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/c/c2/Kayserispor_logosu.png/250px-Kayserispor_logosu.png" },
+            alanyaspor: { name: "Alanyaspor", logo: "https://upload.wikimedia.org/wikipedia/tr/thumb/2/29/Alanyaspor_logo.png/250px-Alanyaspor_logo.png" },
+            gaziantep: { name: "Gaziantep FK", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/GFK-Official-Logo.png/250px-GFK-Official-Logo.png" }
+        };
+
+        let currentPhotoData = null;
+
+        let currentWeek = 2;
+        let currentEditingPosition = null;
+        let isEditMode = false;
+
+        // Encoded credentials
+        const validUsers = [
+            { u: atob('YWRtaW4='), p: atob('dHJpYmUyMDI0') },
+            { u: atob('bW9k'), p: atob('bGVhZ3VlMTIz') }
+        ];
+
+        function loadWeek(week) {
+            currentWeek = parseInt(week);
+            renderPlayers();
+
+            // Oylama kazananlarını tekrar yerleştir
+            if (currentVotingData && !currentVotingData.active && currentVotingData.winners) {
+                // Sadece seçilen hafta için kazananları göster
+                if (currentVotingData.week === currentWeek) {
+                    setTimeout(() => placeWinnersOnPitch(currentVotingData.winners), 100);
+                }
+            }
+        }
+
+        function renderPlayers() {
+            const weekData = weeksData[currentWeek] || {};
+            const slots = document.querySelectorAll('.player-slot');
+
+            slots.forEach(slot => {
+                const position = slot.dataset.position;
+                const player = weekData[position];
+                const card = slot.querySelector('.player-card');
+                const avatar = card.querySelector('.player-avatar');
+                const nameEl = card.querySelector('.player-name');
+                const teamInfoEl = card.querySelector('.player-team-info') || createTeamInfoEl(card);
+
+                if (player && player.name) {
+                    card.classList.remove('player-empty');
+
+                    // Show photo or icon
+                    if (player.photo) {
+                        avatar.innerHTML = `<img src="${player.photo}" alt="${player.name}"><span class="position-badge ${getPositionClass(position)}">${getPositionLabel(position)}</span>`;
+                    } else {
+                        avatar.innerHTML = `<i class="fas fa-user"></i><span class="position-badge ${getPositionClass(position)}">${getPositionLabel(position)}</span>`;
+                    }
+
+                    nameEl.textContent = player.name;
+
+                    // Show team with logo
+                    if (player.teamId && teamLogos[player.teamId]) {
+                        const team = teamLogos[player.teamId];
+                        teamInfoEl.innerHTML = `<img class="player-team-logo" src="${team.logo}" alt="${team.name}"><span class="player-team">${team.name}</span>`;
+                    } else {
+                        teamInfoEl.innerHTML = '';
+                    }
+                } else {
+                    card.classList.add('player-empty');
+                    avatar.innerHTML = `<i class="fas fa-plus"></i><span class="position-badge ${getPositionClass(position)}">${getPositionLabel(position)}</span>`;
+                    nameEl.textContent = '-';
+                    teamInfoEl.innerHTML = '';
+                }
+            });
+        }
+
+        function createTeamInfoEl(card) {
+            const el = document.createElement('div');
+            el.className = 'player-team-info';
+            card.appendChild(el);
+            return el;
+        }
+
+        function getPositionClass(pos) {
+            if (pos === 'GK') return 'gk';
+            if (['LB', 'LCB', 'RCB', 'RB'].includes(pos)) return 'df';
+            if (['LM', 'CM', 'RM'].includes(pos)) return 'mf';
+            return 'fw';
+        }
+
+        function getPositionLabel(pos) {
+            const labels = {
+                'GK': 'GK', 'LB': 'LB', 'LCB': 'CB', 'RCB': 'CB', 'RB': 'RB',
+                'LM': 'LM', 'CM': 'CM', 'RM': 'RM',
+                'LW': 'LW', 'ST': 'ST', 'RW': 'RW'
+            };
+            return labels[pos] || pos;
+        }
+
+        function editPlayer(position) {
+            if (!isEditMode) return;
+
+            currentEditingPosition = position;
+            currentPhotoData = null;
+            const weekData = weeksData[currentWeek] || {};
+            const player = weekData[position] || {};
+
+            document.getElementById('playerNameInput').value = player.name || '';
+            document.getElementById('playerTeamSelect').value = player.teamId || '';
+
+            // Reset photo preview
+            const preview = document.getElementById('photoPreview');
+            if (player.photo) {
+                preview.src = player.photo;
+                preview.classList.add('active');
+                currentPhotoData = player.photo;
+            } else {
+                preview.src = '';
+                preview.classList.remove('active');
+            }
+
+            document.getElementById('playerModal').classList.add('active');
+            document.getElementById('playerNameInput').focus();
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentPhotoData = e.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = currentPhotoData;
+                    preview.classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function closePlayerModal() {
+            document.getElementById('playerModal').classList.remove('active');
+            document.getElementById('photoInput').value = '';
+            currentEditingPosition = null;
+            currentPhotoData = null;
+        }
+
+        function savePlayer() {
+            const name = document.getElementById('playerNameInput').value.trim();
+            const teamId = document.getElementById('playerTeamSelect').value;
+
+            if (!weeksData[currentWeek]) {
+                weeksData[currentWeek] = {};
+            }
+
+            if (name) {
+                weeksData[currentWeek][currentEditingPosition] = {
+                    name,
+                    teamId,
+                    photo: currentPhotoData
+                };
+            } else {
+                delete weeksData[currentWeek][currentEditingPosition];
+            }
+
+            renderPlayers();
+            closePlayerModal();
+        }
+
+        function openLogin() {
+            document.getElementById('loginOverlay').classList.add('active');
+            document.getElementById('username').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function tryLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            const isValid = validUsers.some(v => v.u === user && v.p === pass);
+
+            if (isValid) {
+                closeLogin();
+                enterEditMode();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') tryLogin();
+        });
+
+        function enterEditMode() {
+            isEditMode = true;
+            document.getElementById('mainContainer').classList.add('edit-mode');
+            document.getElementById('editToolbar').classList.add('active');
+            document.getElementById('editBtn').style.display = 'none';
+        }
+
+        function exitEditMode() {
+            isEditMode = false;
+            document.getElementById('mainContainer').classList.remove('edit-mode');
+            document.getElementById('editToolbar').classList.remove('active');
+            document.getElementById('editBtn').style.display = 'flex';
+        }
+
+        function exportHTML() {
+            const fullHTML = document.documentElement.outerHTML;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(fullHTML, 'text/html');
+
+            doc.querySelector('#mainContainer')?.classList.remove('edit-mode');
+            doc.querySelector('#loginOverlay')?.classList.remove('active');
+            doc.querySelector('#editToolbar')?.classList.remove('active');
+            doc.querySelector('#playerModal')?.classList.remove('active');
+            doc.querySelector('#exportModal')?.classList.remove('active');
+
+            const expEditBtn = doc.querySelector('#editBtn');
+            if (expEditBtn) expEditBtn.style.display = 'flex';
+
+            const finalHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+            document.getElementById('exportCode').value = finalHTML;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExport() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function copyCode() {
+            const textarea = document.getElementById('exportCode');
+            textarea.select();
+            document.execCommand('copy');
+
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Kopyalandı!';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        }
+
+        // Initialize
+        renderPlayers();
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🗳️ KULLANICI OYLAMA SİSTEMİ
+        // ═══════════════════════════════════════════════════════════════
+        let currentVotingData = null;
+        let userSelections = {};
+        let votingTimerInterval = null;
+
+        // Sayfayüklenince oylama verilerini kontrol et
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initVoting, 500);
+        });
+
+        async function initVoting() {
+            if (typeof getVotingData !== 'function') {
+                console.log('Firebase yüklenmedi');
+                return;
+            }
+
+            listenVoting((data) => {
+                currentVotingData = data;
+                renderVotingUI();
+
+                // Oylama bitmişse kazananları sahaya yerleştir
+                if (data && !data.active && data.winners) {
+                    placeWinnersOnPitch(data.winners);
+                }
+            });
+        }
+
+        // Mevki isimlerini pitch pozisyonlarına eşle
+        const positionToPitchMap = {
+            'Kaleci': 'GK',
+            'Sol Bek': 'LB',
+            'Stoper': 'LCB', // İlk stoper sol CB
+            'Sağ Bek': 'RB',
+            'Orta Saha': 'CM',
+            'Sol Kanat': 'LM',
+            'Sağ Kanat': 'RM',
+            'Forvet': 'ST',
+            // İngilizce alternatifler
+            'GK': 'GK',
+            'LB': 'LB',
+            'LCB': 'LCB',
+            'RCB': 'RCB',
+            'RB': 'RB',
+            'LM': 'LM',
+            'CM': 'CM',
+            'RM': 'RM',
+            'LW': 'LW',
+            'ST': 'ST',
+            'RW': 'RW'
+        };
+
+        // Kazananları sahaya yerleştir
+        function placeWinnersOnPitch(winners) {
+            console.log('Kazananları sahaya yerleştiriliyor:', winners);
+
+            // Tüm pozisyonları sıfırla değil, sadece winner olanları güncelle
+            for (const [posName, winner] of Object.entries(winners)) {
+                const pitchPos = positionToPitchMap[posName];
+                if (!pitchPos) {
+                    console.log('Eşleşmeyen mevki:', posName);
+                    continue;
+                }
+
+                // Pitch'teki ilgili player slot'u bul
+                const slot = document.querySelector(`[data-position="${pitchPos}"]`);
+                if (!slot) {
+                    console.log('Slot bulunamadı:', pitchPos);
+                    continue;
+                }
+
+                const card = slot.querySelector('.player-card');
+                const avatar = card?.querySelector('.player-avatar');
+                const nameEl = card?.querySelector('.player-name');
+                const teamInfoEl = card?.querySelector('.player-team-info') || createTeamInfoEl(card);
+
+                // Kazananı yerleştir
+                if (avatar) {
+                    const logoUrl = winner.logo || TribeData?.teams?.[winner.team]?.logo || '';
+                    if (logoUrl) {
+                        avatar.innerHTML = `<img src="${logoUrl}" alt="${winner.name}" style="width: 100%; height: 100%; object-fit: contain;"><span class="position-badge ${getPositionClass(pitchPos)}">${getPositionLabel(pitchPos)}</span>`;
+                    } else {
+                        avatar.innerHTML = `<i class="fas fa-user"></i><span class="position-badge ${getPositionClass(pitchPos)}">${getPositionLabel(pitchPos)}</span>`;
+                    }
+                }
+                if (nameEl) {
+                    nameEl.textContent = winner.name;
+                }
+                if (teamInfoEl && winner.team) {
+                    const teamData = TribeData?.teams?.[winner.team];
+                    if (teamData) {
+                        teamInfoEl.innerHTML = `<img class="player-team-logo" src="${teamData.logo}" alt="${winner.team}"><span class="player-team">${winner.team}</span>`;
+                    } else {
+                        teamInfoEl.innerHTML = `<span class="player-team">${winner.team}</span>`;
+                    }
+                }
+
+                // Slot'u dolu olarak işaretle
+                card?.classList.remove('player-empty');
+                slot.classList.remove('empty');
+                slot.classList.add('filled', 'winner-slot');
+            }
+        }
+
+        function renderVotingUI() {
+            const section = document.getElementById('votingSection');
+            const content = document.getElementById('votingContent');
+
+            // Oylama aktif değilse
+            if (!currentVotingData || !currentVotingData.active) {
+                // Kazananlar varsa göster
+                if (currentVotingData?.winners && Object.keys(currentVotingData.winners).length > 0) {
+                    section.style.display = 'block';
+                    content.innerHTML = renderWinnersDisplay();
+                    return;
+                }
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            // Daha önce oy kullandı mı kontrol et
+            const voterId = generateVoterId();
+            const hasVoted = currentVotingData.voters && currentVotingData.voters[voterId];
+
+            if (hasVoted) {
+                // Oy verdiyse sonuçları göster
+                content.innerHTML = renderVotingResults();
+                startVotingCountdown();
+                return;
+            }
+
+            // Oylama formunu oluştur
+            let html = '';
+            const positions = currentVotingData.positions || {};
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+
+                const positionTotal = players.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+                html += `
+                    <div class="voting-position-box">
+                        <h3 class="voting-position-title"><i class="fas fa-futbol"></i> ${posName}</h3>
+                        <div class="voting-players-grid">
+                            ${players.map((p, idx) => {
+                    const isSelected = userSelections[posName] === p.name;
+                    const percentage = positionTotal > 0 ? Math.round((p.votes || 0) / positionTotal * 100) : 0;
+                    return `
+                                <div class="voting-player-option ${isSelected ? 'selected' : ''}" 
+                                     data-position="${posName}" data-player="${p.name}"
+                                     style="cursor: pointer; ${isSelected ? 'border: 3px solid var(--primary); background: rgba(196, 255, 14, 0.2); box-shadow: 0 0 20px rgba(196, 255, 14, 0.5);' : ''}">
+                                    ${isSelected ? '<div class="vote-check" style="position: absolute; top: 5px; right: 5px; background: var(--primary); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;"><i class="fas fa-check"></i></div>' : ''}
+                                    <img class="voting-player-logo" src="${TribeData?.teams?.[p.team]?.logo || 'https://via.placeholder.com/40?text=' + p.team.charAt(0)}" alt="${p.team}">
+                                    <div class="voting-player-name" style="${isSelected ? 'color: var(--primary); font-weight: bold;' : ''}">${p.name}</div>
+                                    <div class="voting-player-team">${p.team}</div>
+                                    <div class="voting-player-votes">${p.votes || 0} oy (${percentage}%)</div>
+                                </div>
+                            `}).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Seçim özeti
+            const selectedCount = Object.keys(userSelections).length;
+            const totalPositions = Object.keys(positions).length;
+
+            html += `
+                <div style="background: rgba(0,0,0,0.3); padding: 15px 20px; border-radius: 12px; margin-bottom: 15px; text-align: center;">
+                    <span style="color: var(--text-muted);">Seçilen:</span>
+                    <span style="color: var(--primary); font-weight: bold; margin-left: 8px;">${selectedCount} / ${totalPositions} mevki</span>
+                </div>
+                <button class="voting-submit-btn" id="submitVoteBtn" onclick="submitUserVote()">
+                    <i class="fas fa-paper-plane"></i> OYUMU GÖNDER
+                </button>
+            `;
+
+            content.innerHTML = html;
+            startVotingCountdown();
+        }
+
+        // Oylama sonuçları göster (oy vermiş kullanıcılar için)
+        function renderVotingResults() {
+            const positions = currentVotingData.positions || {};
+
+            // Toplam oy
+            let totalVotes = 0;
+            for (const players of Object.values(positions)) {
+                if (players) players.forEach(p => totalVotes += (p.votes || 0));
+            }
+
+            let html = `
+                <div class="already-voted">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Oyunuz Kaydedildi!</h3>
+                </div>
+                <div style="background: rgba(196,255,14,0.1); padding: 15px; border-radius: 12px; margin: 20px 0; text-align: center; border: 1px solid var(--primary);">
+                    <span style="color: var(--text-muted);">Toplam Oy:</span>
+                    <span style="color: var(--primary); font-weight: bold; font-size: 1.5rem; margin-left: 10px;">${totalVotes}</span>
+                </div>
+            `;
+
+            for (const [posName, players] of Object.entries(positions)) {
+                if (!players || players.length === 0) continue;
+                const sorted = [...players].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                const positionTotal = players.reduce((sum, p) => sum + (p.votes || 0), 0);
+
+                html += `<div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-family: var(--font-head);">${posName}</h4>
+                    ${sorted.map((p, i) => {
+                    const percentage = positionTotal > 0 ? Math.round((p.votes || 0) / positionTotal * 100) : 0;
+                    return `
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: ${i === 0 ? 'rgba(196,255,14,0.15)' : 'rgba(0,0,0,0.3)'}; border-radius: 10px; margin-bottom: 6px; ${i === 0 ? 'border: 1px solid var(--primary);' : ''}">
+                            <span style="font-weight: bold; color: ${i === 0 ? 'var(--primary)' : 'var(--text-muted)'}; width: 25px;">${i === 0 ? '🏆' : '#' + (i + 1)}</span>
+                            <img src="${TribeData?.teams?.[p.team]?.logo || 'https://via.placeholder.com/28?text=' + p.team.charAt(0)}" style="width: 28px; height: 28px; border-radius: 50%;">
+                            <span style="flex: 1; font-weight: ${i === 0 ? 'bold' : 'normal'};">${p.name}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">${p.team}</span>
+                            <span style="color: var(--primary); font-weight: bold;">${p.votes || 0}</span>
+                            <div style="background: rgba(196,255,14,0.2); width: ${percentage}px; max-width: 100px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: var(--primary); font-size: 0.8rem; font-weight: bold;">${percentage}%</span>
+                            </div>
+                        </div>
+                    `}).join('')}
+                </div>`;
+            }
+
+            return html;
+        }
+
+        // Oylama kazananlarını göster
+        function renderWinnersDisplay() {
+            const winners = currentVotingData.winners || {};
+
+            let html = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <i class="fas fa-trophy" style="font-size: 3rem; color: gold; margin-bottom: 10px;"></i>
+                    <h2 style="color: var(--primary); font-family: var(--font-head); margin: 0;">HAFTANIN EN İYİLERİ</h2>
+                    <p style="color: var(--text-muted); margin-top: 5px;">Oylamanız ile belirlendi</p>
+                </div>
+            `;
+
+            for (const [posName, winner] of Object.entries(winners)) {
+                html += `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(196,255,14,0.1); border: 1px solid var(--primary); border-radius: 14px; margin-bottom: 12px;">
+                        <span style="background: linear-gradient(135deg, gold, #f4a700); color: #000; padding: 5px 12px; border-radius: 8px; font-weight: bold; font-family: var(--font-head);">${posName}</span>
+                        <img src="${winner.logo || TribeData?.teams?.[winner.team]?.logo || 'https://via.placeholder.com/40?text=' + winner.team.charAt(0)}" style="width: 40px; height: 40px; object-fit: contain;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; font-size: 1.1rem;">${winner.name}</div>
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">${winner.team}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--primary); font-weight: bold; font-size: 1.2rem;">${winner.votes} oy</div>
+                            <div style="color: gold; font-size: 0.8rem;"><i class="fas fa-crown"></i> Kazanan</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return html;
+        }
+
+        function selectPlayer(position, playerName) {
+            console.log('selectPlayer called:', position, playerName);
+            // Aynı oyuncu seçiliyse seçimi kaldır
+            if (userSelections[position] === playerName) {
+                delete userSelections[position];
+            } else {
+                userSelections[position] = playerName;
+            }
+            console.log('userSelections:', JSON.stringify(userSelections));
+            renderVotingUI();
+        }
+
+        // Event delegation ile tıklama yönetimi
+        document.addEventListener('click', function (e) {
+            const option = e.target.closest('.voting-player-option');
+            if (option) {
+                const pos = option.dataset.position;
+                const player = option.dataset.player;
+                if (pos && player) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectPlayer(pos, player);
+                }
+            }
+        });
+
+        async function submitUserVote() {
+            const positions = currentVotingData?.positions || {};
+            const positionCount = Object.keys(positions).length;
+            const selectedCount = Object.keys(userSelections).length;
+
+            if (selectedCount === 0) {
+                alert('Lütfen en az bir oyuncu seçin!');
+                return;
+            }
+
+            const btn = document.getElementById('submitVoteBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+
+            try {
+                const voterId = generateVoterId();
+                const result = await submitVote(voterId, userSelections);
+
+                if (result.success) {
+                    alert('Oyunuz başarıyla kaydedildi! 🎉');
+                    userSelections = {};
+                    renderVotingUI();
+                } else if (result.error === 'already_voted') {
+                    alert('Bu oylamada zaten oy kullandınız!');
+                    renderVotingUI();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                alert('Oy gönderilirken bir hata oluştu: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> OYUMU GÖNDER';
+            }
+        }
+
+        function startVotingCountdown() {
+            if (votingTimerInterval) clearInterval(votingTimerInterval);
+
+            const timerEl = document.getElementById('votingTimer');
+
+            function updateTimer() {
+                if (!currentVotingData?.endTime) {
+                    timerEl.textContent = 'Süresiz';
+                    return;
+                }
+
+                const now = Date.now();
+                const remaining = currentVotingData.endTime - now;
+
+                if (remaining <= 0) {
+                    timerEl.textContent = 'Bitti';
+                    clearInterval(votingTimerInterval);
+                    return;
+                }
+
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((remaining % (1000 * 60)) / 1000);
+
+                timerEl.textContent = `Kalan: ${hours > 0 ? hours + ':' : ''}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            updateTimer();
+            votingTimerInterval = setInterval(updateTimer, 1000);
+        }
+    </script>
+
+    <script src="../theme-switcher.js"></script>
+
+</body>
+
+</html>
