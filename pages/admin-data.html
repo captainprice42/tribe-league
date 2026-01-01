@@ -6246,7 +6246,6 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                 const embed = {
                     title: `${statusLabels[t.status] || '📰 DEDİKODU'} | TRANSFER`,
                     color: statusColors[t.status] || 0xffa502,
-                    thumbnail: t.playerImage ? { url: t.playerImage } : null,
                     fields: [
                         { name: '⚽ Oyuncu', value: `**${t.playerName}**`, inline: true },
                         { name: '📤 Eski Takım', value: t.fromTeam ? `${fromEmoji} ${t.fromTeam}` : 'Serbest', inline: true },
@@ -6255,6 +6254,11 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     footer: { text: `Tribe League Transfer | ${new Date().toLocaleDateString('tr-TR')}` },
                     timestamp: new Date().toISOString()
                 };
+
+                // Thumbnail sadece varsa ekle (null olursa Discord hata veriyor)
+                if (t.playerImage) {
+                    embed.thumbnail = { url: t.playerImage };
+                }
 
                 if (t.fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: false });
 
