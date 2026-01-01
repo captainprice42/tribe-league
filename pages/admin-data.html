@@ -2274,6 +2274,100 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 🎨 CUSTOM CONFIRM MODAL - Tarayıcı confirm() yerine
+        // ═══════════════════════════════════════════════════════════════
+        function showConfirmModal(message, onConfirm, onCancel = null) {
+            // Eski modal varsa kaldır
+            const existingModal = document.getElementById('customConfirmModal');
+            if (existingModal) existingModal.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'customConfirmModal';
+            modal.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+                animation: fadeIn 0.2s ease;
+            `;
+
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 14, 0.95));
+                    border: 1px solid rgba(255, 71, 87, 0.3);
+                    border-radius: 20px;
+                    padding: 30px;
+                    max-width: 400px;
+                    width: 90%;
+                    text-align: center;
+                    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 71, 87, 0.1);
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
+                    <h3 style="color: #fff; margin: 0 0 15px; font-size: 1.3rem;">${message}</h3>
+                    <div style="display: flex; gap: 12px; margin-top: 25px;">
+                        <button id="confirmModalNo" style="
+                            flex: 1;
+                            padding: 14px 20px;
+                            background: rgba(255, 255, 255, 0.1);
+                            border: 1px solid rgba(255, 255, 255, 0.2);
+                            border-radius: 12px;
+                            color: #fff;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                        ">Hayır</button>
+                        <button id="confirmModalYes" style="
+                            flex: 1;
+                            padding: 14px 20px;
+                            background: linear-gradient(135deg, #ff4757, #e84118);
+                            border: none;
+                            border-radius: 12px;
+                            color: #fff;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+                        ">Evet, Sil</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Event listeners
+            document.getElementById('confirmModalYes').onclick = () => {
+                modal.remove();
+                if (onConfirm) onConfirm();
+            };
+
+            document.getElementById('confirmModalNo').onclick = () => {
+                modal.remove();
+                if (onCancel) onCancel();
+            };
+
+            // Click outside to close
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    if (onCancel) onCancel();
+                }
+            };
+
+            // Hover effects
+            const yesBtn = document.getElementById('confirmModalYes');
+            const noBtn = document.getElementById('confirmModalNo');
+            yesBtn.onmouseenter = () => { yesBtn.style.transform = 'translateY(-2px)'; yesBtn.style.boxShadow = '0 8px 25px rgba(255, 71, 87, 0.5)'; };
+            yesBtn.onmouseleave = () => { yesBtn.style.transform = 'translateY(0)'; yesBtn.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.4)'; };
+            noBtn.onmouseenter = () => { noBtn.style.background = 'rgba(255, 255, 255, 0.15)'; };
+            noBtn.onmouseleave = () => { noBtn.style.background = 'rgba(255, 255, 255, 0.1)'; };
+        }
+
         // 🔐 Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
         // Şifre artık Firebase'de saklanıyor (adminConfig/passwordHash)
         const _SALT_KEY = 'TrIbE_LeAgUe_2024_sEcReT';
@@ -6128,16 +6222,16 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
         }
 
         // Transfer sil
-        async function deleteTransfer(id) {
-            if (!confirm('Bu transfer haberini silmek istediğinize emin misiniz?')) return;
-
-            try {
-                await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `transfers/${id}`));
-                showToast('🗑️ Transfer haberi silindi', 'success');
-                loadAdminTransfers();
-            } catch (e) {
-                showToast('Hata: ' + e.message, 'error');
-            }
+        function deleteTransfer(id) {
+            showConfirmModal('Bu transfer haberini silmek istediğinize emin misiniz?', async () => {
+                try {
+                    await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `transfers/${id}`));
+                    showToast('🗑️ Transfer haberi silindi', 'success');
+                    loadAdminTransfers();
+                } catch (e) {
+                    showToast('Hata: ' + e.message, 'error');
+                }
+            });
         }
 
         // Sayfa yüklenince transfer select'lerini doldur
