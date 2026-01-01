@@ -6255,8 +6255,8 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     timestamp: new Date().toISOString()
                 };
 
-                // Thumbnail sadece varsa ekle (null/boş olursa Discord hata veriyor)
-                if (t.playerImage && t.playerImage.trim() !== '') {
+                // Thumbnail sadece gerçek URL varsa ekle (base64 data URL kabul edilmiyor!)
+                if (t.playerImage && t.playerImage.trim() !== '' && !t.playerImage.startsWith('data:')) {
                     embed.thumbnail = { url: t.playerImage };
                 }
 
