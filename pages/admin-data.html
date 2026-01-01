@@ -6247,20 +6247,22 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     title: `${statusLabels[t.status] || '📰 DEDİKODU'} | TRANSFER`,
                     color: statusColors[t.status] || 0xffa502,
                     fields: [
-                        { name: '⚽ Oyuncu', value: `**${t.playerName}**`, inline: true },
+                        { name: '⚽ Oyuncu', value: t.playerName ? `**${t.playerName}**` : 'Bilinmiyor', inline: true },
                         { name: '📤 Eski Takım', value: t.fromTeam ? `${fromEmoji} ${t.fromTeam}` : 'Serbest', inline: true },
-                        { name: '📥 Yeni Takım', value: `${toEmoji} **${t.toTeam}**`, inline: true }
+                        { name: '📥 Yeni Takım', value: t.toTeam ? `${toEmoji} **${t.toTeam}**` : 'Bilinmiyor', inline: true }
                     ],
                     footer: { text: `Tribe League Transfer | ${new Date().toLocaleDateString('tr-TR')}` },
                     timestamp: new Date().toISOString()
                 };
 
-                // Thumbnail sadece varsa ekle (null olursa Discord hata veriyor)
-                if (t.playerImage) {
+                // Thumbnail sadece varsa ekle (null/boş olursa Discord hata veriyor)
+                if (t.playerImage && t.playerImage.trim() !== '') {
                     embed.thumbnail = { url: t.playerImage };
                 }
 
-                if (t.fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: false });
+                if (t.fee && t.fee > 0) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: false });
+
+                console.log('📤 Discord embed gönderiliyor:', JSON.stringify({ embeds: [embed] }, null, 2));
 
                 // XMLHttpRequest kullan
                 const xhr = new XMLHttpRequest();
