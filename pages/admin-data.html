@@ -2871,7 +2871,7 @@
         // Transfer geçmişi (mesaj ID'leri ile)
         let transferHistory = [];
 
-        async function sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhotoUrl, fee = null, existingMessageId = null, status = 'rumor') {
+        async function sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhotoUrl, fee = null, existingMessageId = null, status = 'rumor', salary = null) {
             const fromEmoji = MAC_SONUC_TAKIMLAR[fromTeam]?.e || '';
             const toEmoji = MAC_SONUC_TAKIMLAR[toTeam]?.e || '';
 
@@ -2891,17 +2891,22 @@
             const embed = {
                 title: `${statusLabels[status] || '📰 DEDİKODU'} | ${transferType.toUpperCase()}`,
                 color: statusColors[status] || 0xffa502,
-                thumbnail: playerPhotoUrl ? { url: playerPhotoUrl } : null,
                 fields: [
-                    { name: '⚽ Oyuncu', value: `**${playerName}**`, inline: true },
+                    { name: '⚽ Oyuncu', value: playerName ? `**${playerName}**` : 'Bilinmiyor', inline: true },
                     { name: '📤 Eski Takım', value: fromTeam ? `${fromEmoji} ${fromTeam}` : 'Serbest', inline: true },
-                    { name: '📥 Yeni Takım', value: `${toEmoji} **${toTeam}**`, inline: true }
+                    { name: '📥 Yeni Takım', value: toTeam ? `${toEmoji} **${toTeam}**` : 'Bilinmiyor', inline: true }
                 ],
                 footer: { text: `Tribe League Transfer | ${new Date().toLocaleDateString('tr-TR')}` },
                 timestamp: new Date().toISOString()
             };
 
-            if (fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${fee}M €`, inline: false });
+            // Thumbnail sadece gerçek URL varsa ekle (base64 kabul edilmiyor!)
+            if (playerPhotoUrl && playerPhotoUrl.trim() !== '' && !playerPhotoUrl.startsWith('data:')) {
+                embed.thumbnail = { url: playerPhotoUrl };
+            }
+
+            if (fee && parseFloat(fee) > 0) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${fee}M €`, inline: true });
+            if (salary && parseFloat(salary) > 0) embed.fields.push({ name: '💵 Maaş', value: `${salary}M €`, inline: true });
 
             // XMLHttpRequest kullan - CORS için daha güvenilir
             return new Promise((resolve, reject) => {
@@ -6174,7 +6179,8 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                         transfer.playerImage,
                         transfer.fee ? `${transfer.fee}` : null,
                         transfer.discordMessageId,
-                        status
+                        status,
+                        transfer.salary ? `${transfer.salary}` : null
                     );
                 } else {
                     // Discord mesajı yoksa yeni gönder ve ID'yi kaydet
@@ -6186,7 +6192,8 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                         transfer.playerImage,
                         transfer.fee ? `${transfer.fee}` : null,
                         null,
-                        status
+                        status,
+                        transfer.salary ? `${transfer.salary}` : null
                     );
 
                     if (discordResult.messageId) {
@@ -6260,7 +6267,8 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     embed.thumbnail = { url: t.playerImage };
                 }
 
-                if (t.fee && t.fee > 0) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: false });
+                if (t.fee && t.fee > 0) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: true });
+                if (t.salary && t.salary > 0) embed.fields.push({ name: '💵 Maaş', value: `${t.salary}M €`, inline: true });
 
                 console.log('📤 Discord embed gönderiliyor:', JSON.stringify({ embeds: [embed] }, null, 2));
 
