@@ -2903,50 +2903,41 @@
 
             if (fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${fee}M €`, inline: false });
 
-            try {
-                let response;
+            // XMLHttpRequest kullan - CORS için daha güvenilir
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                const url = existingMessageId
+                    ? `${TRANSFER_WEBHOOK_URL}/messages/${existingMessageId}`
+                    : TRANSFER_WEBHOOK_URL + '?wait=true';
 
-                if (existingMessageId) {
-                    // Mevcut mesajı düzenle (PATCH)
-                    response = await fetch(`${TRANSFER_WEBHOOK_URL}/messages/${existingMessageId}`, {
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ embeds: [embed] })
-                    });
+                xhr.open(existingMessageId ? 'PATCH' : 'POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
 
-                    if (response.ok) {
-                        showToast('✅ Discord mesajı güncellendi!', 'success');
-                        return { success: true, messageId: existingMessageId };
-                    } else if (response.status === 404) {
-                        console.log('Eski mesaj bulunamadı, yeni gönderiliyor...');
-                        return sendTransferToDiscord(playerName, fromTeam, toTeam, transferType, playerPhotoUrl, fee, null, status);
+                xhr.onload = function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            showToast('✅ Transfer haberi Discord\'a gönderildi!', 'success');
+                            resolve({ success: true, messageId: data.id || existingMessageId });
+                        } catch (e) {
+                            showToast('✅ Transfer haberi Discord\'a gönderildi!', 'success');
+                            resolve({ success: true, messageId: existingMessageId || null });
+                        }
                     } else {
-                        throw new Error('Güncelleme hatası: ' + response.status);
+                        console.error('Discord hatası:', xhr.status, xhr.responseText);
+                        showToast('❌ Discord hatası: ' + xhr.status, 'error');
+                        resolve({ success: false });
                     }
-                } else {
-                    // Yeni mesaj gönder - ?wait=true ile mesaj ID'sini al
-                    response = await fetch(TRANSFER_WEBHOOK_URL + '?wait=true', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ embeds: [embed] })
-                    });
+                };
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        showToast('✅ Transfer haberi Discord\'a gönderildi!', 'success');
-                        return { success: true, messageId: data.id };
-                    } else {
-                        throw new Error('Webhook hatası: ' + response.status);
-                    }
-                }
-            } catch (e) {
-                console.error('Transfer webhook hatası:', e);
-                if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch')) {
-                    alert('⚠️ Tarayıcı Güvenlik Hatası (CORS)\n\nLive Server kullanın veya localhost\'tan açın.');
-                }
-                showToast('❌ Discord gönderilemedi!', 'error');
-                return { success: false };
-            }
+                xhr.onerror = function () {
+                    console.error('Discord XHR hatası');
+                    showToast('❌ Discord bağlantı hatası!', 'error');
+                    resolve({ success: false });
+                };
+
+                xhr.send(JSON.stringify({ embeds: [embed] }));
+            });
         }
 
         function openTransferDiscordModal(editTransferId = null) {
