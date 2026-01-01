@@ -6062,18 +6062,6 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
             }
 
             try {
-                // Önce Discord'a gönder
-                const discordResult = await sendTransferToDiscord(
-                    playerName,
-                    fromTeam,
-                    toTeam,
-                    'transfer',
-                    playerImage,
-                    fee ? `${fee}` : null,
-                    null,
-                    status
-                );
-
                 const transfer = {
                     playerName,
                     position,
@@ -6088,11 +6076,11 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     source,
                     playerImage: playerImage || null,
                     timestamp: Date.now(),
-                    discordMessageId: discordResult.messageId || null  // Discord mesaj ID'sini kaydet
+                    discordMessageId: null  // Manuel olarak Discord butonuyla gönderilecek
                 };
 
                 await window.firebasePush(window.firebaseRef(window.firebaseDb, 'transfers'), transfer);
-                showToast('✅ Transfer haberi eklendi!', 'success');
+                showToast('✅ Transfer haberi eklendi! Discord\'a göndermek için listedeki butona tıklayın.', 'success');
 
                 // Formu temizle
                 document.getElementById('transferPlayerName').value = '';
@@ -6133,6 +6121,7 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                 container.innerHTML = transfersArray.map(([id, t]) => {
                     const statusLabels = { confirmed: 'RESMİ', rumor: 'DEDİKODU', denied: 'YALANLANDI' };
                     const statusColors = { confirmed: 'var(--success)', rumor: 'var(--warning)', denied: 'var(--danger)' };
+                    const hasDiscordMsg = t.discordMessageId ? true : false;
 
                     return `
                         <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; border-left: 4px solid ${statusColors[t.status] || 'var(--border)'};">
@@ -6141,6 +6130,9 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                                 <div style="color: var(--text-muted); font-size: 0.85rem;">${t.fromTeam} → ${t.toTeam} | ${t.fee || 0}M € | ${t.source || '-'}</div>
                             </div>
                             <span style="padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; background: ${statusColors[t.status]}20; color: ${statusColors[t.status]};">${statusLabels[t.status] || 'BİLİNMİYOR'}</span>
+                            <button onclick="sendTransferToDiscordById('${id}')" title="${hasDiscordMsg ? 'Discord Güncelle' : 'Discord\'a Gönder'}" style="padding: 8px 12px; background: ${hasDiscordMsg ? 'rgba(88, 101, 242, 0.2)' : 'transparent'}; border: 1px solid #5865f2; border-radius: 8px; color: #5865f2; cursor: pointer; transition: all 0.3s;">
+                                <i class="fab fa-discord"></i> ${hasDiscordMsg ? '✓' : ''}
+                            </button>
                             <select onchange="updateTransferStatus('${id}', this.value)" style="padding: 8px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; color: #fff;">
                                 <option value="rumor" ${t.status === 'rumor' ? 'selected' : ''}>Dedikodu</option>
                                 <option value="confirmed" ${t.status === 'confirmed' ? 'selected' : ''}>Resmi</option>
@@ -6223,6 +6215,92 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     showToast('Hata: ' + e.message, 'error');
                 }
             });
+        }
+
+        // Transfer'ı Discord'a gönder (ID ile)
+        async function sendTransferToDiscordById(id) {
+            try {
+                // Transfer verilerini al
+                const transferSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `transfers/${id}`));
+                if (!transferSnapshot.exists()) {
+                    showToast('Transfer bulunamadı!', 'error');
+                    return;
+                }
+
+                const t = transferSnapshot.val();
+                const fromEmoji = MAC_SONUC_TAKIMLAR[t.fromTeam]?.e || '';
+                const toEmoji = MAC_SONUC_TAKIMLAR[t.toTeam]?.e || '';
+
+                const statusColors = {
+                    'confirmed': 0x2ed573,
+                    'rumor': 0xffa502,
+                    'denied': 0xff4757
+                };
+
+                const statusLabels = {
+                    'confirmed': '✅ RESMİ',
+                    'rumor': '📰 DEDİKODU',
+                    'denied': '❌ YALANLANDI'
+                };
+
+                const embed = {
+                    title: `${statusLabels[t.status] || '📰 DEDİKODU'} | TRANSFER`,
+                    color: statusColors[t.status] || 0xffa502,
+                    thumbnail: t.playerImage ? { url: t.playerImage } : null,
+                    fields: [
+                        { name: '⚽ Oyuncu', value: `**${t.playerName}**`, inline: true },
+                        { name: '📤 Eski Takım', value: t.fromTeam ? `${fromEmoji} ${t.fromTeam}` : 'Serbest', inline: true },
+                        { name: '📥 Yeni Takım', value: `${toEmoji} **${t.toTeam}**`, inline: true }
+                    ],
+                    footer: { text: `Tribe League Transfer | ${new Date().toLocaleDateString('tr-TR')}` },
+                    timestamp: new Date().toISOString()
+                };
+
+                if (t.fee) embed.fields.push({ name: '💰 Bonservis Bedeli', value: `${t.fee}M €`, inline: false });
+
+                // XMLHttpRequest kullan
+                const xhr = new XMLHttpRequest();
+                const existingMessageId = t.discordMessageId;
+                const url = existingMessageId
+                    ? `${TRANSFER_WEBHOOK_URL}/messages/${existingMessageId}`
+                    : TRANSFER_WEBHOOK_URL + '?wait=true';
+
+                xhr.open(existingMessageId ? 'PATCH' : 'POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                xhr.onload = async function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            // Mesaj ID'sini kaydet
+                            if (data.id && !existingMessageId) {
+                                await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `transfers/${id}`), {
+                                    discordMessageId: data.id
+                                });
+                            }
+                            showToast('✅ Discord\'a gönderildi!', 'success');
+                            loadAdminTransfers();
+                        } catch (e) {
+                            showToast('✅ Discord\'a gönderildi!', 'success');
+                            loadAdminTransfers();
+                        }
+                    } else {
+                        console.error('Discord hatası:', xhr.status, xhr.responseText);
+                        showToast('❌ Discord hatası: ' + xhr.status, 'error');
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('Discord XHR hatası');
+                    showToast('❌ Discord bağlantı hatası!', 'error');
+                };
+
+                xhr.send(JSON.stringify({ embeds: [embed] }));
+
+            } catch (e) {
+                console.error('Transfer Discord gönderme hatası:', e);
+                showToast('Hata: ' + e.message, 'error');
+            }
         }
 
         // Sayfa yüklenince transfer select'lerini doldur
