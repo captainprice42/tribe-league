@@ -1464,13 +1464,42 @@
 <body>
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
-        <div class="login-box">
+        <div class="login-box" style="max-width: 420px;">
             <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
             <h1>VERİ YÖNETİM PANELİ</h1>
-            <p style="color: var(--text-muted);">Devam etmek için şifre girin</p>
-            <input type="password" id="passwordInput" placeholder="••••••••"
-                onkeypress="if(event.key==='Enter')login()">
-            <button onclick="login()"><i class="fas fa-unlock"></i> Giriş Yap</button>
+
+            <!-- Login Tabs -->
+            <div
+                style="display: flex; gap: 5px; margin: 20px 0 15px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 5px;">
+                <button id="loginTabPassword" onclick="switchLoginTab('password')" style="
+                    flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer;
+                    background: linear-gradient(135deg, var(--primary), #a8d900); color: #000; font-weight: 600; font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                "><i class="fas fa-key"></i> Şifre</button>
+                <button id="loginTab2FA" onclick="switchLoginTab('2fa')" style="
+                    flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer;
+                    background: transparent; color: var(--text-muted); font-weight: 600; font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                "><i class="fas fa-mobile-alt"></i> 2FA Kodu</button>
+            </div>
+
+            <!-- Password Login Form -->
+            <div id="loginFormPassword">
+                <p style="color: var(--text-muted); margin-bottom: 15px;">Şifre ile giriş yapın</p>
+                <input type="password" id="passwordInput" placeholder="••••••••"
+                    onkeypress="if(event.key==='Enter')login()">
+                <button onclick="login()"><i class="fas fa-unlock"></i> Giriş Yap</button>
+            </div>
+
+            <!-- 2FA Login Form -->
+            <div id="loginForm2FA" style="display: none;">
+                <p style="color: var(--text-muted); margin-bottom: 15px;">Microsoft Authenticator kodunuzu girin</p>
+                <input type="text" id="totpInput" placeholder="000000" maxlength="6"
+                    style="text-align: center; font-size: 1.5rem; letter-spacing: 8px;"
+                    onkeypress="if(event.key==='Enter')loginWith2FA()">
+                <button onclick="loginWith2FA()"><i class="fas fa-shield-alt"></i> 2FA ile Giriş</button>
+            </div>
+
             <p class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i> Yanlış şifre!</p>
         </div>
     </div>
@@ -2201,27 +2230,107 @@
             </div>
         </div>
 
-        <!-- Settings Panel -->
+        <!-- Settings Panel (Owner-Only - IP + Ekran Korumalı) -->
         <div class="panel" id="panel-settings">
-            <div class="panel-title"><i class="fas fa-cog"></i> Sistem Ayarları</div>
+            <div class="panel-title" style="color: #ff4757;">
+                <i class="fas fa-user-shield"></i> Özel Ayarlar (Sadece Owner)
+            </div>
 
-            <p style="color: var(--text-muted); margin-bottom: 20px;">
-                <i class="fas fa-info-circle"></i> Sistem ayarları bu panelden yönetilir.
-            </p>
-
-            <!-- Ziyaretçi Logları -->
             <div
-                style="background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 25px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="color: var(--accent); margin: 0;"><i class="fas fa-list-alt"></i> Son Ziyaretçiler</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-accent" onclick="loadVisitorLogs()"><i class="fas fa-sync"></i>
-                            Yenile</button>
-                        <button class="btn btn-danger" onclick="clearVisitorLogs()"><i class="fas fa-trash"></i>
-                            Temizle</button>
+                style="background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(255, 71, 87, 0.02)); border: 1px solid rgba(255, 71, 87, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: #ff4757; margin: 0 0 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-fingerprint"></i> Cihaz Yönetimi
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">
+                    Bu cihaz owner olarak kayıtlı. Fingerprint: <code id="currentFingerprint"
+                        style="color: var(--primary); background: rgba(196,255,14,0.1); padding: 2px 8px; border-radius: 4px;"></code>
+                </p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-danger" onclick="TribeSpecialPanel.showOwnerList()">
+                        <i class="fas fa-list"></i> Owner Listesi
+                    </button>
+                    <button class="btn btn-warning" onclick="TribeSpecialPanel.removeOwner()">
+                        <i class="fas fa-user-minus"></i> Owner Kaldır
+                    </button>
+                </div>
+                <div id="ownerListContainer" style="margin-top: 20px; display: none;"></div>
+            </div>
+
+            <div
+                style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.02)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: var(--accent); margin: 0 0 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-key"></i> 2FA Yönetimi
+                </h3>
+                <div id="2faStatusContainer">
+                    <p style="color: var(--text-muted);">2FA durumu yükleniyor...</p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                    <button class="btn btn-success" onclick="TribeSpecialPanel.setup2FA()">
+                        <i class="fas fa-qrcode"></i> 2FA Kur
+                    </button>
+                    <button class="btn btn-danger" onclick="TribeSpecialPanel.disable2FA()">
+                        <i class="fas fa-times"></i> 2FA Kapat
+                    </button>
+                </div>
+                <div id="2faSetupContainer" style="margin-top: 20px; display: none;"></div>
+            </div>
+
+            <div
+                style="background: linear-gradient(135deg, rgba(46, 213, 115, 0.1), rgba(46, 213, 115, 0.02)); border: 1px solid rgba(46, 213, 115, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: var(--success); margin: 0 0 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-history"></i> Aktivite Logları
+                </h3>
+                <button class="btn btn-accent" onclick="TribeSpecialPanel.loadActivityLogs()">
+                    <i class="fas fa-sync"></i> Logları Yükle
+                </button>
+                <div id="activityLogsContainer" style="margin-top: 20px; max-height: 400px; overflow-y: auto;"></div>
+            </div>
+
+            <div
+                style="background: linear-gradient(135deg, rgba(255, 165, 2, 0.1), rgba(255, 165, 2, 0.02)); border: 1px solid rgba(255, 165, 2, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: var(--warning); margin: 0 0 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-shield-alt"></i> Güvenlik Ayarları
+                </h3>
+                <div style="display: grid; gap: 15px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <span><i class="fas fa-user-lock"></i> Rate Limiting</span>
+                        <span style="color: var(--success);">✅ Aktif</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <span><i class="fas fa-fingerprint"></i> Fingerprint Kontrolü</span>
+                        <span style="color: var(--success);">✅ Aktif</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <span><i class="fas fa-bell"></i> Email Bildirimleri</span>
+                        <span id="emailStatus" style="color: var(--warning);">⚠️ Yapılandırılmamış</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <span><i class="fas fa-database"></i> IndexedDB</span>
+                        <span style="color: var(--success);">✅ Aktif</span>
                     </div>
                 </div>
-                <div id="visitorLogsContainer" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+
+            <div
+                style="background: linear-gradient(135deg, rgba(196, 255, 14, 0.1), rgba(196, 255, 14, 0.02)); border: 1px solid rgba(196, 255, 14, 0.3); border-radius: 16px; padding: 25px;">
+                <h3 style="color: var(--primary); margin: 0 0 15px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-broom"></i> Oturum Yönetimi
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">
+                    Tüm aktif oturumları temizleyebilir veya rate limit verilerini sıfırlayabilirsin.
+                </p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-accent" onclick="TribeSpecialPanel.clearAllSessions()">
+                        <i class="fas fa-broom"></i> Tüm Oturumları Temizle
+                    </button>
+                    <button class="btn btn-warning" onclick="clearRateLimiting()">
+                        <i class="fas fa-unlock"></i> Rate Limit Sıfırla
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -2256,10 +2365,8 @@
         </div>
     </div>
 
-    <!-- Data.js -->
-    <script src="../data.js"></script>
+    <!-- Live Match -->
     <script src="../live-match.js"></script>
-    <script src="../firebase-config.js"></script>
 
     <script>
         // Firebase bağlantı bekleme
@@ -2366,6 +2473,20 @@
             yesBtn.onmouseleave = () => { yesBtn.style.transform = 'translateY(0)'; yesBtn.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.4)'; };
             noBtn.onmouseenter = () => { noBtn.style.background = 'rgba(255, 255, 255, 0.15)'; };
             noBtn.onmouseleave = () => { noBtn.style.background = 'rgba(255, 255, 255, 0.1)'; };
+        }
+
+        // 🔓 Rate Limiting Sıfırlama
+        async function clearRateLimiting() {
+            showConfirmModal('Tüm rate limiting verilerini sıfırlamak istediğinize emin misiniz?', async () => {
+                try {
+                    if (window.firebaseRemove && window.firebaseDb) {
+                        await window.firebaseRemove(window.firebaseRef(window.firebaseDb, 'adminSecurity/rateLimiting'));
+                        showToast('Rate limiting verileri sıfırlandı!', 'success');
+                    }
+                } catch (e) {
+                    showToast('Hata: ' + e.message, 'error');
+                }
+            });
         }
 
         // 🔐 Güvenli şifreleme sistemi - SHA-256 hash ile korumalı
@@ -2496,7 +2617,7 @@
             renderLiveMatches();
         }
 
-        // Login - Firebase'den şifre kontrolü
+        // Login - GÜVENLİ VERSİYON (Rate Limiting + Fingerprint + 2FA)
         async function login() {
             const loginBtn = document.querySelector('#loginScreen button');
             const originalText = loginBtn.innerHTML;
@@ -2504,6 +2625,19 @@
             loginBtn.disabled = true;
 
             try {
+                // 1. Rate Limit kontrolü
+                if (window.TribeAuthControl) {
+                    const rateCheck = await TribeAuthControl.rateLimiter.check();
+                    if (!rateCheck.allowed) {
+                        document.getElementById('loginError').style.display = 'block';
+                        document.getElementById('loginError').innerHTML =
+                            `<i class="fas fa-clock"></i> ${rateCheck.message}`;
+                        loginBtn.innerHTML = originalText;
+                        loginBtn.disabled = false;
+                        return;
+                    }
+                }
+
                 const pass = document.getElementById('passwordInput').value;
                 const hash = await hashPassword(pass);
 
@@ -2511,14 +2645,25 @@
                 const correctHash = await getAdminPasswordHash();
 
                 if (correctHash && hash === correctHash) {
-                    // Oturumu localStorage'a kaydet
-                    localStorage.setItem('tribe-admin-auth', 'true');
-                    localStorage.setItem('tribe-admin-time', Date.now().toString());
-
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('mainContainer').style.display = 'block';
-                    init();
+                    // Şifre doğru - direkt giriş yap (2FA kontrolü yok)
+                    await completeLogin();
                 } else {
+                    // Yanlış şifre - Rate limit artır
+                    if (window.TribeAuthControl) {
+                        const attempts = await TribeAuthControl.rateLimiter.incrementAttempt();
+                        await TribeAuthControl.logger.logLogin(false);
+
+                        if (attempts >= 5) {
+                            document.getElementById('loginError').innerHTML =
+                                `<i class="fas fa-lock"></i> Çok fazla hatalı deneme! Lütfen bekleyin.`;
+                        } else {
+                            document.getElementById('loginError').innerHTML =
+                                `<i class="fas fa-exclamation-circle"></i> Yanlış şifre! (${attempts}/5)`;
+                        }
+                    } else {
+                        document.getElementById('loginError').innerHTML =
+                            '<i class="fas fa-exclamation-circle"></i> Yanlış şifre!';
+                    }
                     document.getElementById('loginError').style.display = 'block';
                     document.getElementById('passwordInput').value = '';
                 }
@@ -2532,28 +2677,264 @@
             }
         }
 
-        // Logout
-        function logout() {
-            localStorage.removeItem('tribe-admin-auth');
-            localStorage.removeItem('tribe-admin-time');
+        // Login sekme değiştirme
+        function switchLoginTab(tab) {
+            const passwordForm = document.getElementById('loginFormPassword');
+            const totpForm = document.getElementById('loginForm2FA');
+            const tabPassword = document.getElementById('loginTabPassword');
+            const tabTOTP = document.getElementById('loginTab2FA');
+            const errorEl = document.getElementById('loginError');
+
+            errorEl.style.display = 'none';
+
+            if (tab === 'password') {
+                passwordForm.style.display = 'block';
+                totpForm.style.display = 'none';
+                tabPassword.style.background = 'linear-gradient(135deg, var(--primary), #a8d900)';
+                tabPassword.style.color = '#000';
+                tabTOTP.style.background = 'transparent';
+                tabTOTP.style.color = 'var(--text-muted)';
+                document.getElementById('passwordInput').focus();
+            } else {
+                passwordForm.style.display = 'none';
+                totpForm.style.display = 'block';
+                tabTOTP.style.background = 'linear-gradient(135deg, var(--accent), #00a8cc)';
+                tabTOTP.style.color = '#000';
+                tabPassword.style.background = 'transparent';
+                tabPassword.style.color = 'var(--text-muted)';
+                document.getElementById('totpInput').focus();
+            }
+        }
+
+        // 2FA kodu ile giriş
+        async function loginWith2FA() {
+            const loginBtn = document.querySelector('#loginForm2FA button');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Doğrulanıyor...';
+            loginBtn.disabled = true;
+
+            const code = document.getElementById('totpInput').value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                // Rate Limit kontrolü
+                if (window.TribeAuthControl) {
+                    const rateCheck = await TribeAuthControl.rateLimiter.check();
+                    if (!rateCheck.allowed) {
+                        errorEl.style.display = 'block';
+                        errorEl.innerHTML = `<i class="fas fa-clock"></i> ${rateCheck.message}`;
+                        return;
+                    }
+                }
+
+                if (code.length !== 6) {
+                    errorEl.textContent = '6 haneli kod girin!';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                // 2FA aktif mi kontrol et
+                if (!window.TribeAuthControl) {
+                    errorEl.textContent = 'Auth sistemi yüklenmedi!';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                const totpEnabled = await TribeAuthControl.totp.isEnabled();
+                if (!totpEnabled) {
+                    errorEl.textContent = '2FA henüz kurulmamış! Önce şifre ile giriş yapıp 2FA\'yı kurun.';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                const secret = await TribeAuthControl.totp.getSecret();
+                const isValid = await TribeAuthControl.totp.verifyCode(secret, code);
+
+                if (isValid) {
+                    // 2FA kodu doğru - giriş yap
+                    errorEl.style.display = 'none';
+                    await completeLogin();
+                } else {
+                    // Yanlış kod
+                    if (window.TribeAuthControl) {
+                        const attempts = await TribeAuthControl.rateLimiter.incrementAttempt();
+                        errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> Yanlış kod! (${attempts}/5)`;
+                    } else {
+                        errorEl.textContent = 'Yanlış kod!';
+                    }
+                    errorEl.style.display = 'block';
+                    document.getElementById('totpInput').value = '';
+                }
+            } catch (error) {
+                console.error('2FA login hatası:', error);
+                errorEl.textContent = 'Doğrulama hatası!';
+                errorEl.style.display = 'block';
+            } finally {
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        // 2FA Modal
+        function show2FAModal() {
+            const modal = document.createElement('div');
+            modal.id = 'modal2FA';
+            modal.style.cssText = `
+                position: fixed; inset: 0; background: rgba(0,0,0,0.9); 
+                display: flex; align-items: center; justify-content: center; z-index: 10000;
+            `;
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 14, 0.95));
+                    border: 1px solid rgba(0, 212, 255, 0.3);
+                    border-radius: 20px;
+                    padding: 40px;
+                    max-width: 400px;
+                    width: 90%;
+                    text-align: center;
+                    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 212, 255, 0.1);
+                ">
+                    <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h2 style="color: var(--accent); margin-bottom: 10px;">2FA Doğrulama</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Microsoft Authenticator kodunuzu girin</p>
+                    <input type="text" id="input2FACode" placeholder="000000" maxlength="6" style="
+                        width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 2px solid var(--border);
+                        border-radius: 14px; color: #fff; font-size: 2rem; text-align: center; letter-spacing: 10px;
+                    " onkeypress="if(event.key==='Enter')verify2FALogin()">
+                    <p id="error2FA" style="color: var(--danger); margin-top: 10px; display: none;"></p>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="document.getElementById('modal2FA').remove()" style="
+                            flex: 1; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+                            border-radius: 12px; color: #fff; font-size: 1rem; cursor: pointer;
+                        ">İptal</button>
+                        <button onclick="verify2FALogin()" style="
+                            flex: 1; padding: 14px; background: linear-gradient(135deg, var(--accent), #00a8cc);
+                            border: none; border-radius: 12px; color: #000; font-size: 1rem; font-weight: 600; cursor: pointer;
+                        ">Doğrula</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('input2FACode').focus();
+        }
+
+        // 2FA doğrulama
+        async function verify2FALogin() {
+            const code = document.getElementById('input2FACode').value.trim();
+            const errorEl = document.getElementById('error2FA');
+
+            if (code.length !== 6) {
+                errorEl.textContent = '6 haneli kod girin!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const secret = await TribeAuthControl.totp.getSecret();
+                const isValid = await TribeAuthControl.totp.verifyCode(secret, code);
+
+                if (isValid) {
+                    document.getElementById('modal2FA').remove();
+                    await completeLogin();
+                } else {
+                    errorEl.textContent = 'Yanlış kod! Tekrar deneyin.';
+                    errorEl.style.display = 'block';
+                    document.getElementById('input2FACode').value = '';
+                }
+            } catch (e) {
+                errorEl.textContent = 'Doğrulama hatası!';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Giriş tamamlama (ortak fonksiyon)
+        async function completeLogin() {
+            try {
+                if (window.TribeAuthControl) {
+                    // Fingerprint oluştur ve session başlat
+                    const fp = await TribeAuthControl.fingerprint.generate();
+                    await TribeAuthControl.fingerprint.store(fp);
+                    await TribeAuthControl.session.create(fp);
+
+                    // Rate limit sıfırla
+                    await TribeAuthControl.rateLimiter.reset();
+
+                    // Log ve email alert
+                    await TribeAuthControl.alerts.sendLoginAlert();
+                } else {
+                    // Fallback: eski sistem
+                    localStorage.setItem('tribe-admin-auth', 'true');
+                    localStorage.setItem('tribe-admin-time', Date.now().toString());
+                }
+
+                // UI güncelle
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+
+                // Özel panel erişimi kontrol et
+                if (window.TribeSpecialPanel) {
+                    await TribeSpecialPanel.checkAccess();
+                }
+
+                init();
+            } catch (e) {
+                console.error('Complete login error:', e);
+            }
+        }
+
+        // Logout - GÜVENLİ VERSİYON
+        async function logout() {
+            try {
+                if (window.TribeAuthControl) {
+                    await TribeAuthControl.session.destroy();
+                    await TribeAuthControl.logger.logAction('logout');
+                } else {
+                    localStorage.removeItem('tribe-admin-auth');
+                    localStorage.removeItem('tribe-admin-time');
+                }
+            } catch (e) {
+                console.error('Logout error:', e);
+            }
+
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('mainContainer').style.display = 'none';
             document.getElementById('passwordInput').value = '';
         }
 
-        // Sayfa yüklendiğinde oturum kontrolü
-        function checkSession() {
-            const isAuth = localStorage.getItem('tribe-admin-auth');
-            if (isAuth === 'true') {
-                // Daha önce giriş yapılmış, direkt ana sayfayı göster
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'block';
-                init();
+        // Sayfa yüklendiğinde oturum kontrolü - GÜVENLİ VERSİYON
+        async function checkSession() {
+            try {
+                let isValid = false;
+
+                if (window.TribeAuthControl) {
+                    // Güvenli session doğrulama
+                    isValid = await TribeAuthControl.session.verify();
+                } else {
+                    // Fallback - sadece eski sistemle uyumluluk için
+                    const isAuth = localStorage.getItem('tribe-admin-auth');
+                    isValid = isAuth === 'true';
+                }
+
+                if (isValid) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainContainer').style.display = 'block';
+
+                    // Özel panel erişimi kontrol et
+                    if (window.TribeSpecialPanel) {
+                        await TribeSpecialPanel.checkAccess();
+                    }
+
+                    init();
+                }
+            } catch (e) {
+                console.error('Session check error:', e);
             }
         }
 
-        // Sayfa yüklendiğinde kontrol et
-        document.addEventListener('DOMContentLoaded', checkSession);
+        // Sayfa yüklendiğinde kontrol et (biraz gecikme ile - scriptlerin yüklenmesini bekle)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkSession, 500);
+        });
 
         // Tab Switch
         function switchTab(tabName) {
@@ -6326,19 +6707,20 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
 
         async function loadDashboardData() {
             try {
-                // Ziyaretçi loglarını çek
-                const visitorsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'visitorLogs'));
-                let totalVisitors = 0;
+                // Admin aktivite loglarını çek (haftalık giriş verileri için)
+                const adminLogsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'adminSecurity/activityLogs'));
+                let totalLogins = 0;
                 let weeklyData = [0, 0, 0, 0, 0, 0, 0];
 
-                if (visitorsSnapshot.exists()) {
-                    const logs = visitorsSnapshot.val();
-                    totalVisitors = Object.keys(logs).length;
+                if (adminLogsSnapshot.exists()) {
+                    const logs = Object.values(adminLogsSnapshot.val());
+                    const loginLogs = logs.filter(l => l.type === 'login');
+                    totalLogins = loginLogs.length;
 
                     // Haftalık veri hesapla
                     const now = Date.now();
                     const oneDay = 24 * 60 * 60 * 1000;
-                    Object.values(logs).forEach(log => {
+                    loginLogs.forEach(log => {
                         const daysAgo = Math.floor((now - log.timestamp) / oneDay);
                         if (daysAgo >= 0 && daysAgo < 7) {
                             weeklyData[6 - daysAgo]++;
@@ -6346,7 +6728,7 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                     });
                 }
 
-                document.getElementById('statTotalVisitors').textContent = totalVisitors.toLocaleString();
+                document.getElementById('statTotalVisitors').textContent = totalLogins.toLocaleString();
                 renderWeeklyChart(weeklyData);
 
                 // Kullanıcı sayısı
@@ -6439,6 +6821,40 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
             const activities = [];
 
             try {
+                // 🔐 Admin giriş logları
+                const adminLogsSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'adminSecurity/activityLogs'));
+                if (adminLogsSnapshot.exists()) {
+                    const logs = Object.values(adminLogsSnapshot.val());
+                    logs.slice(-10).forEach(log => {
+                        if (log.type === 'login') {
+                            activities.push({
+                                icon: log.success ? 'fa-sign-in-alt' : 'fa-times-circle',
+                                color: log.success ? 'var(--success)' : 'var(--danger)',
+                                text: log.success
+                                    ? `<strong>Admin girişi</strong> ${log.ip || ''} (${log.browser || 'Bilinmiyor'})`
+                                    : `<strong>Başarısız giriş denemesi</strong> ${log.ip || ''}`,
+                                time: log.timestamp
+                            });
+                        } else if (log.type === 'action' && log.action) {
+                            const actionLabels = {
+                                'logout': '🚪 Admin çıkış yaptı',
+                                'owner_registered': '👤 Yeni owner kaydedildi',
+                                '2fa_enabled': '🔐 2FA aktifleştirildi',
+                                '2fa_disabled': '⚠️ 2FA devre dışı bırakıldı',
+                                'devtools_opened': '🔍 DevTools açıldı'
+                            };
+                            if (actionLabels[log.action]) {
+                                activities.push({
+                                    icon: 'fa-shield-alt',
+                                    color: 'var(--warning)',
+                                    text: actionLabels[log.action],
+                                    time: log.timestamp
+                                });
+                            }
+                        }
+                    });
+                }
+
                 // Son kullanıcılar
                 const usersSnapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'users'));
                 if (usersSnapshot.exists()) {
@@ -6529,7 +6945,11 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
         }
     </script>
 
-    <!-- Firebase Config -->
+    <!-- Security System -->
+    <script src="../auth-control.js"></script>
+    <script src="../special-detect.js"></script>
+
+    <!-- Firebase Config (tek sefer yüklenir) -->
     <script src="../firebase-config.js"></script>
 
     <!-- Theme Switcher -->

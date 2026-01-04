@@ -1547,12 +1547,25 @@
                     return;
                 }
 
-                // Takım hesabını localStorage'a kaydet
+                // Takım hesabını Firebase'de kullanıcı profiline kaydet
                 const teamAccountData = {
                     teamKey: foundTeam.key,
                     teamName: foundTeam.name,
-                    loggedInAt: Date.now()
+                    linkedAt: Date.now()
                 };
+
+                // Firebase'de kullanıcıya bağla
+                if (currentUser && currentUser.id) {
+                    await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), {
+                        linkedTeam: teamAccountData
+                    });
+
+                    // localStorage'ı da güncelle (oturum süresi için)
+                    currentUser.linkedTeam = teamAccountData;
+                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                }
+
+                // Eski localStorage'ı da ayarla (geriye uyumluluk için)
                 localStorage.setItem('tribeTeamAccount', JSON.stringify(teamAccountData));
 
                 // UI güncelle
@@ -1567,12 +1580,29 @@
         }
 
         // Takım hesabından çıkış
-        function logoutFromTeamAccount() {
-            localStorage.removeItem('tribeTeamAccount');
-            document.getElementById('teamLoginForm').style.display = 'block';
-            document.getElementById('teamLoggedIn').style.display = 'none';
-            document.getElementById('teamAccountStatus').textContent = 'Takımına giriş yap';
-            document.getElementById('teamPasswordInput').value = '';
+        async function logoutFromTeamAccount() {
+            try {
+                // Firebase'den linkedTeam'i kaldır
+                if (currentUser && currentUser.id) {
+                    await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), {
+                        linkedTeam: null
+                    });
+
+                    // localStorage'ı da güncelle
+                    delete currentUser.linkedTeam;
+                    localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                }
+
+                // Eski localStorage'ı da temizle (geriye uyumluluk)
+                localStorage.removeItem('tribeTeamAccount');
+
+                document.getElementById('teamLoginForm').style.display = 'block';
+                document.getElementById('teamLoggedIn').style.display = 'none';
+                document.getElementById('teamAccountStatus').textContent = 'Takımına giriş yap';
+                document.getElementById('teamPasswordInput').value = '';
+            } catch (e) {
+                console.error('Takım çıkış hatası:', e);
+            }
         }
 
         // Takım giriş durumunu göster
@@ -1590,12 +1620,52 @@
             }
         }
 
-        // Takım hesabı durumunu kontrol et
-        function checkTeamAccountStatus() {
-            const savedTeam = localStorage.getItem('tribeTeamAccount');
-            if (savedTeam) {
-                const teamData = JSON.parse(savedTeam);
-                showTeamLoggedIn(teamData.teamName);
+        // Takım hesabı durumunu kontrol et - önce Firebase'den, sonra localStorage'dan
+        async function checkTeamAccountStatus() {
+            try {
+                // Önce Firebase'den kontrol et (kullanıcı giriş yapmışsa)
+                if (currentUser && currentUser.id) {
+                    await waitForFirebase();
+                    const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}/linkedTeam`));
+
+                    if (snapshot.exists()) {
+                        const teamData = snapshot.val();
+                        if (teamData && teamData.teamName) {
+                            // LocalStorage'ı da senkronize et
+                            localStorage.setItem('tribeTeamAccount', JSON.stringify(teamData));
+                            currentUser.linkedTeam = teamData;
+                            localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+
+                            showTeamLoggedIn(teamData.teamName);
+                            return;
+                        }
+                    }
+                }
+
+                // Geriye uyumluluk: localStorage'dan kontrol et
+                const savedTeam = localStorage.getItem('tribeTeamAccount');
+                if (savedTeam) {
+                    const teamData = JSON.parse(savedTeam);
+
+                    // Eğer kullanıcı giriş yapmışsa ve localStorage'da takım varsa, Firebase'e de kaydet
+                    if (currentUser && currentUser.id && teamData.teamName) {
+                        await window.firebaseUpdate(window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`), {
+                            linkedTeam: teamData
+                        });
+                        currentUser.linkedTeam = teamData;
+                        localStorage.setItem('tribeUser', JSON.stringify(currentUser));
+                    }
+
+                    showTeamLoggedIn(teamData.teamName);
+                }
+            } catch (e) {
+                console.error('Takım durumu kontrol hatası:', e);
+                // Fallback: localStorage'dan kontrol et
+                const savedTeam = localStorage.getItem('tribeTeamAccount');
+                if (savedTeam) {
+                    const teamData = JSON.parse(savedTeam);
+                    showTeamLoggedIn(teamData.teamName);
+                }
             }
         }
 

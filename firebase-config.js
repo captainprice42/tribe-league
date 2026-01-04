@@ -369,3 +369,114 @@ async function loadTribeDataFromFirebase() {
 
 // Sayfa yüklenince TribeData'yı doldur
 document.addEventListener('DOMContentLoaded', loadTribeDataFromFirebase);
+
+// ═══════════════════════════════════════════════════════════════
+// 🔐 OWNER KORUMA SİSTEMİ (IP + Ekran Doğrulama)
+// ═══════════════════════════════════════════════════════════════
+
+const TribeOwner = {
+    // Sabit değerler - sadece sen!
+    config: {
+        allowedIP: '88.241.180.6',
+        allowedScreen: '2560x1440',
+        firebasePath: 'adminSecurity/ownerAccess'
+    },
+
+    // Mevcut değerleri al
+    async getCurrentInfo() {
+        let ip = null;
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            ip = data.ip;
+        } catch (e) {
+            ip = 'unknown';
+        }
+
+        return {
+            ip: ip,
+            screen: `${screen.width}x${screen.height}`,
+            timestamp: Date.now()
+        };
+    },
+
+    // Frontend kontrolü - IP ve ekran doğrulama
+    async verifyOwner() {
+        const info = await this.getCurrentInfo();
+
+        const ipMatch = info.ip === this.config.allowedIP;
+        const screenMatch = info.screen === this.config.allowedScreen;
+
+        console.log('🔐 Owner kontrolü:', {
+            ip: info.ip,
+            ipMatch: ipMatch,
+            screen: info.screen,
+            screenMatch: screenMatch
+        });
+
+        return ipMatch && screenMatch;
+    },
+
+    // Backend kontrolü - Firebase'den de kontrol et
+    async verifyWithBackend() {
+        const info = await this.getCurrentInfo();
+        const isOwnerFrontend = await this.verifyOwner();
+
+        if (!isOwnerFrontend) {
+            // Log suspicious access attempt
+            if (window.firebasePush && window.firebaseDb) {
+                await window.firebasePush(
+                    window.firebaseRef(window.firebaseDb, 'adminSecurity/suspiciousAccess'),
+                    {
+                        ip: info.ip,
+                        screen: info.screen,
+                        timestamp: info.timestamp,
+                        page: window.location.href
+                    }
+                );
+            }
+            return false;
+        }
+
+        // Log successful access
+        if (window.firebaseSet && window.firebaseDb) {
+            await window.firebaseSet(
+                window.firebaseRef(window.firebaseDb, this.config.firebasePath + '/lastAccess'),
+                {
+                    ip: info.ip,
+                    screen: info.screen,
+                    timestamp: info.timestamp
+                }
+            );
+        }
+
+        return true;
+    },
+
+    // Settings panelini göster/gizle
+    async checkSettingsAccess() {
+        const isOwner = await this.verifyWithBackend();
+
+        const settingsTab = document.getElementById('settingsTab');
+        const settingsPanel = document.getElementById('panel-settings');
+
+        if (isOwner) {
+            console.log('✅ Owner erişimi onaylandı!');
+            if (settingsTab) {
+                settingsTab.style.display = 'flex';
+                settingsTab.style.background = 'linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.05))';
+                settingsTab.style.border = '1px solid rgba(255, 71, 87, 0.3)';
+            }
+            return true;
+        } else {
+            console.log('🚫 Owner erişimi reddedildi!');
+            if (settingsTab) settingsTab.style.display = 'none';
+            if (settingsPanel) settingsPanel.innerHTML = '<p style="text-align:center; color: var(--danger);">Erişim Reddedildi</p>';
+            return false;
+        }
+    }
+};
+
+// Global export
+window.TribeOwner = TribeOwner;
+

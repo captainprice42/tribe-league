@@ -2293,30 +2293,46 @@
         let connectedTeamAccount = null;
 
         async function checkTeamAccount() {
-            // Önce localStorage'a bak (şifre ile giriş yapılmış)
+            // Önce Firebase'den linkedTeam kontrol et (kullanıcı hesabına bağlı)
+            if (currentUser && window.firebaseDb) {
+                try {
+                    const snapshot = await window.firebaseGet(
+                        window.firebaseRef(window.firebaseDb, `users/${currentUser.id}/linkedTeam`)
+                    );
+
+                    if (snapshot.exists()) {
+                        const teamData = snapshot.val();
+                        if (teamData && teamData.teamName) {
+                            connectedTeamAccount = teamData;
+                            // LocalStorage'ı da senkronize et
+                            localStorage.setItem('tribeTeamAccount', JSON.stringify(teamData));
+                            document.getElementById('accountSwitcher').style.display = 'flex';
+                            updateAccountSwitcherUI();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Firebase takım kontrolü hatası:', e.message);
+                }
+            }
+
+            // Geriye uyumluluk: localStorage'dan kontrol et
             const savedTeam = localStorage.getItem('tribeTeamAccount');
             if (savedTeam) {
                 connectedTeamAccount = JSON.parse(savedTeam);
                 document.getElementById('accountSwitcher').style.display = 'flex';
                 updateAccountSwitcherUI();
-                return;
-            }
 
-            // Firebase'den linkedTeamAccount kontrol et (admin tarafından atanmış)
-            if (currentUser && window.firebaseDb) {
-                try {
-                    const userRef = window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`);
-                    const snapshot = await window.firebaseGet(userRef);
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        if (userData.linkedTeamAccount) {
-                            connectedTeamAccount = { teamName: userData.linkedTeamAccount };
-                            document.getElementById('accountSwitcher').style.display = 'flex';
-                            updateAccountSwitcherUI();
-                        }
+                // Eğer kullanıcı giriş yapmışsa ve localStorage'da takım varsa, Firebase'e de kaydet
+                if (currentUser && currentUser.id && connectedTeamAccount.teamName) {
+                    try {
+                        await window.firebaseUpdate(
+                            window.firebaseRef(window.firebaseDb, `users/${currentUser.id}`),
+                            { linkedTeam: connectedTeamAccount }
+                        );
+                    } catch (e) {
+                        console.log('Firebase senkronizasyon hatası:', e.message);
                     }
-                } catch (e) {
-                    console.log('Takım hesabı kontrolü:', e.message);
                 }
             }
         }
