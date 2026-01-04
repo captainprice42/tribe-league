@@ -2230,7 +2230,85 @@
             </div>
         </div>
 
+        <!-- Polls (Anketler) Panel -->
+        <div class="panel" id="panel-polls">
+            <div class="panel-title"><i class="fas fa-poll"></i> Anket Yönetimi</div>
+
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Anketler oluşturun, düzenleyin ve sonuçları takip edin.
+                Anketler <strong style="color: var(--primary);">anket.html</strong> sayfasında görünür.
+            </p>
+
+            <!-- Yeni Anket Oluşturma Formu -->
+            <div
+                style="background: rgba(196,255,14,0.05); border: 1px solid rgba(196,255,14,0.2); border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="color: var(--primary); margin: 0 0 20px;"><i class="fas fa-plus-circle"></i> Yeni Anket
+                    Oluştur</h3>
+
+                <div class="form-group">
+                    <label>Anket Sorusu</label>
+                    <input type="text" id="pollQuestion" class="form-control"
+                        placeholder="Örn: Şampiyonluğun favorisi kim?">
+                </div>
+
+                <div class="form-group">
+                    <label>Seçenekler</label>
+                    <div id="pollOptionsContainer">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" class="form-control poll-option-input" placeholder="Seçenek 1"
+                                style="flex: 1;">
+                            <button class="btn btn-danger" onclick="this.parentElement.remove()"
+                                style="padding: 10px 15px;"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" class="form-control poll-option-input" placeholder="Seçenek 2"
+                                style="flex: 1;">
+                            <button class="btn btn-danger" onclick="this.parentElement.remove()"
+                                style="padding: 10px 15px;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn btn-accent" onclick="addPollOptionInput()" style="margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Seçenek Ekle
+                    </button>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Bitiş Süresi (Gün)</label>
+                        <select id="pollDuration" class="form-control">
+                            <option value="0">Süresiz</option>
+                            <option value="1">1 Gün</option>
+                            <option value="3">3 Gün</option>
+                            <option value="7" selected>7 Gün</option>
+                            <option value="14">14 Gün</option>
+                            <option value="30">30 Gün</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Durum</label>
+                        <select id="pollStatus" class="form-control">
+                            <option value="active">Aktif</option>
+                            <option value="inactive">Pasif</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-success" onclick="createPoll()"><i class="fas fa-check"></i> Anket
+                        Oluştur</button>
+                </div>
+            </div>
+
+            <!-- Mevcut Anketler -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--accent); margin: 0;"><i class="fas fa-list"></i> Mevcut Anketler</h3>
+                <button class="btn btn-accent" onclick="loadAdminPolls()"><i class="fas fa-sync"></i> Yenile</button>
+            </div>
+            <div id="adminPollsList"></div>
+        </div>
+
         <!-- Settings Panel (Owner-Only - IP + Ekran Korumalı) -->
+
         <div class="panel" id="panel-settings">
             <div class="panel-title" style="color: #ff4757;">
                 <i class="fas fa-user-shield"></i> Özel Ayarlar (Sadece Owner)
@@ -6941,7 +7019,195 @@ console.log('⚽ LiveMatchData yüklendi!', { maçlar: LiveMatchData.matches.len
                 if (tabName === 'dashboard') {
                     loadDashboardData();
                 }
+                if (tabName === 'polls') {
+                    loadAdminPolls();
+                }
             };
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📊 ANKET YÖNETİMİ FONKSİYONLARI
+        // ═══════════════════════════════════════════════════════════════
+
+        // Seçenek inputu ekle
+        function addPollOptionInput() {
+            const container = document.getElementById('pollOptionsContainer');
+            const optionNumber = container.querySelectorAll('.poll-option-input').length + 1;
+            const div = document.createElement('div');
+            div.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px;';
+            div.innerHTML = `
+                <input type="text" class="form-control poll-option-input" placeholder="Seçenek ${optionNumber}" style="flex: 1;">
+                <button class="btn btn-danger" onclick="this.parentElement.remove()" style="padding: 10px 15px;"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Yeni anket oluştur
+        async function createPoll() {
+            const question = document.getElementById('pollQuestion').value.trim();
+            const optionInputs = document.querySelectorAll('.poll-option-input');
+            const duration = parseInt(document.getElementById('pollDuration').value);
+            const status = document.getElementById('pollStatus').value;
+
+            // Validasyon
+            if (!question) {
+                showToast('Lütfen bir soru girin!', 'error');
+                return;
+            }
+
+            const options = [];
+            optionInputs.forEach(input => {
+                const text = input.value.trim();
+                if (text) {
+                    options.push({ text, votes: 0 });
+                }
+            });
+
+            if (options.length < 2) {
+                showToast('En az 2 seçenek gerekli!', 'error');
+                return;
+            }
+
+            try {
+                await waitForFirebase();
+
+                const pollId = 'poll_' + Date.now();
+                const pollData = {
+                    question,
+                    options,
+                    createdAt: Date.now(),
+                    endDate: duration > 0 ? Date.now() + (duration * 24 * 60 * 60 * 1000) : null,
+                    status,
+                    totalVotes: 0
+                };
+
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, `polls/${pollId}`), pollData);
+
+                showToast('Anket oluşturuldu!', 'success');
+
+                // Formu temizle
+                document.getElementById('pollQuestion').value = '';
+                document.getElementById('pollOptionsContainer').innerHTML = `
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" class="form-control poll-option-input" placeholder="Seçenek 1" style="flex: 1;">
+                        <button class="btn btn-danger" onclick="this.parentElement.remove()" style="padding: 10px 15px;"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" class="form-control poll-option-input" placeholder="Seçenek 2" style="flex: 1;">
+                        <button class="btn btn-danger" onclick="this.parentElement.remove()" style="padding: 10px 15px;"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+
+                loadAdminPolls();
+
+            } catch (e) {
+                console.error('Anket oluşturma hatası:', e);
+                showToast('Anket oluşturulamadı!', 'error');
+            }
+        }
+
+        // Anketleri yükle
+        async function loadAdminPolls() {
+            const container = document.getElementById('adminPollsList');
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Anketler yükleniyor...</p>';
+
+            try {
+                await waitForFirebase();
+
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, 'polls'));
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;"><i class="fas fa-poll-h"></i> Henüz anket yok</p>';
+                    return;
+                }
+
+                const polls = snapshot.val();
+                const pollsArray = Object.entries(polls).sort((a, b) => b[1].createdAt - a[1].createdAt);
+
+                container.innerHTML = pollsArray.map(([id, poll]) => {
+                    const totalVotes = poll.options ? poll.options.reduce((sum, opt) => sum + (opt.votes || 0), 0) : 0;
+                    const isActive = poll.status === 'active' && (!poll.endDate || poll.endDate > Date.now());
+                    const statusBadge = isActive
+                        ? '<span style="background: rgba(46,213,115,0.2); color: var(--success); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">AKTİF</span>'
+                        : '<span style="background: rgba(255,71,87,0.2); color: var(--danger); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">PASİF</span>';
+
+                    return `
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <div>
+                                    <h4 style="color: var(--text-main); margin: 0 0 8px;">${poll.question}</h4>
+                                    ${statusBadge}
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-${isActive ? 'warning' : 'success'}" onclick="togglePollStatus('${id}')" style="padding: 8px 12px; font-size: 0.85rem;">
+                                        <i class="fas fa-${isActive ? 'pause' : 'play'}"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deletePoll('${id}')" style="padding: 8px 12px; font-size: 0.85rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                ${poll.options.map((opt, i) => {
+                        const percent = totalVotes > 0 ? Math.round((opt.votes || 0) / totalVotes * 100) : 0;
+                        return `
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                            <div style="flex: 1; background: rgba(255,255,255,0.05); border-radius: 8px; height: 30px; position: relative; overflow: hidden;">
+                                                <div style="position: absolute; left: 0; top: 0; height: 100%; width: ${percent}%; background: linear-gradient(90deg, var(--primary), rgba(196,255,14,0.3)); border-radius: 8px;"></div>
+                                                <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; z-index: 1;">${opt.text}</span>
+                                            </div>
+                                            <span style="min-width: 60px; text-align: right; color: var(--primary); font-weight: 600;">${percent}%</span>
+                                            <span style="min-width: 50px; text-align: right; color: var(--text-muted); font-size: 0.85rem;">${opt.votes || 0} oy</span>
+                                        </div>
+                                    `;
+                    }).join('')}
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem;">
+                                <span><i class="fas fa-users"></i> Toplam: ${totalVotes} oy</span>
+                                <span><i class="fas fa-clock"></i> ${getTimeAgo(poll.createdAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Anket yükleme hatası:', e);
+                container.innerHTML = '<p style="text-align: center; color: var(--danger); padding: 40px;"><i class="fas fa-exclamation-triangle"></i> Yükleme hatası</p>';
+            }
+        }
+
+        // Anket durumunu değiştir
+        async function togglePollStatus(pollId) {
+            try {
+                await waitForFirebase();
+
+                const snapshot = await window.firebaseGet(window.firebaseRef(window.firebaseDb, `polls/${pollId}/status`));
+                const currentStatus = snapshot.exists() ? snapshot.val() : 'active';
+                const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
+                await window.firebaseSet(window.firebaseRef(window.firebaseDb, `polls/${pollId}/status`), newStatus);
+
+                showToast(`Anket ${newStatus === 'active' ? 'aktif' : 'pasif'} yapıldı!`, 'success');
+                loadAdminPolls();
+            } catch (e) {
+                showToast('Durum değiştirilemedi!', 'error');
+            }
+        }
+
+        // Anket sil
+        async function deletePoll(pollId) {
+            showConfirmModal('Bu anketi silmek istediğinize emin misiniz?', async () => {
+                try {
+                    await waitForFirebase();
+                    await window.firebaseRemove(window.firebaseRef(window.firebaseDb, `polls/${pollId}`));
+                    showToast('Anket silindi!', 'success');
+                    loadAdminPolls();
+                } catch (e) {
+                    showToast('Anket silinemedi!', 'error');
+                }
+            });
         }
     </script>
 
